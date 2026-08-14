@@ -533,8 +533,8 @@ export class App {
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
       const pdf = await loadingTask.promise;
 
-      if (pdf.numPages > 500) {
-        this.apiError.set(`Tài liệu có ${pdf.numPages} trang, vượt quá giới hạn 500 trang. Vui lòng cắt nhỏ tệp PDF trước khi xử lý.`);
+      if (pdf.numPages > 1000) {
+        this.apiError.set(`Tài liệu có ${pdf.numPages} trang, vượt quá giới hạn 1000 trang. Vui lòng cắt nhỏ tệp PDF trước khi xử lý.`);
         this.isParsing.set(false);
         this.parsingStatus.set('');
         return;

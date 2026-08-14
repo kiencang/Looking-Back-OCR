@@ -51,11 +51,11 @@ import { PdfType } from './header';
           <div class="h-6 mb-2 flex items-center justify-center">
             @if (isParsing()) {
               <h2 class="text-sm font-semibold tracking-tight font-sans text-slate-100 text-center leading-none animate-pulse">
-                Đang phân tích cú pháp dữ liệu...
+                Đang phân tích dữ liệu...
               </h2>
             } @else {
               <span class="text-[11px] font-sans font-medium text-slate-500 text-center uppercase tracking-wider select-none">
-                [Tối đa: 100MB / 500 trang]
+                [Tối đa: 100MB / 1000 trang]
               </span>
             }
           </div>
@@ -66,9 +66,9 @@ import { PdfType } from './header';
               @if (isParsing()) {
                 <span class="text-indigo-300 font-medium">{{ parsingStatus() || 'Hệ thống đang cấu trúc thông tin' }}</span>
               } @else if (selectedPdfType() === 'scan') {
-                Chế độ <strong>PDF Scan (Mặc định)</strong>: Phù hợp nhất cho PDF dạng scan. Không bóc tách ảnh lẻ để tăng tốc xử lý.
+                Chế độ <strong>PDF Scan (Mặc định)</strong>: Phù hợp nhất cho PDF dạng scan. Đa số tài liệu/sách cổ sẽ ở định dạng này.
               } @else {
-                Chế độ <strong>PDF Tiêu chuẩn</strong>: Bóc tách ảnh minh họa nhúng trong file PDF tiêu chuẩn để tái tạo vào bản chuyển đổi.
+                Chế độ <strong>PDF Tiêu chuẩn</strong>: Chỉ dùng cho file PDF có layout chuẩn, hệ thống sẽ bóc tách ảnh trong bản gốc để tái tạo vào bản OCR... Sẽ không phù hợp khi áp dụng chế độ này cho file PDF scan.
               }
             </p>
           </div>

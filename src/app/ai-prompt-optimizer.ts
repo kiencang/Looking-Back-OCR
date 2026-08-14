@@ -274,7 +274,23 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
     let rawMarkdown = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     if (!rawMarkdown) {
-      throw new Error('Gemini API không phản hồi dữ liệu văn bản hợp lệ.');
+      const finishReason = resData?.candidates?.[0]?.finishReason;
+      if (finishReason) {
+        switch (finishReason) {
+          case 'SAFETY':
+            throw new Error('Lỗi: Tài liệu bị hệ thống từ chối xử lý do chứa nội dung vi phạm tiêu chuẩn an toàn (ví dụ: bạo lực, nhạy cảm...).');
+          case 'RECITATION':
+            throw new Error('Lỗi: Tài liệu bị từ chối xử lý do nghi ngờ vi phạm bản quyền hoặc chứa nội dung sao chép nguyên văn.');
+          case 'MAX_TOKENS':
+            throw new Error('Lỗi: Tài liệu quá dài hoặc quá phức tạp để xử lý trong một lần. Vui lòng cắt nhỏ file PDF.');
+          case 'OTHER':
+            throw new Error('Lỗi: AI từ chối phản hồi vì lý do không xác định (Mã lỗi: OTHER).');
+          default:
+            throw new Error(`Lỗi: AI từ chối phản hồi (Lý do: ${finishReason}).`);
+        }
+      } else {
+        throw new Error('Lỗi từ AI: Không nhận được dữ liệu văn bản phản hồi.');
+      }
     }
 
     // Secondary sanitization: remove Markdown wrappers if returned despite strict instructions

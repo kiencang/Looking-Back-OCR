@@ -9,12 +9,12 @@ import { MatIconModule } from '@angular/material/icon';
   template: `
     <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end pointer-events-none" id="toast-wrapper">
       @if (apiError()) {
-        <div class="pointer-events-auto bg-slate-950/95 backdrop-blur border border-rose-500/30 text-rose-300 px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between gap-4 animate-fade-in max-w-sm" id="toast-error">
-          <div class="flex items-center gap-2.5">
-            <mat-icon class="text-rose-400 shrink-0 text-[20px] w-5 h-5 leading-[20px] flex items-center justify-center animate-pulse">error_outline</mat-icon>
-            <span class="font-sans text-sm leading-snug">{{ apiError() }}</span>
+        <div class="pointer-events-auto bg-slate-950/95 backdrop-blur border border-rose-500/30 text-rose-300 px-4 py-3 rounded-xl shadow-2xl flex items-start justify-between gap-4 animate-fade-in max-w-sm sm:max-w-md md:max-w-xl max-h-[80vh] overflow-y-auto" id="toast-error">
+          <div class="flex items-start gap-2.5 w-full">
+            <mat-icon class="text-rose-400 shrink-0 text-[20px] w-5 h-5 leading-[20px] flex items-center justify-center animate-pulse mt-0.5">error_outline</mat-icon>
+            <span class="font-sans text-sm leading-snug break-words whitespace-pre-wrap">{{ apiError() }}</span>
           </div>
-          <button (click)="clearError.emit()" class="text-rose-300 hover:text-white shrink-0 outline-none flex items-center justify-center cursor-pointer transition-colors" aria-label="Đóng lỗi">
+          <button (click)="clearError.emit()" class="text-rose-300 hover:text-white shrink-0 outline-none flex items-center justify-center cursor-pointer transition-colors mt-0.5" aria-label="Đóng lỗi">
             <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex">close</mat-icon>
           </button>
         </div>
