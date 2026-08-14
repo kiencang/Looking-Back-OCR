@@ -6,7 +6,12 @@ export class EpubExporter {
   /**
    * Zip compilation of valid, standard EPUB structure package
    */
-  static async generateEpub(title: string, markdownContent: string, pdfPages: PdfPageData[]): Promise<Blob> {
+  static async generateEpub(
+    title: string,
+    content: string,
+    pdfPages: PdfPageData[],
+    outputMode: 'markdown' | 'html' = 'markdown'
+  ): Promise<Blob> {
     const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
 
@@ -42,7 +47,9 @@ export class EpubExporter {
       zip.file(`OEBPS/${img.fileName}`, base64Clean, { base64: true });
     });
 
-    const xhtmlContent = MarkdownRenderer.markdownToXhtml(markdownContent);
+    const xhtmlContent = outputMode === 'html' 
+      ? MarkdownRenderer.htmlToXhtml(content)
+      : MarkdownRenderer.markdownToXhtml(content);
     const mathmlProperty = xhtmlContent.includes('<math') ? ' properties="mathml"' : '';
 
     zip.file('OEBPS/section1.xhtml', `<?xml version="1.0" encoding="utf-8"?>

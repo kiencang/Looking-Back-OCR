@@ -125,21 +125,36 @@ export class PdfProcessor {
     return MarkdownRenderer.renderMarkdownToHtml(markdown, pdfPages);
   }
 
+  renderHtmlContent(htmlContent: string, pdfPages: PdfPageData[]): string {
+    return MarkdownRenderer.renderHtmlContent(htmlContent, pdfPages);
+  }
+
+  renderContent(content: string, pdfPages: PdfPageData[], outputMode: 'markdown' | 'html' = 'markdown'): string {
+    if (outputMode === 'html') {
+      return MarkdownRenderer.renderHtmlContent(content, pdfPages);
+    }
+    return MarkdownRenderer.renderMarkdownToHtml(content, pdfPages);
+  }
+
   markdownToXhtml(markdown: string): string {
     return MarkdownRenderer.markdownToXhtml(markdown);
+  }
+
+  htmlToXhtml(htmlContent: string): string {
+    return MarkdownRenderer.htmlToXhtml(htmlContent);
   }
 
   /**
    * EPUB generation builder delegation
    */
-  generateEpub(title: string, markdownContent: string, pdfPages: PdfPageData[]): Promise<Blob> {
-    return EpubExporter.generateEpub(title, markdownContent, pdfPages);
+  generateEpub(title: string, content: string, pdfPages: PdfPageData[], outputMode: 'markdown' | 'html' = 'markdown'): Promise<Blob> {
+    return EpubExporter.generateEpub(title, content, pdfPages, outputMode);
   }
 
   /**
    * DOCX Word generation delegation
    */
-  generateDocx(title: string, markdownContent: string, pdfPages: PdfPageData[]): Promise<Blob> {
-    return DocxExporter.generateDocx(title, markdownContent, pdfPages);
+  generateDocx(title: string, content: string, pdfPages: PdfPageData[]): Promise<Blob> {
+    return DocxExporter.generateDocx(title, content, pdfPages);
   }
 }

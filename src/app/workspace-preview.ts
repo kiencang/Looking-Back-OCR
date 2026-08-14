@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, input, output, effect } from '@angu
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfChunk } from './app';
-import { PdfType } from './header';
+import { PdfType, OutputMode } from './header';
 import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -83,39 +83,58 @@ import { SafeHtml } from '@angular/platform-browser';
           }
 
           @if (reflowHtml() && isAllCompleted()) {
-            <!-- Docx Export Wrapper -->
-            <div class="relative group">
-              <button 
-                (click)="downloadDocx.emit()"
-                [disabled]="isParsing() || isOptimizing()"
-                class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-indigo-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
-                <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">description</mat-icon>
-                <span>Tải Docx (đầy đủ)</span>
-              </button>
-              <!-- Tailwind Tooltip Downwards -->
-              <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
-                Tải tài liệu Microsoft Word (.docx) đầy đủ
-                <!-- Tooltip Arrow Pointing Up -->
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+            @if (outputMode() === 'html') {
+              <!-- Single HTML Export Button for Full Document -->
+              <div class="relative group">
+                <button 
+                  (click)="downloadHtml.emit()"
+                  [disabled]="isParsing() || isOptimizing()"
+                  class="py-2.5 px-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-emerald-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
+                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">html</mat-icon>
+                  <span>Tải HTML (đầy đủ)</span>
+                </button>
+                <!-- Tailwind Tooltip Downwards -->
+                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
+                  Tải toàn bộ tài liệu dưới dạng trang HTML/CSS độc lập
+                  <!-- Tooltip Arrow Pointing Up -->
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+                </div>
               </div>
-            </div>
+            } @else {
+              <!-- Docx Export Wrapper (Markdown mode) -->
+              <div class="relative group">
+                <button 
+                  (click)="downloadDocx.emit()"
+                  [disabled]="isParsing() || isOptimizing()"
+                  class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-indigo-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
+                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">description</mat-icon>
+                  <span>Tải Docx (đầy đủ)</span>
+                </button>
+                <!-- Tailwind Tooltip Downwards -->
+                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
+                  Tải tài liệu Microsoft Word (.docx) đầy đủ
+                  <!-- Tooltip Arrow Pointing Up -->
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+                </div>
+              </div>
 
-            <!-- EPUB Export Wrapper -->
-            <div class="relative group">
-              <button 
-                (click)="downloadEpub.emit()"
-                [disabled]="isParsing() || isOptimizing()"
-                class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-emerald-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
-                <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">book</mat-icon>
-                <span>Tải EPUB (đầy đủ)</span>
-              </button>
-              <!-- Tailwind Tooltip Downwards -->
-              <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
-                Tải sách điện tử định dạng EPUB 3 đầy đủ
-                <!-- Tooltip Arrow Pointing Up -->
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+              <!-- EPUB Export Wrapper (Markdown mode) -->
+              <div class="relative group">
+                <button 
+                  (click)="downloadEpub.emit()"
+                  [disabled]="isParsing() || isOptimizing()"
+                  class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-emerald-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
+                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">book</mat-icon>
+                  <span>Tải EPUB (đầy đủ)</span>
+                </button>
+                <!-- Tailwind Tooltip Downwards -->
+                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
+                  Tải sách điện tử định dạng EPUB 3 đầy đủ
+                  <!-- Tooltip Arrow Pointing Up -->
+                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+                </div>
               </div>
-            </div>
+            }
           }
         </div>
       </div>
@@ -127,28 +146,38 @@ import { SafeHtml } from '@angular/platform-browser';
         @if (selectedTab() === 'reflow') {
           <div 
             class="w-full max-w-4xl rounded-2xl shadow-lg border p-6 md:p-14 transition-all duration-300 relative"
-            [class.theme-clean]="themeStyle() === 'clean'"
-            [class.theme-warm]="themeStyle() === 'warm'"
-            [class.theme-mono]="themeStyle() === 'mono'"
-            [class.font-mono]="themeStyle() === 'mono'">
+            [class.theme-clean]="outputMode() === 'html' || themeStyle() === 'clean'"
+            [class.theme-warm]="outputMode() === 'markdown' && themeStyle() === 'warm'"
+            [class.theme-mono]="outputMode() === 'markdown' && themeStyle() === 'mono'"
+            [class.font-mono]="outputMode() === 'markdown' && themeStyle() === 'mono'">
             
             @if (activeChunk()?.status === 'completed') {
               <!-- Single chunk download buttons -->
               <div class="flex items-center justify-end gap-2 mb-6 border-b border-slate-200/5 pb-4">
-                <button 
-                  (click)="downloadDocxForChunk.emit()"
-                  [disabled]="isParsing() || isOptimizing()"
-                  class="py-1.5 px-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
-                  <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">description</mat-icon>
-                  <span>Tải Docx ({{ activeChunk()?.id | lowercase }})</span>
-                </button>
-                <button 
-                  (click)="downloadEpubForChunk.emit()"
-                  [disabled]="isParsing() || isOptimizing()"
-                  class="py-1.5 px-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 active:bg-emerald-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
-                  <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">book</mat-icon>
-                  <span>Tải EPUB ({{ activeChunk()?.id | lowercase }})</span>
-                </button>
+                @if (outputMode() === 'html') {
+                  <button 
+                    (click)="downloadHtmlForChunk.emit()"
+                    [disabled]="isParsing() || isOptimizing()"
+                    class="py-1.5 px-3 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 active:bg-emerald-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
+                    <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">html</mat-icon>
+                    <span>Tải HTML ({{ activeChunk()?.id | lowercase }})</span>
+                  </button>
+                } @else {
+                  <button 
+                    (click)="downloadDocxForChunk.emit()"
+                    [disabled]="isParsing() || isOptimizing()"
+                    class="py-1.5 px-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
+                    <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">description</mat-icon>
+                    <span>Tải Docx ({{ activeChunk()?.id | lowercase }})</span>
+                  </button>
+                  <button 
+                    (click)="downloadEpubForChunk.emit()"
+                    [disabled]="isParsing() || isOptimizing()"
+                    class="py-1.5 px-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 active:bg-emerald-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
+                    <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">book</mat-icon>
+                    <span>Tải EPUB ({{ activeChunk()?.id | lowercase }})</span>
+                  </button>
+                }
               </div>
             }
 
@@ -276,6 +305,7 @@ import { SafeHtml } from '@angular/platform-browser';
 export class WorkspacePreview {
   selectedTab = input.required<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
+  outputMode = input<OutputMode>('html');
   reflowHtml = input.required<string>();
   reflowSafeHtml = input.required<SafeHtml>();
   selectedPdfType = input<PdfType>('scan');

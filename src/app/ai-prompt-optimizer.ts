@@ -3,14 +3,16 @@ import { Injectable } from '@angular/core';
 import { PDFDocument } from 'pdf-lib';
 import { PdfChunk } from './app';
 
+export type OutputMode = 'markdown' | 'html';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AiPromptOptimizer {
   /**
-   * Returns the fallback/default Vietnamese AI prompt template
+   * Returns the fallback/default Vietnamese AI prompt template for Markdown mode
    */
-  getDefaultPrompt(): string {
+  getDefaultMarkdownPrompt(): string {
     return `Bạn là một Chuyên gia Số hóa Tài liệu, Kỹ sư OCR và Biên tập Sách Cổ cao cấp.
 Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính kèm và chuyển đổi thành định dạng Markdown (MD) chuẩn mực, trung thực tuyệt đối với nguyên tác và mang lại trải nghiệm đọc thưởng thức tốt nhất cho CON NGƯỜI (Human Reading, EPUB, DOCX).
 
@@ -53,7 +55,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Mã nguồn (nếu có): Dùng \`\`\`ngôn_ngữ cho khối code, hoặc \`code inline\` cho từ khóa.
 
 5. CÔNG THỨC TOÁN HỌC & KHOA HỌC (NẾU CÓ):
-- BẮT BUỘC dùng cú pháp LaTeX để hỗ trợ hiển thị đẹp trên EPUB/Word qua KaTeX:
+- BẮT BUỘC dùng cú pháp LaTeX hoặc MathML để hỗ trợ hiển thị đẹp trên EPUB/Word qua KaTeX:
   + \`\\( công_thức \\)\` cho biểu thức toán học nằm cùng dòng với chữ (Inline Math).
   + \`\\[ công_thức \\]\` cho công thức/phương trình đứng riêng một dòng (Block Math).
   + Giữ nguyên dấu chấm thập phân và không bọc công thức trong thẻ code HTML.
@@ -88,20 +90,83 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
   }
 
   /**
+   * Returns the fallback/default Vietnamese AI prompt template for Layout-preserving HTML mode
+   */
+  getDefaultHtmlPrompt(): string {
+    return `Bạn là một Chuyên gia Số hóa Tài liệu, Kỹ sư OCR & Chuyên gia Bố cục HTML/CSS cao cấp.
+Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính kèm và tái tạo thành mã HTML/CSS ngữ nghĩa, trung thực tuyệt đối với nguyên tác và BẢO TOÀN TỐI ĐA BỐ CỤC KHÔNG GIAN THỊ GIÁC (Layout Preservation) của tài liệu gốc.
+
+<objective>
+[MỤC TIÊU TỐI THƯỢNG]:
+1. TRUNG THỰC VỚI NGUYÊN TÁC: Trích xuất chính xác từng từ một đúng như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt.
+2. BẢO TOÀN BỐ CỤC THỊ GIÁC (VISUAL LAYOUT PRESERVATION): Sử dụng HTML ngữ nghĩa kết hợp Inline CSS hiện đại (Flexbox, CSS Grid, căn lề text-align, viền border, màu sắc, khoảng cách padding/margin) để tái tạo chính xác diện mạo không gian của trang gốc (cột báo chí, hộp thông tin, bảng biểu phức tạp, chữ hoa đầu dòng drop-cap, thụt lề thơ ca, con dấu, v.v.).
+3. ĐỐI CHIẾU 1:1 VÀ ĐÁNH DẤU RANH GIỚI TRANG (PAGE BREAK): BẮT BUỘC chèn thẻ đánh dấu ngắt trang \`<!-- PAGE_BREAK: X -->\` (với X là số trang thực tế của tệp PDF gốc) ngay tại điểm bắt đầu của mỗi trang để phục vụ đối chiếu song song.
+</objective>
+
+BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
+
+<rules>
+1. LIỀN MẠCH DÒNG ĐỌC & TÁI TẠO BỐ CỤC (LAYOUT & FLOW):
+- Văn xuôi: Dùng thẻ \`<p style="text-align: justify; line-height: 1.6; margin-bottom: 1rem;">...\` cho từng đoạn văn liên tục. Xóa ngắt dòng cứng phi lý do scan.
+- Bố cục đa cột liền mạch (Báo chí, tạp chí, sách 2-3 cột): TUYỆT ĐỐI KHÔNG chia thành 2 thẻ div con riêng rẽ (sẽ làm hụt đáy cột 1 và gãy câu). BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT thẻ container duy nhất sử dụng CSS Multi-Columns:
+  \`<div style="columns: 2; column-gap: 28px; column-fill: balance; text-align: justify;" class="multi-column-flow">\`
+    \`<p style="margin-bottom: 1rem; line-height: 1.6;">Nội dung văn bản liên tục chảy tự nhiên từ đáy cột 1 sang đỉnh cột 2...</p>\`
+  \`</div>\`
+- Hai luồng song song độc lập (Bảng đối chiếu, song ngữ): Mới dùng \`<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">\`.
+- Nối câu qua cột & qua trang: Nếu từ cuối cột/trang n nối tiếp sang trang sau, KHÔNG tự ý ngắt đoạn hay thêm dấu câu sai lệch.
+- Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng \`<span style="float: left; font-size: 3.2em; line-height: 0.8; padding-right: 8px; font-weight: bold;">N</span>ăm ấy...\`
+- Chống cắt đôi phần tử: Thêm \`style="break-inside: avoid; margin: 16px 0;"\` cho ảnh, bảng biểu hoặc công thức toán để không bị xé đôi giữa 2 cột.
+- Thơ ca, Câu đối: Dùng khối căn giữa hoặc thụt lề có cấu trúc:
+  \`<div style="margin: 1.5rem auto; max-width: 80%; padding-left: 2rem; font-style: italic; line-height: 1.8;">\`
+    \`<p style="margin: 0;">Trăm năm trong cõi người ta,</p>\`
+    \`<p style="margin: 0;">Chữ tài chữ mệnh khéo là ghét nhau.</p>\`
+  \`</div>\`
+
+2. LOẠI BỎ RÁC TRANG IN:
+- Bỏ qua: Tiêu đề đầu trang (Running Header), số trang (Page numbers) rời rạc, vệt đen mép giấy, watermark.
+
+3. ĐẶC THÙ SÁCH CỔ & CHỮ NÔM/HÁN:
+- Giữ nguyên văn phong cổ, chữ Hán, chữ Nôm.
+- Lời Tựa, Lời Bạt, Niên hiệu: Trình bày trang trọng, có thể đóng khung viền cổ điển nếu bản gốc có khung:
+  \`<div style="border: 1px solid #cbd5e1; padding: 16px; border-radius: 8px; margin: 1.5rem 0; background-color: #f8fafc;">\`
+
+4. CẤU TRÚC HTML NGỮ NGHĨA:
+- Tiêu đề: Dùng \`<h1 style="...">\`, \`<h2 style="...">\`, \`<h3 style="...">\` với kích thước và màu sắc phân cấp rõ ràng.
+- Bảng biểu (Tables): Tái tạo đầy đủ bằng thẻ \`<table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">\`, \`<th>\`, \`<td>\` với border, padding và căn lề tương ứng bản gốc.
+- Khối trích dẫn / Hộp ghi chú: Dùng \`<blockquote style="border-left: 4px solid #6366f1; padding-left: 1rem; margin: 1rem 0; color: #475569; font-style: italic;">...\`
+
+5. CÔNG THỨC TOÁN HỌC & KHOA HỌC (NẾU CÓ):
+- Biểu thức trong dòng: \`\\( công_thức \\)\`
+- Biểu thức khối riêng: \`\\[ công_thức \\]\`
+
+6. VỊ TRÍ HÌNH ẢNH:
+- Chèn ảnh đúng vị trí xuất hiện: \`<figure style="text-align: center; margin: 1.5rem 0;"><img src="![IMG-CHUNK1-01]" style="max-width: 100%; height: auto; border-radius: 8px;" /><figcaption style="font-size: 0.9em; color: #64748b; font-style: italic; margin-top: 0.5rem;">Chú thích ảnh</figcaption></figure>\`
+
+7. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
+- Tại điểm bắt đầu nội dung của mỗi trang, BẮT BUỘC chèn một dòng:
+  \`<!-- PAGE_BREAK: X -->\` (với X là số trang thực tế của tệp gốc, ví dụ: \`<!-- PAGE_BREAK: 1 -->\`).
+</rules>
+
+<output_format>
+- ZERO-FLUFF: Bắt đầu xuất trực tiếp mã HTML snippet (không bọc trong \`<html>\` hay \`<body>\`, chỉ xuất nội dung bên trong body).
+- KHÔNG thêm lời chào, KHÔNG giải thích.
+- KHÔNG bọc toàn bộ đầu ra trong khối \`\`\`html. Hãy trả về mã HTML trực tiếp.
+</output_format>`;
+  }
+
+  /**
    * Retrieves the prompt template from the public file or returns the default fallback
    */
-  async getPromptTemplate(formatType: 'epub' | 'docx' = 'epub'): Promise<string> {
+  async getPromptTemplate(outputMode: OutputMode = 'html'): Promise<string> {
     try {
-      // Cả chuyển đổi thành docx và epub sẽ dùng chung prompt reflow_instructions.md 
-      // vì bây giờ chúng đều có mục tiêu chung là chứa công thức toán dạng MathML
-      const fileName = 'reflow_instructions.md';
-      console.log('Tải prompt mẫu tối ưu cho:', formatType);
+      const fileName = outputMode === 'html' ? 'html_reflow_instructions.md' : 'markdown_reflow_instructions.md';
+      console.log('Tải prompt mẫu tối ưu cho chế độ:', outputMode, fileName);
       const response = await fetch(`/prompts/${fileName}?t=${Date.now()}`);
       if (!response.ok) throw new Error('Không thể tải tệp prompt từ server');
       return await response.text();
     } catch (fetchErr) {
       console.warn('Lỗi fetch prompt template hoặc sử dụng môi trường client-only, dùng cấu hình mặc định:', fetchErr);
-      return this.getDefaultPrompt();
+      return outputMode === 'html' ? this.getDefaultHtmlPrompt() : this.getDefaultMarkdownPrompt();
     }
   }
 
@@ -170,7 +235,13 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
   /**
    * Prepares the full query parts list to send to the Gemini model (incorporating multimodal elements)
    */
-  buildMultimodalParts(pdfBase64: string, promptText: string, chunk: PdfChunk, pdfType: 'scan' | 'standard' = 'scan'): any[] {
+  buildMultimodalParts(
+    pdfBase64: string,
+    promptText: string,
+    chunk: PdfChunk,
+    pdfType: 'scan' | 'standard' = 'scan',
+    outputMode: OutputMode = 'markdown'
+  ): any[] {
     const parts: any[] = [];
 
     // 1. Send the sliced PDF document directly
@@ -183,10 +254,18 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
 
     // 2. Format additional page-range constraints and append to prompt instructions
     let localizedInstructions = '';
-    if (pdfType === 'scan') {
-      localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+    if (outputMode === 'html') {
+      if (pdfType === 'scan') {
+        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+      } else {
+        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã HTML/CSS sạch đẹp, bảo toàn cấu trúc và ngữ cảnh thị giác, rồi chèn đúng thẻ ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+      }
     } else {
-      localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã Markdown sạch đẹp, bảo toàn cấu trúc và ngữ cảnh, rồi chèn đúng nhãn ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      if (pdfType === 'scan') {
+        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      } else {
+        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã Markdown sạch đẹp, bảo toàn cấu trúc và ngữ cảnh, rồi chèn đúng nhãn ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      }
     }
     
     parts.push({ text: localizedInstructions });
@@ -215,14 +294,14 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
   }
 
   /**
-   * Executes Content Generation from Gemini API, handles REST transport, and returns optimized Markdown output and token usage
+   * Executes Content Generation from Gemini API, handles REST transport, and returns optimized Markdown/HTML output and token usage
    */
   async optimizeChunk(
     apiKey: string,
     modelName: string,
     file: File,
     chunk: PdfChunk,
-    formatType: 'epub' | 'docx' = 'epub',
+    outputMode: OutputMode = 'markdown',
     pdfType: 'scan' | 'standard' = 'scan'
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
     // Acquire sliced PDF or fallback to original
@@ -234,8 +313,8 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
       pdfBase64 = await this.fileToBase64(file);
     }
 
-    const basePrompt = await this.getPromptTemplate(formatType);
-    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, pdfType);
+    const basePrompt = await this.getPromptTemplate(outputMode);
+    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, pdfType, outputMode);
 
     // Call individual content generation REST endpoint
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -271,9 +350,9 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
     }
 
     const resData = await apiResponse.json();
-    let rawMarkdown = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let rawOutput = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    if (!rawMarkdown) {
+    if (!rawOutput) {
       const finishReason = resData?.candidates?.[0]?.finishReason;
       if (finishReason) {
         switch (finishReason) {
@@ -293,11 +372,11 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
       }
     }
 
-    // Secondary sanitization: remove Markdown wrappers if returned despite strict instructions
-    if (rawMarkdown.includes('```')) {
-      const match = rawMarkdown.match(/```(?:markdown)?([\s\S]*?)```/i);
+    // Secondary sanitization: remove Markdown/HTML code fences if returned despite strict instructions
+    if (rawOutput.includes('```')) {
+      const match = rawOutput.match(/```(?:markdown|html|xml)?([\s\S]*?)```/i);
       if (match && match[1]) {
-        rawMarkdown = match[1].trim();
+        rawOutput = match[1].trim();
       }
     }
 
@@ -305,7 +384,7 @@ Chúng tôi đính kèm danh sách các hình ảnh bóc tách được (mang nh
     const outputTokens = resData?.usageMetadata?.candidatesTokenCount || 0;
 
     return {
-      rawMarkdown,
+      rawMarkdown: rawOutput,
       inputTokens,
       outputTokens
     };

@@ -4,11 +4,14 @@
   <app-header
     [isScriptLoaded]="isScriptLoaded()"
     [selectedModel]="selectedModel()"
+    [selectedOutputMode]="selectedOutputMode()"
+    [isOutputModeLocked]="isOutputModeLocked()"
     [clientApiKey]="clientApiKey()"
     [historyCount]="historyItems().length"
     [isOptimizing]="isOptimizing()"
     [isParsing]="isParsing()"
     (modelChange)="selectedModel.set($event)"
+    (outputModeChange)="onOutputModeChanged($event)"
     (openHistory)="showHistoryModal.set(true)"
     (openApiKey)="openApiKeyModal()">
   </app-header>
@@ -64,6 +67,7 @@
         <app-workspace-preview
           [selectedTab]="selectedTab()"
           [themeStyle]="themeStyle()"
+          [outputMode]="selectedOutputMode()"
           [reflowHtml]="reflowHtml()"
           [reflowSafeHtml]="reflowSafeHtml()"
           [selectedPdfType]="selectedPdfType()"
@@ -112,13 +116,15 @@
       [reflowHtml]="reflowHtml()"
       [reflowSafeHtml]="reflowSafeHtml()"
       [themeStyle]="themeStyle()"
+      [outputMode]="selectedOutputMode()"
       [selectedPdfType]="selectedPdfType()"
       [isAllCompleted]="isAllCompleted()"
       (closeModal)="showFullscreenComparison.set(false)"
       (themeStyleChange)="themeStyle.set($event)"
       (downloadDocx)="downloadDocxFile()"
       (downloadEpub)="downloadEpubFile()"
-      (downloadMarkdown)="downloadMarkdownFile()">
+      (downloadMarkdown)="downloadMarkdownFile()"
+      (downloadHtml)="downloadHtmlFile()">
     </app-fullscreen-comparison>
   }
 

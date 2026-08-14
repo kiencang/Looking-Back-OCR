@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeHtml } from '@angular/platform-browser';
 import { PdfChunk } from './app';
 import { PdfPageData } from './pdf-processor';
-import { PdfType } from './header';
+import { PdfType, OutputMode } from './header';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -97,54 +97,66 @@ import { PdfType } from './header';
           </button>
         </div>
 
-        <!-- Reader Theme Switcher -->
-        <div class="flex items-center bg-slate-950/80 border border-white/10 p-0.5 rounded-lg text-xs">
-          <button 
-            (click)="themeStyleChange.emit('clean')"
-            class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
-            [class.bg-white]="themeStyle() === 'clean'"
-            [class.text-slate-900]="themeStyle() === 'clean'"
-            [class.text-slate-400]="themeStyle() !== 'clean'"
-            title="Nền trắng sáng">
-            Sáng
-          </button>
-          <button 
-            (click)="themeStyleChange.emit('warm')"
-            class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
-            [class.bg-[#fbf6ec]]="themeStyle() === 'warm'"
-            [class.text-amber-900]="themeStyle() === 'warm'"
-            [class.text-slate-400]="themeStyle() !== 'warm'"
-            title="Nền giấy ngả vàng">
-            Ấm
-          </button>
-          <button 
-            (click)="themeStyleChange.emit('mono')"
-            class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
-            [class.bg-zinc-800]="themeStyle() === 'mono'"
-            [class.text-zinc-100]="themeStyle() === 'mono'"
-            [class.text-slate-400]="themeStyle() !== 'mono'"
-            title="Nền tối">
-            Tối
-          </button>
-        </div>
+        <!-- Reader Theme Switcher (Only in Markdown mode) -->
+        @if (outputMode() === 'markdown') {
+          <div class="flex items-center bg-slate-950/80 border border-white/10 p-0.5 rounded-lg text-xs">
+            <button 
+              (click)="themeStyleChange.emit('clean')"
+              class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
+              [class.bg-white]="themeStyle() === 'clean'"
+              [class.text-slate-900]="themeStyle() === 'clean'"
+              [class.text-slate-400]="themeStyle() !== 'clean'"
+              title="Nền trắng sáng">
+              Sáng
+            </button>
+            <button 
+              (click)="themeStyleChange.emit('warm')"
+              class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
+              [class.bg-[#fbf6ec]]="themeStyle() === 'warm'"
+              [class.text-amber-900]="themeStyle() === 'warm'"
+              [class.text-slate-400]="themeStyle() !== 'warm'"
+              title="Nền giấy ngả vàng">
+              Ấm
+            </button>
+            <button 
+              (click)="themeStyleChange.emit('mono')"
+              class="px-2 py-1 rounded text-[11px] font-sans transition-colors cursor-pointer"
+              [class.bg-zinc-800]="themeStyle() === 'mono'"
+              [class.text-zinc-100]="themeStyle() === 'mono'"
+              [class.text-slate-400]="themeStyle() !== 'mono'"
+              title="Nền tối">
+              Tối
+            </button>
+          </div>
+        }
 
         <!-- Quick Export Buttons (Desktop) -->
         @if (isAllCompleted()) {
           <div class="hidden lg:flex items-center gap-1.5 border-l border-white/10 pl-2">
-            <button 
-              (click)="downloadDocx.emit()"
-              class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
-              title="Tải Microsoft Word">
-              <mat-icon class="text-xs">description</mat-icon>
-              <span>Word</span>
-            </button>
-            <button 
-              (click)="downloadEpub.emit()"
-              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
-              title="Tải EPUB">
-              <mat-icon class="text-xs">book</mat-icon>
-              <span>EPUB</span>
-            </button>
+            @if (outputMode() === 'html') {
+              <button 
+                (click)="downloadHtml.emit()"
+                class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
+                title="Tải tệp HTML độc lập trọn bộ">
+                <mat-icon class="text-xs">html</mat-icon>
+                <span>Tải HTML trọn bộ</span>
+              </button>
+            } @else {
+              <button 
+                (click)="downloadDocx.emit()"
+                class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
+                title="Tải Microsoft Word">
+                <mat-icon class="text-xs">description</mat-icon>
+                <span>Word</span>
+              </button>
+              <button 
+                (click)="downloadEpub.emit()"
+                class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
+                title="Tải EPUB">
+                <mat-icon class="text-xs">book</mat-icon>
+                <span>EPUB</span>
+              </button>
+            }
           </div>
         }
 
@@ -253,10 +265,10 @@ import { PdfType } from './header';
           @if (reflowHtml()) {
             <article 
               class="w-full max-w-2xl rounded-2xl shadow-2xl border p-6 md:p-12 transition-all duration-300 h-fit"
-              [class.theme-clean]="themeStyle() === 'clean'"
-              [class.theme-warm]="themeStyle() === 'warm'"
-              [class.theme-mono]="themeStyle() === 'mono'"
-              [class.font-mono]="themeStyle() === 'mono'">
+              [class.theme-clean]="outputMode() === 'html' || themeStyle() === 'clean'"
+              [class.theme-warm]="outputMode() === 'markdown' && themeStyle() === 'warm'"
+              [class.theme-mono]="outputMode() === 'markdown' && themeStyle() === 'mono'"
+              [class.font-mono]="outputMode() === 'markdown' && themeStyle() === 'mono'">
               
               <!-- Clean Proportional Reader typography -->
               <div 
@@ -288,6 +300,7 @@ export class FullscreenComparison {
   reflowHtml = input.required<string>();
   reflowSafeHtml = input.required<SafeHtml>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
+  outputMode = input<OutputMode>('html');
   selectedPdfType = input<PdfType>('scan');
   isAllCompleted = input.required<boolean>();
 
@@ -296,6 +309,7 @@ export class FullscreenComparison {
   downloadDocx = output<void>();
   downloadEpub = output<void>();
   downloadMarkdown = output<void>();
+  downloadHtml = output<void>();
 
   pdfContainer = viewChild<ElementRef<HTMLDivElement>>('pdfContainer');
   htmlContainer = viewChild<ElementRef<HTMLDivElement>>('htmlContainer');

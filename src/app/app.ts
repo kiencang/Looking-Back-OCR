@@ -15,7 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PdfProcessor, PdfPageData } from './pdf-processor';
 import { AiPromptOptimizer } from './ai-prompt-optimizer';
 
-import { Header, ModelType, PdfType } from './header';
+import { Header, ModelType, PdfType, OutputMode } from './header';
 import { Footer } from './footer';
 import { EmptyState } from './empty-state';
 import { InstructionModal } from './instruction-modal';
@@ -75,6 +75,7 @@ export class App {
   shouldStopBatch = signal(false);
   selectedModel = signal<ModelType>('gemini-flash-latest');
   selectedPdfType = signal<PdfType>('scan');
+  selectedOutputMode = signal<OutputMode>('html');
   selectedFormat = signal<'epub' | 'docx'>('epub');
   parsingStatus = signal('');
   apiError = signal('');
@@ -113,6 +114,12 @@ export class App {
   isAllCompleted = computed(() => {
     const chunks = this.pdfChunks();
     return chunks.length > 0 && chunks.every(c => c.status === 'completed');
+  });
+
+  // Mode locking rule: Once any chunk is processing or completed, the mode is locked for the entire file
+  isOutputModeLocked = computed(() => {
+    const chunks = this.pdfChunks();
+    return chunks.some(c => c.status === 'completed' || c.status === 'processing');
   });
 
   // Computed fields
@@ -216,6 +223,19 @@ export class App {
   onFormatTypeChanged(format: 'epub' | 'docx') {
     this.selectedFormat.set(format);
     this.showSuccess(`Đã chuyển mục tiêu ngắt dòng và chuyển đổi sang định dạng ${format.toUpperCase()}`);
+  }
+
+  onOutputModeChanged(mode: OutputMode) {
+    if (this.isOutputModeLocked()) {
+      this.apiError.set('🔒 Chế độ xuất đã được cố định cho tài liệu này vì đã có phần được xử lý.');
+      return;
+    }
+    this.selectedOutputMode.set(mode);
+    if (mode === 'html') {
+      this.showSuccess('Đã kích hoạt chế độ OCR HTML/CSS: Tối ưu bảo toàn bố cục không gian thị giác của tài liệu gốc.');
+    } else {
+      this.showSuccess('Đã kích hoạt chế độ OCR Markdown: Tiết kiệm token, dòng văn bản liền mạch tối ưu.');
+    }
   }
 
   clearApiKeyModal() {
@@ -327,7 +347,8 @@ export class App {
         selectedChunkIndex: this.selectedChunkIndex(),
         pdfFileBlob: file,
         model: this.selectedModel(),
-        pdfType: this.selectedPdfType()
+        pdfType: this.selectedPdfType(),
+        outputMode: this.selectedOutputMode()
       };
       await this.pdfProcessor.saveHistoryItem(historyItem);
       await this.loadHistoryFromDb(); // Keep local state updated
@@ -357,6 +378,9 @@ export class App {
       }
       if (item.pdfType) {
         this.selectedPdfType.set(item.pdfType);
+      }
+      if (item.outputMode) {
+        this.selectedOutputMode.set(item.outputMode);
       }
 
       // 3. Auto-jump to the first chunk that is NOT completed
@@ -668,7 +692,8 @@ export class App {
            selectedChunkIndex: 0,
            pdfFileBlob: file,
            model: this.selectedModel(),
-           pdfType: this.selectedPdfType()
+           pdfType: this.selectedPdfType(),
+           outputMode: this.selectedOutputMode()
          };
          await this.saveHistoryItemAndTrim(historyItem);
        }
@@ -711,11 +736,12 @@ export class App {
 
     const modelName = this.selectedModel();
     const pdfType = this.selectedPdfType();
+    const outputMode = this.selectedOutputMode();
     // Optimize layout and map structures using the AiPromptOptimizer module
-    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(apiKey, modelName, file, chunk, this.selectedFormat(), pdfType);
+    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(apiKey, modelName, file, chunk, outputMode, pdfType);
 
-    // Parse output Markdown to HTML preview
-    const renderedHtml = this.pdfProcessor.renderMarkdownToHtml(rawMarkdown, chunk.pages);
+    // Parse output to HTML preview based on selected mode
+    const renderedHtml = this.pdfProcessor.renderContent(rawMarkdown, chunk.pages, outputMode);
     
     this.pdfChunks.update(cs => {
       const newCs = [...cs];
@@ -933,7 +959,7 @@ export class App {
     this.parsingStatus.set('Đang biên dịch tệp tin sách điện tử chuẩn EPUB 3...');
     
     try {
-      const blob = await this.pdfProcessor.generateEpub(title, activeMarkdown, this.pdfPages());
+      const blob = await this.pdfProcessor.generateEpub(title, activeMarkdown, this.pdfPages(), this.selectedOutputMode());
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1009,7 +1035,7 @@ export class App {
     this.parsingStatus.set(`Đang biên dịch tệp tin sách điện tử chuẩn EPUB 3 cho ${chunk.id}...`);
     
     try {
-      const blob = await this.pdfProcessor.generateEpub(title, chunk.markdownContent, chunk.pages);
+      const blob = await this.pdfProcessor.generateEpub(title, chunk.markdownContent, chunk.pages, this.selectedOutputMode());
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1127,9 +1153,6 @@ export class App {
     const match = chunk.id.match(/\d+/);
     const pSuffix = match ? `_p${match[0]}` : `_${chunk.id.replace(/\s+/g, '')}`;
     const title = `${titleOriginal}${pSuffix}`;
-    
-    let fontClass = 'font-sans';
-    if (this.themeStyle() === 'mono') fontClass = 'font-mono';
 
     const fullHtmlSource = `<!DOCTYPE html>
 <html lang="vi">
@@ -1139,16 +1162,44 @@ export class App {
   <title>${title}</title>
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>
-    tailwind.config = {
-      theme: { extend: { colors: { textBody: '#222' } } }
-    }
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']] },
+      svg: { fontCache: 'global' }
+    };
   </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
+      column-fill: balance !important;
+      -webkit-column-fill: balance !important;
+      orphans: 2 !important;
+      widows: 2 !important;
+      hyphens: auto !important;
+      -webkit-hyphens: auto !important;
+    }
+    .break-inside-avoid, figure, table, blockquote, img, math, pre {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background-color: white !important; padding: 0 !important; }
+      .print-shadow-none { box-shadow: none !important; border: none !important; }
+    }
+  </style>
 </head>
-<body class="bg-[#eef2f6] min-h-screen text-slate-800 p-8 flex items-center justify-center selection:bg-indigo-300 selection:text-indigo-900">
-  <div class="bg-white max-w-[850px] w-full mx-auto shadow-xl ring-1 ring-slate-900/5 sm:rounded-2xl relative">
-    <div class="p-10 sm:p-14 md:p-16 prose prose-lg !max-w-none prose-slate text-justify !leading-relaxed hover:prose-a:text-indigo-600 prose-img:rounded-xl prose-img:shadow-sm ${fontClass}">
-      ${chunk.reflowHtml}
+<body class="bg-slate-50 text-slate-800 p-4 md:p-12 min-h-screen flex items-start justify-center">
+  <div class="max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-16 print-shadow-none">
+    <div class="no-print flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
+      <div class="text-xs text-slate-400 font-mono">${title} (Trang ${chunk.startPageNum} - ${chunk.endPageNum})</div>
+      <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
     </div>
+    <article class="prose max-w-none text-justify flex flex-col">
+      ${chunk.reflowHtml}
+    </article>
   </div>
 </body>
 </html>`;
@@ -1166,32 +1217,47 @@ export class App {
   }
 
   /**
-   * Triggers file download of self-contained file
+   * Triggers file download of self-contained full HTML document
    */
   downloadHtmlFile() {
     const chunks = this.pdfChunks();
     const isAllCompleted = chunks.length > 0 && chunks.every(c => c.status === 'completed');
     if (!isAllCompleted) {
-      this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước.');
+      this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước khi tải file HTML trọn bộ.');
       return;
     }
-    const activeHtml = chunks.map(c => c.reflowHtml).join('<hr class="my-8 border-slate-200" />');
-    
-    let fontClass = 'font-sans';
-    if (this.themeStyle() === 'mono') fontClass = 'font-mono';
+    const activeHtml = chunks.map(c => c.reflowHtml).join('<hr class="my-10 border-slate-200" />');
+    const title = this.fileName().replace(/\.pdf$/i, '') || 'tai_lieu_chuyen_doi';
 
     const fullHtmlSource = `<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.fileName() || 'Tài liệu chuyển đổi - PDF HTML'}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>${title}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --font-sans: "Inter", sans-serif;
-      --font-mono: "JetBrains Mono", monospace;
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
+      column-fill: balance !important;
+      -webkit-column-fill: balance !important;
+      orphans: 2 !important;
+      widows: 2 !important;
+      hyphens: auto !important;
+      -webkit-hyphens: auto !important;
+    }
+    .break-inside-avoid, figure, table, blockquote, img, math, pre {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
     }
     @media print {
       .no-print { display: none !important; }
@@ -1200,16 +1266,15 @@ export class App {
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 p-4 md:p-12 ${fontClass}">
-  <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-16 print-shadow-none">
-    <div class="no-print flex justify-between items-center mb-10 border-b pb-6 border-slate-100">
-      <div class="text-xs text-slate-400 font-mono">Tài liệu đã chuyển đổi bằng PDF-to-HTML AI</div>
-      <button onclick="window.print()" class="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">In tài liệu / Lưu PDF</button>
+<body class="bg-slate-50 text-slate-800 p-4 md:p-12 min-h-screen flex items-start justify-center">
+  <div class="max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-16 print-shadow-none">
+    <div class="no-print flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
+      <div class="text-xs text-slate-400 font-mono">${title} (Trọn bộ tài liệu)</div>
+      <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
     </div>
-    
-    <div>
+    <article class="prose max-w-none text-justify flex flex-col">
       ${activeHtml}
-    </div>
+    </article>
   </div>
 </body>
 </html>`;
@@ -1218,11 +1283,11 @@ export class App {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = (this.fileName().replace(/\.pdf$/i, '') || 'tai_lieu_chuyen_doi') + '.html';
+    a.download = title + '.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    this.showSuccess('Đã tải trang HTML thành công.');
+    this.showSuccess('Đã tải tệp HTML trọn bộ (.html) thành công.');
   }
 }

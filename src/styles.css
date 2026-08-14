@@ -185,6 +185,35 @@
   }
 }
 
+/* Multi-column layout enhancement and typography stability */
+.multi-column-flow,
+[style*="column-count"],
+[style*="columns:"],
+[class*="columns-"] {
+  column-fill: balance !important;
+  -webkit-column-fill: balance !important;
+  orphans: 2 !important;
+  widows: 2 !important;
+  hyphens: auto !important;
+  -webkit-hyphens: auto !important;
+}
+
+/* Prevent breaking elements awkwardly inside columns or pages */
+.break-inside-avoid,
+figure,
+table,
+blockquote,
+.ocr-page-break-container,
+img,
+math,
+.katex,
+.math-fallback-block,
+pre {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  -webkit-column-break-inside: avoid !important;
+}
+
 /* Global cursor configurations for links, buttons and interactive elements */
 a, 
 button, 
