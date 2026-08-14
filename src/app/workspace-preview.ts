@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, input, output, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, effect, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfChunk } from './app';
+import { PdfChunk, DocumentProcessingService } from './services/document-processing.service';
 import { PdfType, OutputMode } from './header';
 import { SafeHtml } from '@angular/platform-browser';
 
@@ -305,15 +305,16 @@ import { SafeHtml } from '@angular/platform-browser';
 export class WorkspacePreview {
   selectedTab = input.required<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
-  outputMode = input<OutputMode>('html');
+  public docService = inject(DocumentProcessingService);
+  outputMode = this.docService.selectedOutputMode;
   reflowHtml = input.required<string>();
   reflowSafeHtml = input.required<SafeHtml>();
-  selectedPdfType = input<PdfType>('scan');
+  selectedPdfType = this.docService.selectedPdfType;
   isDevMode = input.required<boolean>();
-  isParsing = input.required<boolean>();
-  isOptimizing = input.required<boolean>();
-  activeChunk = input.required<PdfChunk | null>();
-  isAllCompleted = input.required<boolean>();
+  isParsing = this.docService.isParsing;
+  isOptimizing = this.docService.isOptimizing;
+  activeChunk = this.docService.activeChunk;
+  isAllCompleted = this.docService.isAllCompleted;
 
   tabChange = output<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyleChange = output<'clean' | 'warm' | 'mono'>();

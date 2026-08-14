@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PdfProcessor, PdfPageData } from './pdf-processor';
 import { AiPromptOptimizer } from './ai-prompt-optimizer';
+import { generateHtmlDocument } from './utils/html-template-builder';
 
 import { Header, ModelType, PdfType, OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from './header';
 import { Footer } from './footer';
@@ -26,19 +27,8 @@ import { WorkspacePreview } from './workspace-preview';
 import { FullscreenComparison } from './fullscreen-comparison';
 import { ToastNotification } from './toast-notification';
 
-export interface PdfChunk {
-  id: string;
-  index: number;
-  startPageNum: number;
-  endPageNum: number;
-  pages: PdfPageData[];
-  status: 'pending' | 'processing' | 'completed' | 'error';
-  errorMessage: string;
-  markdownContent: string;
-  reflowHtml: string;
-  inputTokens?: number;
-  outputTokens?: number;
-}
+import { DocumentProcessingService, PdfChunk } from './services/document-processing.service';
+export type { PdfChunk };
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,29 +55,23 @@ export class App {
   private pdfProcessor = inject(PdfProcessor);
   private sanitizer = inject(DomSanitizer);
   private aiOptimizer = inject(AiPromptOptimizer);
+  public docService = inject(DocumentProcessingService);
 
 
   // Script and loading state
   isScriptLoaded = computed(() => this.pdfProcessor.isScriptLoaded());
-  isParsing = signal(false);
-  isOptimizing = signal(false);
-  isBatchProcessing = signal(false);
-  shouldStopBatch = signal(false);
-  selectedModel = signal<ModelType>('gemini-flash-latest');
-  selectedPdfType = signal<PdfType>('scan');
-  selectedOutputMode = signal<OutputMode>('html');
+  isParsing = this.docService.isParsing;
+  isOptimizing = this.docService.isOptimizing;
+  isBatchProcessing = this.docService.isBatchProcessing;
+  shouldStopBatch = this.docService.shouldStopBatch;
+  selectedModel = this.docService.selectedModel;
+  selectedPdfType = this.docService.selectedPdfType;
+  selectedOutputMode = this.docService.selectedOutputMode;
   selectedFormat = signal<'epub' | 'docx'>('epub');
-  parsingStatus = signal('');
-  apiError = signal('');
+  parsingStatus = this.docService.parsingStatus;
+  apiError = this.docService.apiError;
   successMessage = signal('');
-  optimizationTimer = signal(0);
   private timerInterval: any = null;
-  optimizationTimeFormatted = computed(() => {
-    const s = this.optimizationTimer();
-    const min = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  });
 
   // History storage
   currentHistoryId = signal<string | null>(null);
@@ -96,17 +80,17 @@ export class App {
   deletingItemId = signal<string | null>(null);
 
   // Loaded document details
-  fileName = signal('');
-  fileSize = signal('');
-  pdfFile = signal<File | null>(null);
-  pdfPages = signal<PdfPageData[]>([]);
+  fileName = this.docService.fileName;
+  fileSize = this.docService.fileSize;
+  pdfFile = this.docService.pdfFile;
+  pdfPages = this.docService.pdfPages;
   
-  pdfChunks = signal<PdfChunk[]>([]);
+  pdfChunks = this.docService.pdfChunks;
   selectedChunkIndex = signal<number>(0);
   
   // Document style profile for unified typography and formatting tokens
-  documentStyleProfile = signal<DocumentStyleProfile | null>(null);
-  isAnalyzingStyle = signal<boolean>(false);
+  documentStyleProfile = this.docService.documentStyleProfile;
+  isAnalyzingStyle = this.docService.isAnalyzingStyle;
   
   activeChunk = computed(() => {
     const chunks = this.pdfChunks();
@@ -148,7 +132,7 @@ export class App {
   themeStyle = signal<'clean' | 'warm' | 'mono'>('clean');
 
   // AI Configuration Options
-  clientApiKey = signal('');
+  clientApiKey = this.docService.clientApiKey;
 
   // Markdown representations
   markdownContent = computed(() => this.activeChunk()?.markdownContent || '');
@@ -565,162 +549,39 @@ export class App {
       this.parsingStatus.set('Đang dọn dẹp bộ nhớ ảnh cũ trong IndexedDB...');
       await this.pdfProcessor.clearStoredImagesForFile(file.name);
 
-      const fileReader = new FileReader();
-      const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-        fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
-        fileReader.onerror = (err) => reject(err);
-        fileReader.readAsArrayBuffer(file);
-      });
+      const { pages, chunks } = await this.pdfProcessor.extractPdfChunks(
+        file,
+        this.selectedPdfType(),
+        (msg: string) => this.parsingStatus.set(msg)
+      );
 
-      this.parsingStatus.set('Chuẩn bị phân tích tài liệu...');
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-      const pdf = await loadingTask.promise;
+      this.pdfPages.set(pages);
+      this.pdfChunks.set(chunks);
 
-      if (pdf.numPages > 1000) {
-        this.apiError.set(`Tài liệu có ${pdf.numPages} trang, vượt quá giới hạn 1000 trang. Vui lòng cắt nhỏ tệp PDF trước khi xử lý.`);
-        this.isParsing.set(false);
-        this.parsingStatus.set('');
-        return;
-      }
+      this.parsingStatus.set('Đang thiết lập bản gốc...');
 
-      const itemsExtracted: PdfPageData[] = [];
-
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        this.parsingStatus.set(`Trích xuất nội dung: Trang ${pageNum} / ${pdf.numPages}...`);
-        const page = await pdf.getPage(pageNum);
-
-        // 1. Text parsing
-        const textContent = await page.getTextContent();
-        const textItems = textContent.items.map((item: any) => ({
-          text: item.str,
-          transform: item.transform, // coordinates
-          width: item.width,
-          height: item.height,
-        }));
-
-        // 2. High-quality canvas rendering to generate preview page image
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d')!;
-        
-        await page.render({
-          canvasContext: ctx,
-          viewport: viewport
-        }).promise;
-
-        const pageImageUrl = canvas.toDataURL('image/png');
-
-        // 3. Isolated images extraction from Operators (only for standard PDF mode)
-        let extractedImages: any[] = [];
-        if (this.selectedPdfType() === 'standard') {
-          this.parsingStatus.set(`Tách lập hình ảnh trang ${pageNum}...`);
-          extractedImages = await this.pdfProcessor.extractImagesFromPage(page);
-        }
-
-        itemsExtracted.push({
-          pageNum,
-          items: textItems,
-          pageImageUrl,
-          extractedImages
-        });
-      }
-
-      this.pdfPages.set(itemsExtracted);
-      
-      const createChunks = (pages: PdfPageData[]): PdfChunk[] => {
-        const chunks: PdfChunk[] = [];
-        const divide = (p: PdfPageData[]) => {
-          if (p.length <= 12) {
-             if (p.length > 0) {
-                chunks.push({
-                  id: '',
-                  index: chunks.length,
-                  startPageNum: p[0].pageNum,
-                  endPageNum: p[p.length - 1].pageNum,
-                  pages: p,
-                  status: 'pending',
-                  errorMessage: '',
-                  markdownContent: '',
-                  reflowHtml: ''
-                });
-             }
-             return;
-          }
-          const mid = Math.floor(p.length / 2);
-          divide(p.slice(0, mid));
-          divide(p.slice(mid));
+      // Save initial state to Conversion History 
+      if (this.currentHistoryId()) {
+        const historyItem = {
+          id: this.currentHistoryId(),
+          fileName: file.name,
+          fileSize: this.pdfProcessor.formatBytes(file.size),
+          timestamp: Date.now(),
+          pdfPages: pages,
+          pdfChunks: chunks,
+          selectedChunkIndex: 0,
+          pdfFileBlob: file,
+          model: this.selectedModel(),
+          pdfType: this.selectedPdfType(),
+          outputMode: this.selectedOutputMode(),
+          styleProfile: null
         };
-        divide(pages);
-        return chunks;
-      };
-      
-      const generatedChunks = createChunks(itemsExtracted);
-
-      // Save images sequentially to IndexedDB with IMG-CHUNKXX-XX keys (if in standard PDF mode)
-      if (this.selectedPdfType() === 'standard') {
-        this.parsingStatus.set('Đang đặt gán nhãn ảnh và lưu vào cơ sở dữ liệu IndexedDB trình duyệt...');
-        let chunkCounter = 1;
-        for (const chunk of generatedChunks) {
-          chunk.id = `Phần ${chunkCounter}`;
-          
-          let imageIdxInChunk = 1;
-          for (const page of chunk.pages) {
-            if (page.extractedImages) {
-              for (const img of page.extractedImages) {
-                const labelKey = `IMG-CHUNK${chunkCounter}-${String(imageIdxInChunk).padStart(2, '0')}`;
-                img.labeledKey = labelKey; // Assign sequential label
-                
-                await this.pdfProcessor.saveImageToDb({
-                  id: `${file.name}_${labelKey}`,
-                  key: labelKey,
-                  fileName: file.name,
-                  pageNum: page.pageNum,
-                  dataUrl: img.dataUrl,
-                  width: img.width,
-                  height: img.height
-                });
-                imageIdxInChunk++;
-              }
-            }
-          }
-          chunkCounter++;
-        }
-      } else {
-        let chunkCounter = 1;
-        for (const chunk of generatedChunks) {
-          chunk.id = `Phần ${chunkCounter}`;
-          chunkCounter++;
-        }
+        await this.saveHistoryItemAndTrim(historyItem);
       }
 
-      this.pdfChunks.set(generatedChunks);
- 
-       this.parsingStatus.set('Đang thiết lập bản gốc...');
- 
-       // Save initial state to Conversion History
-       if (this.currentHistoryId()) {
-         const historyItem = {
-           id: this.currentHistoryId(),
-           fileName: file.name,
-           fileSize: this.pdfProcessor.formatBytes(file.size),
-           timestamp: Date.now(),
-           pdfPages: itemsExtracted,
-           pdfChunks: generatedChunks,
-           selectedChunkIndex: 0,
-           pdfFileBlob: file,
-           model: this.selectedModel(),
-           pdfType: this.selectedPdfType(),
-           outputMode: this.selectedOutputMode(),
-           styleProfile: null
-         };
-         await this.saveHistoryItemAndTrim(historyItem);
-       }
- 
-       this.selectedTab.set('pdf');
-       this.showSuccess('Chia PDF thành công, chuyển sang bước chuẩn bị OCR.');
-       this.isParsing.set(false);
+      this.selectedTab.set('pdf');
+      this.showSuccess('Chia PDF thành công, chuyển sang bước chuẩn bị OCR.');
+      this.isParsing.set(false);
       this.parsingStatus.set('');
     } catch (err: any) {
       this.logError(err);
@@ -770,66 +631,7 @@ export class App {
    * Core function to perform text/image reflow optimization on a specific chunk
    */
   private async executeChunkOptimization(chunkIndex: number): Promise<void> {
-    const file = this.pdfFile();
-    const chunks = this.pdfChunks();
-    const chunk = chunks[chunkIndex];
-
-    if (!file || !chunk) {
-      throw new Error('Không tìm thấy file nguồn hoặc phần phân chia.');
-    }
-
-    const apiKey = this.clientApiKey().trim();
-    if (!apiKey) {
-      throw new Error('Vui lòng cấu hình Gemini API Key trước khi thực hiện.');
-    }
-
-    // update state in chunks to processing
-    this.pdfChunks.update(cs => {
-       const newCs = [...cs];
-       newCs[chunkIndex] = { ...newCs[chunkIndex], status: 'processing', errorMessage: '' };
-       return newCs;
-    });
-
-    const modelName = this.selectedModel();
-    const pdfType = this.selectedPdfType();
-    const outputMode = this.selectedOutputMode();
-
-    // Ensure style profile is established for consistent typography & design tokens in HTML mode
-    let styleProfile: DocumentStyleProfile | undefined = this.documentStyleProfile() || undefined;
-    if (outputMode === 'html' && !styleProfile) {
-      try {
-        styleProfile = await this.ensureDocumentStyleProfile();
-      } catch (e) {
-        this.logError('Không thể tạo style profile, dùng mặc định:', e);
-      }
-    }
-
-    // Optimize layout and map structures using the AiPromptOptimizer module
-    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(
-      apiKey,
-      modelName,
-      file,
-      chunk,
-      outputMode,
-      pdfType,
-      styleProfile
-    );
-
-    // Parse output to HTML preview based on selected mode
-    const renderedHtml = this.pdfProcessor.renderContent(rawMarkdown, chunk.pages, outputMode);
-    
-    this.pdfChunks.update(cs => {
-      const newCs = [...cs];
-      newCs[chunkIndex] = { 
-        ...newCs[chunkIndex], 
-        status: 'completed', 
-        markdownContent: rawMarkdown,
-        reflowHtml: renderedHtml,
-        inputTokens: inputTokens || 0,
-        outputTokens: outputTokens || 0
-      };
-      return newCs;
-    });
+    await this.docService.executeChunkOptimization(chunkIndex);
   }
 
   /**
@@ -856,9 +658,9 @@ export class App {
     this.isOptimizing.set(true);
     this.apiError.set('');
     this.showSuccess('');
-    this.optimizationTimer.set(0);
+    this.docService.optimizationTimer.set(0);
     this.timerInterval = setInterval(() => {
-      this.optimizationTimer.update(v => v + 1);
+      this.docService.optimizationTimer.update(v => v + 1);
     }, 1000);
 
     try {
@@ -924,9 +726,9 @@ export class App {
 
     // Setup global timer for batch
     if (!this.timerInterval) {
-      this.optimizationTimer.set(0);
+      this.docService.optimizationTimer.set(0);
       this.timerInterval = setInterval(() => {
-        this.optimizationTimer.update(v => v + 1);
+        this.docService.optimizationTimer.update(v => v + 1);
       }, 1000);
     }
 
@@ -1230,66 +1032,12 @@ export class App {
     const title = `${titleOriginal}${pSuffix}`;
     const profile = this.documentStyleProfile() || DEFAULT_STYLE_PROFILE;
 
-    const fullHtmlSource = `<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']] },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <style>
-    body { 
-      font-family: '${profile.bodyFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: ${profile.bodyFontSize};
-      line-height: ${profile.lineHeight};
-      color: #1e293b;
-      background-color: #f8fafc;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: '${profile.headingFont}', Georgia, serif;
-    }
-    .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
-      column-fill: balance !important;
-      -webkit-column-fill: balance !important;
-      orphans: 2 !important;
-      widows: 2 !important;
-      hyphens: auto !important;
-      -webkit-hyphens: auto !important;
-    }
-    .break-inside-avoid, figure, table, blockquote, img, math, pre {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
-      -webkit-column-break-inside: avoid !important;
-    }
-    @media print {
-      .no-print { display: none !important; }
-      body { background-color: white !important; padding: 0 !important; }
-      .print-shadow-none { box-shadow: none !important; border: none !important; }
-    }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 p-4 md:p-12 min-h-screen flex items-start justify-center">
-  <div class="max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-16 print-shadow-none">
-    <div class="no-print flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
-      <div class="text-xs text-slate-400 font-mono">${title} (Trang ${chunk.startPageNum} - ${chunk.endPageNum})</div>
-      <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
-    </div>
-    <article class="prose max-w-none ${profile.textAlign === 'justify' ? 'text-justify' : 'text-left'} flex flex-col">
-      ${chunk.reflowHtml}
-    </article>
-  </div>
-</body>
-</html>`;
+    const fullHtmlSource = generateHtmlDocument({
+      title,
+      content: chunk.reflowHtml || '',
+      profile,
+      subtitle: `Trang ${chunk.startPageNum} - ${chunk.endPageNum}`
+    });
 
     const blob = new Blob([fullHtmlSource], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -1317,66 +1065,12 @@ export class App {
     const title = this.fileName().replace(/\.pdf$/i, '') || 'tai_lieu_chuyen_doi';
     const profile = this.documentStyleProfile() || DEFAULT_STYLE_PROFILE;
 
-    const fullHtmlSource = `<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']] },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <style>
-    body { 
-      font-family: '${profile.bodyFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: ${profile.bodyFontSize};
-      line-height: ${profile.lineHeight};
-      color: #1e293b;
-      background-color: #f8fafc;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: '${profile.headingFont}', Georgia, serif;
-    }
-    .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
-      column-fill: balance !important;
-      -webkit-column-fill: balance !important;
-      orphans: 2 !important;
-      widows: 2 !important;
-      hyphens: auto !important;
-      -webkit-hyphens: auto !important;
-    }
-    .break-inside-avoid, figure, table, blockquote, img, math, pre {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
-      -webkit-column-break-inside: avoid !important;
-    }
-    @media print {
-      .no-print { display: none !important; }
-      body { background-color: white !important; padding: 0 !important; }
-      .print-shadow-none { box-shadow: none !important; border: none !important; }
-    }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 p-4 md:p-12 min-h-screen flex items-start justify-center">
-  <div class="max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-16 print-shadow-none">
-    <div class="no-print flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
-      <div class="text-xs text-slate-400 font-mono">${title} (Trọn bộ tài liệu)</div>
-      <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
-    </div>
-    <article class="prose max-w-none ${profile.textAlign === 'justify' ? 'text-justify' : 'text-left'} flex flex-col">
-      ${activeHtml}
-    </article>
-  </div>
-</body>
-</html>`;
+    const fullHtmlSource = generateHtmlDocument({
+      title,
+      content: activeHtml || '',
+      profile,
+      subtitle: 'Trọn bộ tài liệu'
+    });
 
     const blob = new Blob([fullHtmlSource], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);

@@ -28,6 +28,129 @@ export interface SavedImage {
   providedIn: 'root'
 })
 export class PdfProcessor {
+  async extractPdfChunks(file: File, pdfType: 'scan' | 'standard', onProgress: (msg: string) => void): Promise<{ pages: PdfPageData[], chunks: any[] }> {
+    if (!this.pdfjsLib) throw new Error('PDF.js not loaded');
+
+    const fileReader = new FileReader();
+    const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+      fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
+      fileReader.onerror = (err) => reject(err);
+      fileReader.readAsArrayBuffer(file);
+    });
+
+    onProgress('Chuẩn bị phân tích tài liệu...');
+    const loadingTask = this.pdfjsLib.getDocument({ data: arrayBuffer });
+    const pdf = await loadingTask.promise;
+
+    if (pdf.numPages > 1000) {
+      throw new Error(`Tài liệu có ${pdf.numPages} trang, vượt quá giới hạn 1000 trang`);
+    }
+
+    const itemsExtracted: PdfPageData[] = [];
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      onProgress(`Trích xuất nội dung: Trang ${pageNum} / ${pdf.numPages}...`);
+      const page = await pdf.getPage(pageNum);
+
+      const textContent = await page.getTextContent();
+      const textItems = textContent.items.map((item: any) => ({
+        text: item.str,
+        transform: item.transform,
+        width: item.width,
+        height: item.height,
+      }));
+
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      }
+      const pageImageUrl = canvas.toDataURL('image/png');
+
+      let extractedImages: any[] = [];
+      if (pdfType === 'standard') {
+        onProgress(`Tách lập hình ảnh trang ${pageNum}...`);
+        extractedImages = await this.extractImagesFromPage(page);
+      }
+
+      itemsExtracted.push({
+        pageNum,
+        items: textItems,
+        pageImageUrl,
+        extractedImages
+      });
+    }
+
+    const createChunks = (pages: PdfPageData[]): any[] => {
+      const chunks: any[] = [];
+      const divide = (p: PdfPageData[]) => {
+        if (p.length <= 12) {
+          if (p.length > 0) {
+            chunks.push({
+              id: '',
+              index: chunks.length,
+              startPageNum: p[0].pageNum,
+              endPageNum: p[p.length - 1].pageNum,
+              pages: p,
+              status: 'pending',
+              errorMessage: '',
+              markdownContent: '',
+              reflowHtml: ''
+            });
+          }
+          return;
+        }
+        const mid = Math.floor(p.length / 2);
+        divide(p.slice(0, mid));
+        divide(p.slice(mid));
+      };
+      divide(pages);
+      return chunks;
+    };
+
+    const generatedChunks = createChunks(itemsExtracted);
+
+    if (pdfType === 'standard') {
+      onProgress('Đang đặt gán nhãn ảnh và lưu vào cơ sở dữ liệu IndexedDB trình duyệt...');
+      let chunkCounter = 1;
+      for (const chunk of generatedChunks) {
+        chunk.id = `Phần ${chunkCounter}`;
+        let imageIdxInChunk = 1;
+        for (const page of chunk.pages) {
+          if (page.extractedImages) {
+            for (const img of page.extractedImages) {
+              const labelKey = `IMG-CHUNK${chunkCounter}-${String(imageIdxInChunk).padStart(2, '0')}`;
+              img.labeledKey = labelKey;
+
+              await this.saveImageToDb({
+                id: `${file.name}_${labelKey}`,
+                key: labelKey,
+                fileName: file.name,
+                pageNum: page.pageNum,
+                dataUrl: img.dataUrl,
+                width: img.width,
+                height: img.height
+              });
+              imageIdxInChunk++;
+            }
+          }
+        }
+        chunkCounter++;
+      }
+    } else {
+      let chunkCounter = 1;
+      for (const chunk of generatedChunks) {
+        chunk.id = `Phần ${chunkCounter}`;
+        chunkCounter++;
+      }
+    }
+
+    return { pages: itemsExtracted, chunks: generatedChunks };
+  }
+
   private platformId = inject(PLATFORM_ID);
   private db = new PdfDb(this.platformId);
   

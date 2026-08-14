@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfChunk } from './app';
+import { PdfChunk, DocumentProcessingService } from './services/document-processing.service';
 import { OutputMode, PdfType, DocumentStyleProfile } from './header';
 
 @Component({
@@ -332,22 +332,24 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
   `
 })
 export class WorkspaceAside {
-  fileName = input.required<string>();
-  fileSize = input.required<string>();
-  totalPageCount = input.required<number>();
-  extractedImagesCount = input.required<number>();
-  selectedPdfType = input<PdfType>('scan');
-  selectedOutputMode = input.required<OutputMode>();
-  isOutputModeLocked = input.required<boolean>();
-  isBatchProcessing = input.required<boolean>();
-  shouldStopBatch = input.required<boolean>();
-  isOptimizing = input.required<boolean>();
-  isParsing = input.required<boolean>();
-  pdfChunks = input.required<PdfChunk[]>();
-  selectedChunkIndex = input.required<number>();
-  optimizationTimeFormatted = input.required<string>();
-  documentStyleProfile = input<DocumentStyleProfile | null>(null);
-  isAnalyzingStyle = input<boolean>(false);
+    public docService = inject(DocumentProcessingService);
+  
+  fileName = this.docService.fileName;
+  fileSize = this.docService.fileSize;
+  totalPageCount = this.docService.totalPageCount;
+  extractedImagesCount = this.docService.extractedImagesCount;
+  selectedPdfType = this.docService.selectedPdfType;
+  selectedOutputMode = this.docService.selectedOutputMode;
+  isOutputModeLocked = this.docService.isOutputModeLocked;
+  isBatchProcessing = this.docService.isBatchProcessing;
+  shouldStopBatch = this.docService.shouldStopBatch;
+  isOptimizing = this.docService.isOptimizing;
+  isParsing = this.docService.isParsing;
+  pdfChunks = this.docService.pdfChunks;
+  selectedChunkIndex = this.docService.selectedChunkIndex;
+  optimizationTimeFormatted = this.docService.optimizationTimeFormatted;
+  documentStyleProfile = this.docService.documentStyleProfile;
+  isAnalyzingStyle = this.docService.isAnalyzingStyle;
 
   resetPdf = output<void>();
   outputModeChange = output<OutputMode>();

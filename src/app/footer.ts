@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfType } from './header';
+import { DocumentProcessingService } from './services/document-processing.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,7 +14,7 @@ import { PdfType } from './header';
         
         <!-- Left side: Links and Info Metadata -->
         <div class="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-2.5 shrink-0 text-slate-400 font-normal w-full md:w-auto md:justify-self-start">
-          <span class="text-slate-400">v1.0.7</span>
+          <span class="text-slate-400">v1.0.8</span>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
           <a href="https://github.com/kiencang/Looking-Back-OCR" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200 cursor-pointer">GitHub</a>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
@@ -88,7 +89,7 @@ import { PdfType } from './header';
 
         <!-- Right side: Dev mode toggle -->
         <div class="flex items-center justify-center md:justify-end md:justify-self-end gap-2 relative group w-full md:w-auto shrink-0">
-          @if (hasPages()) {
+          @if (hasPages() && outputMode() === 'markdown') {
             <span class="text-slate-400 font-medium select-none">Dev</span>
             <button type="button" 
                     (click)="toggleDevMode.emit()" 
@@ -113,6 +114,9 @@ import { PdfType } from './header';
   `
 })
 export class Footer {
+  public docService = inject(DocumentProcessingService);
+  outputMode = this.docService.selectedOutputMode;
+  
   selectedPdfType = input.required<PdfType>();
   isDevMode = input.required<boolean>();
   hasPages = input.required<boolean>();

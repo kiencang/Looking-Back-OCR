@@ -15,7 +15,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeHtml } from '@angular/platform-browser';
-import { PdfChunk } from './app';
+import { PdfChunk } from './services/document-processing.service';
 import { PdfPageData } from './pdf-processor';
 import { PdfType, OutputMode } from './header';
 
