@@ -492,8 +492,8 @@ export class App {
       return;
     }
 
-    if (file.size > 50 * 1024 * 1024) {
-      this.apiError.set(`Tài liệu vượt quá giới hạn 50MB (${this.pdfProcessor.formatBytes(file.size)}). Vui lòng chọn tệp nhỏ hơn.`);
+    if (file.size > 100 * 1024 * 1024) {
+      this.apiError.set(`Tài liệu vượt quá giới hạn 100MB (${this.pdfProcessor.formatBytes(file.size)}). Vui lòng chọn tệp nhỏ hơn.`);
       return;
     }
 
@@ -567,7 +567,7 @@ export class App {
           viewport: viewport
         }).promise;
 
-        const pageImageUrl = canvas.toDataURL('image/jpeg', 0.85);
+        const pageImageUrl = canvas.toDataURL('image/png');
 
         // 3. Isolated images extraction from Operators (only for standard PDF mode)
         let extractedImages: any[] = [];

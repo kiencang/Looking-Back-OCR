@@ -55,7 +55,7 @@ import { PdfType } from './header';
               </h2>
             } @else {
               <span class="text-[11px] font-sans font-medium text-slate-500 text-center uppercase tracking-wider select-none">
-                [Tối đa: 50MB / 500 trang]
+                [Tối đa: 100MB / 500 trang]
               </span>
             }
           </div>
