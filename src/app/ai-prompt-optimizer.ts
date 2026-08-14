@@ -2,8 +2,9 @@
 import { Injectable } from '@angular/core';
 import { PDFDocument } from 'pdf-lib';
 import { PdfChunk } from './app';
+import { DocumentStyleProfile, DEFAULT_STYLE_PROFILE, OutputMode } from './header';
 
-export type OutputMode = 'markdown' | 'html';
+export type { OutputMode };
 
 @Injectable({
   providedIn: 'root'
@@ -233,6 +234,191 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   }
 
   /**
+   * Formats unified design tokens block in XML format to strictly constrain chunk typography & layout
+   */
+  formatDesignTokensBlock(profile: DocumentStyleProfile): string {
+    const isSerif = ['Lora', 'Merriweather', 'EB Garamond', 'Playfair Display'].includes(profile.bodyFont);
+    const bodyFontStack = isSerif ? `"${profile.bodyFont}", Georgia, serif` : `"${profile.bodyFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    const isHeadingSerif = ['Playfair Display', 'Lora', 'EB Garamond', 'Merriweather'].includes(profile.headingFont);
+    const headingFontStack = isHeadingSerif 
+      ? `"${profile.headingFont}", Georgia, serif` 
+      : `"${profile.headingFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+
+    return `<document_design_tokens>
+BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁCH (BẮT BUỘC TUÂN THỦ 100%):
+- Loại hình tài liệu: ${profile.styleArchetype}
+- Phông chữ nội dung chính (Body Font): ${bodyFontStack} (BẮT BUỘC dùng cho toàn bộ thẻ <p>, <li>, <td>, <dd>, văn xuôi).
+- Phông chữ tiêu đề (Heading Font): ${headingFontStack} (BẮT BUỘC dùng cho các thẻ <h1>, <h2>, <h3>, <h4>, <h5>, <h6>).
+- Cỡ chữ nội dung chính (Body Size): ${profile.bodyFontSize} (Mọi đoạn văn xuôi bắt buộc dùng đúng cỡ này, không tự ý thay đổi).
+- Độ giãn dòng (Line Height): ${profile.lineHeight}
+- Căn lề văn bản (Text Align): ${profile.textAlign}
+- Khoảng cách đoạn văn (Paragraph Margin): margin-bottom: ${profile.paragraphSpacing};
+
+* NGUYÊN TẮC BẤT BIẾN KHI XUẤT HTML/CSS:
+1. KHÔNG tự ý chèn font lạ nào khác ngoài "${profile.bodyFont}" và "${profile.headingFont}".
+2. KHÔNG tự đặt max-width hoặc chiều rộng cố định cho toàn trang (khung trang chuẩn sẽ do hệ thống quản lý).
+3. Tiêu đề (h1-h6), trích dẫn và bảng biểu được phép co giãn kích cỡ và màu sắc linh hoạt theo đúng tài liệu gốc.
+</document_design_tokens>`;
+  }
+
+  /**
+   * Analyzes aesthetic typography and layout from sample chunks to generate a DocumentStyleProfile
+   */
+  async analyzeDocumentStyle(
+    apiKey: string,
+    modelName: string,
+    file: File,
+    chunks: PdfChunk[]
+  ): Promise<DocumentStyleProfile> {
+    if (!chunks || chunks.length === 0) {
+      return { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+    }
+
+    const sampleIndices: number[] = [];
+    if (chunks.length <= 3) {
+      chunks.forEach((_, i) => sampleIndices.push(i));
+    } else {
+      sampleIndices.push(0);
+      sampleIndices.push(Math.floor(chunks.length / 2));
+      sampleIndices.push(chunks.length - 1);
+    }
+
+    const parts: any[] = [];
+    for (const idx of sampleIndices) {
+      const sampleChunk = chunks[idx];
+      try {
+        const pdfBase64 = await this.splitPdf(file, sampleChunk.startPageNum, sampleChunk.endPageNum);
+        parts.push({
+          inlineData: {
+            mimeType: 'application/pdf',
+            data: pdfBase64
+          }
+        });
+      } catch (err) {
+        console.warn(`Không thể trích xuất PDF mẫu cho phần ${idx}:`, err);
+      }
+    }
+
+    if (parts.length === 0) {
+      try {
+        const fullBase64 = await this.fileToBase64(file);
+        parts.push({
+          inlineData: {
+            mimeType: 'application/pdf',
+            data: fullBase64
+          }
+        });
+      } catch (e) {
+        console.warn('Không thể nạp file PDF gốc để phân tích phong cách:', e);
+        return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
+      }
+    }
+
+    const analysisPrompt = `Bạn là Chuyên gia Nghệ thuật Chữ (Typography) và Giám đốc Thiết kế Sách cao cấp.
+Trước mặt bạn là các trang mẫu trích xuất từ tài liệu PDF (Đầu sách, Giữa sách và Cuối sách).
+
+Nhiệm vụ: Phân tích thể loại tài liệu, phong cách trình bày và chọn bộ font chữ cùng quy chuẩn thiết kế ĐỒNG NHẤT CHO TOÀN BỘ CUỐN SÁCH.
+
+DANH MỤC 10 PHÔNG CHỮ TIẾNG VIỆT CHUẨN ĐƯỢC PHÉP DÙNG:
+1. Nhóm Văn học / Học thuật (Serif):
+   - "Lora": Rất thanh nhã, mềm mại, chuẩn mực cho tiểu thuyết, văn xuôi, tản văn.
+   - "Merriweather": Dày dặn, tương phản cao, tối ưu số 1 cho việc đọc văn bản dài.
+   - "EB Garamond": Cổ điển, quý phái, phù hợp tài liệu lịch sử, sách xưa, triết học, chữ Hán Nôm.
+   - "Playfair Display": Đẳng cấp, nghệ thuật, dùng làm Tiêu đề (Headings) sách sang trọng.
+2. Nhóm Hiện đại / Báo chí (Sans-serif):
+   - "Be Vietnam Pro": Font chuẩn tiếng Việt hiện đại, tối ưu dấu thanh, rất đẹp cho sách kỹ năng, tạp chí mới.
+   - "Plus Jakarta Sans": Năng động, thanh thoát, hợp tài liệu hiện đại.
+   - "Inter": Rõ ràng, trung tính, công thái học cao, phù hợp sách chuyên ngành, báo cáo, nghiên cứu.
+   - "Montserrat": Vững chãi, góc cạnh, rất hợp làm Tiêu đề tài liệu hiện đại.
+3. Nhóm Kỹ thuật / Tài liệu (Neutral & Monospace):
+   - "Roboto": Phổ thông, dễ đọc, phù hợp sách giáo khoa, tài liệu hành chính.
+   - "JetBrains Mono": Phù hợp sách công nghệ, lập trình, công thức và bảng kỹ thuật.
+
+QUY TẮC PHÂN TÍCH:
+- \`styleArchetype\`: Xác định ngắn gọn thể loại tài liệu (ví dụ: "Văn học / Tiểu thuyết cổ điển", "Báo chí / Tạp chí hiện đại", "Sách chuyên khảo khoa học", "Sách giáo khoa / Hành chính", "Thơ ca / Văn nghệ").
+- \`bodyFont\`: Bắt buộc chọn đúng 1 tên font trong 10 font trên.
+- \`headingFont\`: Bắt buộc chọn đúng 1 tên font trong 10 font trên.
+- \`bodyFontSize\`: Chọn '15px', '16px' hoặc '17px' (mặc định '16px').
+- \`lineHeight\`: Chọn '1.6', '1.65' hoặc '1.7' (mặc định '1.65').
+- \`textAlign\`: Chọn 'justify' (cho văn xuôi/sách đọc) hoặc 'left' (cho sách kỹ thuật/danh mục).
+- \`paragraphSpacing\`: Chọn '12px', '14px' hoặc '16px' (mặc định '14px').
+
+BẮT BUỘC TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (KHÔNG THÊM BẤT KỲ VĂN BẢN NÀO NGOÀI JSON) theo mẫu:
+{
+  "styleArchetype": "Văn học / Tiểu thuyết cổ điển",
+  "bodyFont": "Lora",
+  "headingFont": "Playfair Display",
+  "bodyFontSize": "16px",
+  "lineHeight": "1.65",
+  "textAlign": "justify",
+  "paragraphSpacing": "14px"
+}`;
+
+    parts.push({ text: analysisPrompt });
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: {
+            temperature: 0.1,
+            responseMimeType: 'application/json',
+            thinkingConfig: { thinkingLevel: 'HIGH' }
+          },
+          safetySettings: [
+            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        console.warn('Lỗi API phân tích phong cách, sử dụng cấu hình mặc định:', response.status);
+        return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
+      }
+
+      const data = await response.json();
+      let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      
+      if (rawText.includes('```')) {
+        const match = rawText.match(/```(?:json)?([\s\S]*?)```/i);
+        if (match && match[1]) rawText = match[1].trim();
+      }
+
+      const parsed = JSON.parse(rawText);
+      const validFonts = [
+        'Lora', 'Merriweather', 'EB Garamond', 'Playfair Display',
+        'Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat',
+        'Roboto', 'JetBrains Mono'
+      ];
+
+      const bodyFont = validFonts.includes(parsed.bodyFont) ? parsed.bodyFont : 'Lora';
+      const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Playfair Display';
+
+      return {
+        bodyFont,
+        headingFont,
+        bodyFontSize: parsed.bodyFontSize || '16px',
+        lineHeight: parsed.lineHeight || '1.65',
+        textAlign: parsed.textAlign === 'left' ? 'left' : 'justify',
+        paragraphSpacing: parsed.paragraphSpacing || '14px',
+        styleArchetype: parsed.styleArchetype || 'Văn bản / Sách tiêu chuẩn',
+        analyzedSampleChunks: sampleIndices,
+        analyzedAt: Date.now()
+      };
+    } catch (err) {
+      console.warn('Lỗi phân tích phong cách thiết kế tài liệu, sử dụng cấu hình mặc định:', err);
+      return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
+    }
+  }
+
+  /**
    * Prepares the full query parts list to send to the Gemini model (incorporating multimodal elements)
    */
   buildMultimodalParts(
@@ -240,7 +426,8 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
     promptText: string,
     chunk: PdfChunk,
     pdfType: 'scan' | 'standard' = 'scan',
-    outputMode: OutputMode = 'markdown'
+    outputMode: OutputMode = 'markdown',
+    styleProfile?: DocumentStyleProfile | null
   ): any[] {
     const parts: any[] = [];
 
@@ -252,13 +439,18 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
       }
     });
 
-    // 2. Format additional page-range constraints and append to prompt instructions
+    // 2. Format additional page-range constraints and style tokens
+    let designTokensBlock = '';
+    if (styleProfile && outputMode === 'html') {
+      designTokensBlock = `\n\n${this.formatDesignTokensBlock(styleProfile)}\n`;
+    }
+
     let localizedInstructions = '';
     if (outputMode === 'html') {
       if (pdfType === 'scan') {
-        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+        localizedInstructions = `${promptText}${designTokensBlock}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
       } else {
-        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã HTML/CSS sạch đẹp, bảo toàn cấu trúc và ngữ cảnh thị giác, rồi chèn đúng thẻ ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+        localizedInstructions = `${promptText}${designTokensBlock}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã HTML/CSS sạch đẹp, bảo toàn cấu trúc và ngữ cảnh thị giác, rồi chèn đúng thẻ ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
       }
     } else {
       if (pdfType === 'scan') {
@@ -302,7 +494,8 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
     file: File,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    pdfType: 'scan' | 'standard' = 'scan'
+    pdfType: 'scan' | 'standard' = 'scan',
+    styleProfile?: DocumentStyleProfile | null
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
     // Acquire sliced PDF or fallback to original
     let pdfBase64 = '';
@@ -314,7 +507,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
     }
 
     const basePrompt = await this.getPromptTemplate(outputMode);
-    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, pdfType, outputMode);
+    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, pdfType, outputMode, styleProfile);
 
     // Call individual content generation REST endpoint
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;

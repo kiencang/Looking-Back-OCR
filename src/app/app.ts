@@ -15,7 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PdfProcessor, PdfPageData } from './pdf-processor';
 import { AiPromptOptimizer } from './ai-prompt-optimizer';
 
-import { Header, ModelType, PdfType, OutputMode } from './header';
+import { Header, ModelType, PdfType, OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from './header';
 import { Footer } from './footer';
 import { EmptyState } from './empty-state';
 import { InstructionModal } from './instruction-modal';
@@ -103,6 +103,10 @@ export class App {
   
   pdfChunks = signal<PdfChunk[]>([]);
   selectedChunkIndex = signal<number>(0);
+  
+  // Document style profile for unified typography and formatting tokens
+  documentStyleProfile = signal<DocumentStyleProfile | null>(null);
+  isAnalyzingStyle = signal<boolean>(false);
   
   activeChunk = computed(() => {
     const chunks = this.pdfChunks();
@@ -244,6 +248,18 @@ export class App {
     this.showSuccess('Đã xóa cấu hình API Key cá nhân.');
   }
 
+  resetPdf() {
+    this.pdfFile.set(null);
+    this.fileName.set('');
+    this.fileSize.set('');
+    this.pdfPages.set([]);
+    this.pdfChunks.set([]);
+    this.selectedChunkIndex.set(0);
+    this.documentStyleProfile.set(null);
+    this.currentHistoryId.set(null);
+    this.showSuccess('Đã chuyển sang tài liệu mới.');
+  }
+
   /**
    * Translates technical or English Gemini exceptions & network codes into clean user-friendly Vietnamese Toast templates
    */
@@ -348,7 +364,8 @@ export class App {
         pdfFileBlob: file,
         model: this.selectedModel(),
         pdfType: this.selectedPdfType(),
-        outputMode: this.selectedOutputMode()
+        outputMode: this.selectedOutputMode(),
+        styleProfile: this.documentStyleProfile()
       };
       await this.pdfProcessor.saveHistoryItem(historyItem);
       await this.loadHistoryFromDb(); // Keep local state updated
@@ -373,6 +390,7 @@ export class App {
       this.pdfPages.set(item.pdfPages);
       this.pdfChunks.set(item.pdfChunks);
       this.currentHistoryId.set(item.id);
+      this.documentStyleProfile.set(item.styleProfile || null);
       if (item.model) {
         this.selectedModel.set(item.model);
       }
@@ -534,6 +552,7 @@ export class App {
     this.pdfPages.set([]);
     this.pdfChunks.set([]);
     this.selectedChunkIndex.set(0);
+    this.documentStyleProfile.set(null);
 
     const newHistoryId = `${Date.now()}_${file.name}`;
     this.currentHistoryId.set(newHistoryId);
@@ -693,7 +712,8 @@ export class App {
            pdfFileBlob: file,
            model: this.selectedModel(),
            pdfType: this.selectedPdfType(),
-           outputMode: this.selectedOutputMode()
+           outputMode: this.selectedOutputMode(),
+           styleProfile: null
          };
          await this.saveHistoryItemAndTrim(historyItem);
        }
@@ -706,6 +726,42 @@ export class App {
       this.logError(err);
       this.apiError.set('Lỗi phân tích cú pháp tệp PDF: ' + (err.message || err) + '.');
       this.isParsing.set(false);
+      this.parsingStatus.set('');
+    }
+  }
+
+  /**
+   * Ensures a unified document typography & style profile is analyzed before processing HTML chunks
+   */
+  async ensureDocumentStyleProfile(): Promise<DocumentStyleProfile> {
+    const current = this.documentStyleProfile();
+    if (current) return current;
+
+    const file = this.pdfFile();
+    const chunks = this.pdfChunks();
+    const apiKey = this.clientApiKey().trim();
+    const modelName = this.selectedModel();
+
+    if (!file || chunks.length === 0 || !apiKey) {
+      const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+      this.documentStyleProfile.set(fallback);
+      return fallback;
+    }
+
+    this.isAnalyzingStyle.set(true);
+    this.parsingStatus.set('Đang phân tích phong cách thiết kế & nhận diện bộ font chuẩn toàn tài liệu...');
+    try {
+      const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, modelName, file, chunks);
+      this.documentStyleProfile.set(profile);
+      await this.saveCurrentProgressToHistory();
+      return profile;
+    } catch (e) {
+      this.logError('Lỗi khi phân tích phong cách tài liệu, sử dụng cấu hình mặc định:', e);
+      const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+      this.documentStyleProfile.set(fallback);
+      return fallback;
+    } finally {
+      this.isAnalyzingStyle.set(false);
       this.parsingStatus.set('');
     }
   }
@@ -737,8 +793,27 @@ export class App {
     const modelName = this.selectedModel();
     const pdfType = this.selectedPdfType();
     const outputMode = this.selectedOutputMode();
+
+    // Ensure style profile is established for consistent typography & design tokens in HTML mode
+    let styleProfile: DocumentStyleProfile | undefined = this.documentStyleProfile() || undefined;
+    if (outputMode === 'html' && !styleProfile) {
+      try {
+        styleProfile = await this.ensureDocumentStyleProfile();
+      } catch (e) {
+        this.logError('Không thể tạo style profile, dùng mặc định:', e);
+      }
+    }
+
     // Optimize layout and map structures using the AiPromptOptimizer module
-    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(apiKey, modelName, file, chunk, outputMode, pdfType);
+    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(
+      apiKey,
+      modelName,
+      file,
+      chunk,
+      outputMode,
+      pdfType,
+      styleProfile
+    );
 
     // Parse output to HTML preview based on selected mode
     const renderedHtml = this.pdfProcessor.renderContent(rawMarkdown, chunk.pages, outputMode);
@@ -1153,6 +1228,7 @@ export class App {
     const match = chunk.id.match(/\d+/);
     const pSuffix = match ? `_p${match[0]}` : `_${chunk.id.replace(/\s+/g, '')}`;
     const title = `${titleOriginal}${pSuffix}`;
+    const profile = this.documentStyleProfile() || DEFAULT_STYLE_PROFILE;
 
     const fullHtmlSource = `<!DOCTYPE html>
 <html lang="vi">
@@ -1168,9 +1244,20 @@ export class App {
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { 
+      font-family: '${profile.bodyFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: ${profile.bodyFontSize};
+      line-height: ${profile.lineHeight};
+      color: #1e293b;
+      background-color: #f8fafc;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: '${profile.headingFont}', Georgia, serif;
+    }
     .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
       column-fill: balance !important;
       -webkit-column-fill: balance !important;
@@ -1197,7 +1284,7 @@ export class App {
       <div class="text-xs text-slate-400 font-mono">${title} (Trang ${chunk.startPageNum} - ${chunk.endPageNum})</div>
       <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
     </div>
-    <article class="prose max-w-none text-justify flex flex-col">
+    <article class="prose max-w-none ${profile.textAlign === 'justify' ? 'text-justify' : 'text-left'} flex flex-col">
       ${chunk.reflowHtml}
     </article>
   </div>
@@ -1228,6 +1315,7 @@ export class App {
     }
     const activeHtml = chunks.map(c => c.reflowHtml).join('<hr class="my-10 border-slate-200" />');
     const title = this.fileName().replace(/\.pdf$/i, '') || 'tai_lieu_chuyen_doi';
+    const profile = this.documentStyleProfile() || DEFAULT_STYLE_PROFILE;
 
     const fullHtmlSource = `<!DOCTYPE html>
 <html lang="vi">
@@ -1243,9 +1331,20 @@ export class App {
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { 
+      font-family: '${profile.bodyFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: ${profile.bodyFontSize};
+      line-height: ${profile.lineHeight};
+      color: #1e293b;
+      background-color: #f8fafc;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: '${profile.headingFont}', Georgia, serif;
+    }
     .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
       column-fill: balance !important;
       -webkit-column-fill: balance !important;
@@ -1272,7 +1371,7 @@ export class App {
       <div class="text-xs text-slate-400 font-mono">${title} (Trọn bộ tài liệu)</div>
       <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">In tài liệu / Lưu PDF</button>
     </div>
-    <article class="prose max-w-none text-justify flex flex-col">
+    <article class="prose max-w-none ${profile.textAlign === 'justify' ? 'text-justify' : 'text-left'} flex flex-col">
       ${activeHtml}
     </article>
   </div>

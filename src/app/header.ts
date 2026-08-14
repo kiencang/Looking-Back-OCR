@@ -6,6 +6,28 @@ export type ModelType = 'gemini-flash-latest' | 'gemini-flash-lite-latest' | 'ge
 export type PdfType = 'scan' | 'standard';
 export type OutputMode = 'markdown' | 'html';
 
+export interface DocumentStyleProfile {
+  bodyFont: string;
+  headingFont: string;
+  bodyFontSize: string;
+  lineHeight: string;
+  textAlign: 'justify' | 'left';
+  paragraphSpacing: string;
+  styleArchetype: string;
+  analyzedSampleChunks?: number[];
+  analyzedAt?: number;
+}
+
+export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
+  bodyFont: 'Lora',
+  headingFont: 'Playfair Display',
+  bodyFontSize: '16px',
+  lineHeight: '1.65',
+  textAlign: 'justify',
+  paragraphSpacing: '14px',
+  styleArchetype: 'Văn học / Sách tiêu chuẩn'
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-header',
@@ -19,10 +41,10 @@ export type OutputMode = 'markdown' | 'html';
         <h1 class="text-sm font-bold tracking-tight font-sans bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap">Looking-Back-OCR</h1>
       </div>
 
-      <!-- Center: Model & Output Format Toggles -->
-      <div class="flex flex-wrap items-center justify-center gap-2.5 shrink-0 lg:justify-self-center">
+      <!-- Center: Model Switcher Toggle -->
+      <div class="flex items-center justify-center shrink-0 lg:justify-self-center">
         
-        <!-- Toggle 1: Model Switcher (Flash vs Lite) -->
+        <!-- Toggle: Model Switcher (Flash vs Lite) -->
         <div class="flex items-center bg-slate-900/90 border border-white/5 rounded-full p-0.5 shadow-inner relative select-none shrink-0 transition-opacity duration-200 w-[148px]"
              [class.opacity-50]="isOptimizing() || isParsing()"
              [class.pointer-events-none]="isOptimizing() || isParsing()"
@@ -85,92 +107,6 @@ export type OutputMode = 'markdown' | 'html';
           </button>
         </div>
 
-        <!-- Toggle 2: Format Switcher (Markdown vs HTML) -->
-        <div class="flex items-center bg-slate-900/90 border border-white/5 rounded-full p-0.5 shadow-inner relative select-none shrink-0 transition-opacity duration-200 w-[216px]"
-             [class.opacity-75]="isOutputModeLocked()"
-             id="format-toggle-wrapper">
-          <!-- Active indicator pill background -->
-          <div 
-            class="absolute top-0.5 bottom-0.5 rounded-full border transition-all duration-300 pointer-events-none overflow-hidden"
-            [class.bg-cyan-500/10]="selectedOutputMode() === 'markdown'"
-            [class.border-cyan-500/30]="selectedOutputMode() === 'markdown'"
-            [class.shadow-[0_0_14px_rgba(6,182,212,0.25)]]="selectedOutputMode() === 'markdown'"
-            [class.bg-emerald-500/10]="selectedOutputMode() === 'html'"
-            [class.border-emerald-500/30]="selectedOutputMode() === 'html'"
-            [class.shadow-[0_0_14px_rgba(16,185,129,0.25)]]="selectedOutputMode() === 'html'"
-            style="width: 106px;"
-            [style.left.px]="selectedOutputMode() === 'markdown' ? 2 : 108">
-            <div class="absolute inset-0 opacity-20 blur-md rounded-full transition-colors duration-300"
-                 [class.bg-cyan-400]="selectedOutputMode() === 'markdown'"
-                 [class.bg-emerald-400]="selectedOutputMode() === 'html'">
-            </div>
-          </div>
-
-          <!-- Format Option 1: Markdown -->
-          <button 
-            id="toggle-btn-markdown"
-            type="button"
-            (click)="onOutputModeSelect('markdown')"
-            [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
-            class="relative w-[106px] h-7 rounded-full flex items-center justify-center gap-1 px-2.5 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed whitespace-nowrap"
-            [class.text-cyan-400]="selectedOutputMode() === 'markdown'"
-            [class.text-slate-400]="selectedOutputMode() !== 'markdown'"
-            [class.hover:text-slate-200]="selectedOutputMode() !== 'markdown' && !isOutputModeLocked()">
-            <span>Markdown</span>
-            @if (isOutputModeLocked() && selectedOutputMode() === 'markdown') {
-              <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
-            }
-
-            <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[260px] text-left z-50 pointer-events-none">
-              <div class="flex items-center justify-between mb-0.5">
-                <span class="font-bold text-cyan-400">Markdown (Tiết kiệm token):</span>
-                @if (isOutputModeLocked()) {
-                  <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
-                }
-              </div>
-              <span>Nối dòng mượt mà, định dạng tiêu chuẩn, tiết kiệm token tối đa. Phù hợp đọc sách và xuất EPUB/Word.</span>
-              @if (isOutputModeLocked()) {
-                <div class="mt-1 pt-1 border-t border-white/10 text-amber-400/90 text-[9px]">
-                  🔒 Chế độ đã được cố định cho tài liệu này vì đã có phần được xử lý.
-                </div>
-              }
-            </div>
-          </button>
-
-          <!-- Format Option 2: HTML/CSS -->
-          <button 
-            id="toggle-btn-html"
-            type="button"
-            (click)="onOutputModeSelect('html')"
-            [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
-            class="relative w-[106px] h-7 rounded-full flex items-center justify-center gap-1 px-2.5 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed whitespace-nowrap"
-            [class.text-emerald-400]="selectedOutputMode() === 'html'"
-            [class.text-slate-400]="selectedOutputMode() !== 'html'"
-            [class.hover:text-slate-200]="selectedOutputMode() !== 'html' && !isOutputModeLocked()">
-            <span>HTML/CSS</span>
-            @if (isOutputModeLocked() && selectedOutputMode() === 'html') {
-              <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
-            }
-
-            <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[260px] text-left z-50 pointer-events-none">
-              <div class="flex items-center justify-between mb-0.5">
-                <span class="font-bold text-emerald-400">HTML/CSS (Bảo toàn bố cục):</span>
-                @if (isOutputModeLocked()) {
-                  <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
-                }
-              </div>
-              <span>Tái hiện chính xác diện mạo, bố cục nhiều cột, căn lề, viền hộp và bảng biểu phức tạp của bản gốc.</span>
-              @if (isOutputModeLocked()) {
-                <div class="mt-1 pt-1 border-t border-white/10 text-amber-400/90 text-[9px]">
-                  🔒 Chế độ đã được cố định cho tài liệu này vì đã có phần được xử lý.
-                </div>
-              }
-            </div>
-          </button>
-        </div>
-
       </div>
 
       <!-- Right side: Actions & API Key Badge -->
@@ -213,25 +149,17 @@ export type OutputMode = 'markdown' | 'html';
 export class Header {
   isScriptLoaded = input.required<boolean>();
   selectedModel = input.required<ModelType>();
-  selectedOutputMode = input.required<OutputMode>();
-  isOutputModeLocked = input.required<boolean>();
   clientApiKey = input.required<string>();
   historyCount = input.required<number>();
   isOptimizing = input.required<boolean>();
   isParsing = input.required<boolean>();
 
   modelChange = output<ModelType>();
-  outputModeChange = output<OutputMode>();
   openHistory = output<void>();
   openApiKey = output<void>();
 
   onModelSelect(model: ModelType) {
     if (this.isOptimizing() || this.isParsing()) return;
     this.modelChange.emit(model);
-  }
-
-  onOutputModeSelect(mode: OutputMode) {
-    if (this.isOptimizing() || this.isParsing() || this.isOutputModeLocked()) return;
-    this.outputModeChange.emit(mode);
   }
 }
