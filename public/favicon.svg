@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <!-- Beautiful Gradient background container -->
+  <rect width="512" height="512" rx="128" fill="url(#grad)" />
+  <!-- Inner dark slate backdrop resembling header icon wrap -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="#0f172a" />
+  <!-- Crisp vector icon replica of chrome_reader_mode in text-indigo-400 (#818cf8) -->
+  <g fill="#818cf8" transform="translate(96, 96) scale(13.333)">
+    <path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM3 18V6h5v12H3zm18 0h-11V6h11v12z M5 16h2v-2H5v2zm0-3h2v-2H5v2zm0-3h2V8H5v2zm14 6h-7v-2h7v2zm0-3h-7v-2h7v2zm0-3h-7V8h7v2z"/>
+  </g>
+</svg>

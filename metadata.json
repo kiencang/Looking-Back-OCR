@@ -1,0 +1,8 @@
+{
+  "name": "Looking-Back-OCR",
+  "description": "OCR file PDF. Nhất là sách cổ tiếng Việt.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

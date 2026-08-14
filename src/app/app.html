@@ -1,0 +1,174 @@
+<div class="min-h-screen bg-slate-900 text-slate-100 font-sans flex flex-col selection:bg-indigo-500/30 selection:text-white" id="main-app-container">
+  
+  <!-- Header Bar Component -->
+  <app-header
+    [isScriptLoaded]="isScriptLoaded()"
+    [selectedModel]="selectedModel()"
+    [clientApiKey]="clientApiKey()"
+    [historyCount]="historyItems().length"
+    [isOptimizing]="isOptimizing()"
+    [isParsing]="isParsing()"
+    (modelChange)="selectedModel.set($event)"
+    (openHistory)="showHistoryModal.set(true)"
+    (openApiKey)="openApiKeyModal()">
+  </app-header>
+
+  <!-- Toast notifications -->
+  <app-toast-notification
+    [apiError]="apiError()"
+    [successMessage]="successMessage()"
+    (clearError)="apiError.set('')"
+    (clearSuccess)="showSuccess('')">
+  </app-toast-notification>
+
+  <!-- Main Body -->
+  <main class="flex-1 flex flex-col md:flex-row min-h-0">
+    
+    <!-- Empty Upload State Component -->
+    @if (pdfPages().length === 0) {
+      <app-empty-state
+        [isParsing]="isParsing()"
+        [parsingStatus]="parsingStatus()"
+        [isScriptLoaded]="isScriptLoaded()"
+        [selectedPdfType]="selectedPdfType()"
+        (fileSelected)="processPdfFile($event)">
+      </app-empty-state>
+    }
+
+    <!-- Active Workspace -->
+    @if (pdfPages().length > 0) {
+      <div class="flex-1 flex flex-col md:flex-row min-h-0 w-full" id="workspace">
+        
+        <!-- Left Panel: Configurations & Details Component -->
+        <app-workspace-aside
+          [fileName]="fileName()"
+          [fileSize]="fileSize()"
+          [totalPageCount]="totalPageCount()"
+          [extractedImagesCount]="extractedImagesCount()"
+          [selectedPdfType]="selectedPdfType()"
+          [isBatchProcessing]="isBatchProcessing()"
+          [shouldStopBatch]="shouldStopBatch()"
+          [isOptimizing]="isOptimizing()"
+          [isParsing]="isParsing()"
+          [pdfChunks]="pdfChunks()"
+          [selectedChunkIndex]="selectedChunkIndex()"
+          [optimizationTimeFormatted]="optimizationTimeFormatted()"
+          (resetPdf)="pdfPages.set([]); pdfChunks.set([]); selectedChunkIndex.set(0);"
+          (startBatch)="startBatchProcessing()"
+          (stopBatch)="stopBatchProcessing()"
+          (selectChunk)="selectChunk($event)"
+          (optimizeChunk)="optimizeChunkWithAI($event)">
+        </app-workspace-aside>
+
+        <!-- Right Panel: Tabs, Workspace Preview and Live Editor Component -->
+        <app-workspace-preview
+          [selectedTab]="selectedTab()"
+          [themeStyle]="themeStyle()"
+          [reflowHtml]="reflowHtml()"
+          [reflowSafeHtml]="reflowSafeHtml()"
+          [selectedPdfType]="selectedPdfType()"
+          [isDevMode]="isDevMode()"
+          [isParsing]="isParsing()"
+          [isOptimizing]="isOptimizing()"
+          [activeChunk]="activeChunk()"
+          [isAllCompleted]="isAllCompleted()"
+          (tabChange)="selectedTab.set($event)"
+          (themeStyleChange)="themeStyle.set($event)"
+          (downloadEpub)="downloadEpubFile()"
+          (downloadDocx)="downloadDocxFile()"
+          (downloadDocxForChunk)="downloadChunkDocxFile()"
+          (downloadEpubForChunk)="downloadChunkEpubFile()"
+          (downloadMarkdownForChunk)="downloadChunkMarkdownFile()"
+          (downloadHtmlForChunk)="downloadChunkHtmlFile()"
+          (downloadMarkdown)="downloadMarkdownFile()"
+          (downloadHtml)="downloadHtmlFile()"
+          (zoomImage)="zoomImageUrl.set($event)"
+          (openFullscreen)="showFullscreenComparison.set(true)">
+        </app-workspace-preview>
+
+      </div>
+    }
+
+  </main>
+
+  <!-- Footer Component -->
+  <app-footer
+    [selectedPdfType]="selectedPdfType()"
+    [isDevMode]="isDevMode()"
+    [hasPages]="pdfPages().length > 0"
+    [isOptimizing]="isOptimizing()"
+    [isParsing]="isParsing()"
+    (pdfTypeChange)="selectedPdfType.set($event)"
+    (toggleDevMode)="isDevMode.set(!isDevMode())"
+    (openInstruction)="showInstruction.set(true)">
+  </app-footer>
+
+  <!-- Fullscreen Dual-Pane Comparison Modal Component -->
+  @if (showFullscreenComparison()) {
+    <app-fullscreen-comparison
+      [fileName]="fileName()"
+      [activeChunk]="activeChunk()"
+      [pdfPages]="pdfPages()"
+      [reflowHtml]="reflowHtml()"
+      [reflowSafeHtml]="reflowSafeHtml()"
+      [themeStyle]="themeStyle()"
+      [selectedPdfType]="selectedPdfType()"
+      [isAllCompleted]="isAllCompleted()"
+      (closeModal)="showFullscreenComparison.set(false)"
+      (themeStyleChange)="themeStyle.set($event)"
+      (downloadDocx)="downloadDocxFile()"
+      (downloadEpub)="downloadEpubFile()"
+      (downloadMarkdown)="downloadMarkdownFile()">
+    </app-fullscreen-comparison>
+  }
+
+  <!-- User Guide Interactive Modal Component -->
+  @if (showInstruction()) {
+    <app-instruction-modal
+      (closeModal)="showInstruction.set(false)">
+    </app-instruction-modal>
+  }
+
+  <!-- Interactive Lightbox Modal for extracted photos -->
+  @if (zoomImageUrl(); as zoomSrc) {
+    <div 
+      role="button"
+      tabindex="0"
+      (click)="zoomImageUrl.set(null)"
+      (keydown.escape)="zoomImageUrl.set(null)"
+      class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in cursor-zoom-out">
+      <div class="absolute top-4 right-4 text-white">
+        <button class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-colors focus:outline-none cursor-pointer">
+          <mat-icon class="text-[24px] w-6 h-6 flex items-center justify-center">close</mat-icon>
+        </button>
+      </div>
+      <div class="max-w-4xl max-h-[85vh] p-2 bg-slate-900/40 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center">
+        <img [src]="zoomSrc" alt="Bản xem phóng" class="max-w-full max-h-[80vh] object-contain rounded-2xl animate-scale-up" referrerpolicy="no-referrer" />
+      </div>
+    </div>
+  }
+
+  <!-- API Key Setup Interactive Modal Component -->
+  @if (showApiKeyModal()) {
+    <app-api-key-modal
+      [clientApiKey]="clientApiKey()"
+      (closeModal)="showApiKeyModal.set(false)"
+      (save)="saveApiKey($event)"
+      (clearKey)="clearApiKeyModal()">
+    </app-api-key-modal>
+  }
+
+  <!-- Conversion History Modal Component -->
+  @if (showHistoryModal()) {
+    <app-history-modal
+      [historyItems]="historyItems()"
+      [currentHistoryId]="currentHistoryId()"
+      [isParsing]="isParsing()"
+      [isOptimizing]="isOptimizing()"
+      (closeModal)="showHistoryModal.set(false)"
+      (restoreItem)="restoreHistoryItem($event)"
+      (deleteItem)="removeHistoryItem($event)">
+    </app-history-modal>
+  }
+
+</div>
