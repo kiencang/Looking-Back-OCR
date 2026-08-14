@@ -35,13 +35,11 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
               <span class="text-sm font-bold text-slate-200 font-mono">{{ totalPageCount() }}</span>
             </div>
             <div class="bg-slate-950/50 rounded-xl p-2.5">
-              <span class="block text-[10px] text-slate-400 uppercase font-sans">
-                {{ selectedPdfType() === 'scan' ? 'Chế độ' : 'Ảnh tách được' }}
-              </span>
+              <span class="block text-[10px] text-slate-400 uppercase font-sans">Loại tài liệu</span>
               @if (selectedPdfType() === 'scan') {
-                <span class="text-xs font-bold text-emerald-400 font-mono">Trực tiếp</span>
+                <span class="text-xs font-bold text-emerald-400 font-sans">Bản Scan</span>
               } @else {
-                <span class="text-sm font-bold text-sky-400 font-mono">{{ extractedImagesCount() }}</span>
+                <span class="text-xs font-bold text-sky-400 font-sans">Tiêu chuẩn</span>
               }
             </div>
           </div>
@@ -165,47 +163,88 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
         <!-- Document Style Profile Badge / Section -->
         @if (documentStyleProfile() || isAnalyzingStyle()) {
           <div class="mt-4 border-t border-white/5 pt-4 space-y-2" id="style-profile-section">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-mono tracking-widest text-slate-400 uppercase font-semibold flex items-center gap-1.5">
-                <mat-icon class="!text-[12px] !w-3 !h-3 text-indigo-400">palette</mat-icon>
+            <div class="flex flex-col gap-2.5 mb-1">
+              <span class="text-[10px] font-mono tracking-widest text-slate-400 uppercase font-bold flex items-center gap-1.5">
+                <mat-icon class="!text-[14px] !w-3.5 !h-3.5 text-indigo-400">palette</mat-icon>
                 <span>Hồ sơ thiết kế đồng nhất</span>
               </span>
-              @if (isAnalyzingStyle()) {
-                <span class="flex items-center gap-1 text-[9px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full animate-pulse border border-cyan-500/20">
-                  <mat-icon class="!text-[10px] !w-2.5 !h-2.5 animate-spin">refresh</mat-icon>
-                  <span>Đang phân tích...</span>
-                </span>
-              } @else if (documentStyleProfile()) {
-                <span class="text-[9px] font-mono text-indigo-400/90 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">
-                  Chuẩn hóa 100%
-                </span>
-              }
+              <div>
+                @if (isAnalyzingStyle()) {
+                  <span class="inline-flex items-center gap-1 text-[9px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full animate-pulse border border-cyan-500/20 w-fit">
+                    <mat-icon class="!text-[10px] !w-2.5 !h-2.5 animate-spin">refresh</mat-icon>
+                    <span>Đang phân tích AI...</span>
+                  </span>
+                } @else if (documentStyleProfile()) {
+                  <span class="inline-flex text-[9px] font-mono text-emerald-400/90 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 w-fit">
+                    Chuẩn hóa 100%
+                  </span>
+                }
+              </div>
             </div>
 
             @if (documentStyleProfile(); as profile) {
-              <div class="bg-slate-900/90 border border-white/10 rounded-xl p-2.5 space-y-2 text-xs relative group shadow-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-[11px] font-semibold text-indigo-200 truncate" title="{{ profile.styleArchetype }}">{{ profile.styleArchetype }}</span>
+              <div class="bg-slate-900/80 border border-white/10 rounded-xl p-3 space-y-2.5 text-xs relative group shadow-sm hover:border-indigo-500/30 transition-colors">
+                
+                <!-- Style Archetype Header -->
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-200">
+                  <mat-icon class="!text-[14px] !w-3.5 !h-3.5 text-indigo-400 shrink-0">auto_stories</mat-icon>
+                  <span class="text-[11px] font-medium truncate" title="{{ profile.styleArchetype }}">{{ profile.styleArchetype }}</span>
                 </div>
-                <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-slate-400 pt-1.5 border-t border-white/5">
-                  <div class="flex flex-col">
-                    <span class="text-slate-500 text-[9px]">Font nội dung</span>
-                    <span class="text-slate-200 font-semibold truncate" title="{{ profile.bodyFont }}">{{ profile.bodyFont }} ({{ profile.bodyFontSize }})</span>
+
+                <!-- Font Specs (Body & Heading) -->
+                <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                  <div class="bg-slate-950/40 rounded-lg p-2 border border-white/5 flex flex-col justify-between">
+                    <span class="text-slate-500 text-[9px] uppercase tracking-wider block mb-0.5">Font nội dung</span>
+                    <div class="flex items-baseline justify-between gap-1">
+                      <span class="text-slate-200 font-semibold truncate" title="{{ profile.bodyFont }}">{{ profile.bodyFont }}</span>
+                      <span class="text-[9px] text-cyan-400 bg-cyan-500/15 px-1.5 py-0.5 rounded font-mono shrink-0">{{ profile.bodyFontSize }}</span>
+                    </div>
                   </div>
-                  <div class="flex flex-col">
-                    <span class="text-slate-500 text-[9px]">Font tiêu đề</span>
+
+                  <div class="bg-slate-950/40 rounded-lg p-2 border border-white/5 flex flex-col justify-between">
+                    <span class="text-slate-500 text-[9px] uppercase tracking-wider block mb-0.5">Font tiêu đề</span>
                     <span class="text-slate-200 font-semibold truncate" title="{{ profile.headingFont }}">{{ profile.headingFont }}</span>
-                  </div>
-                  <div class="flex flex-row justify-between items-center col-span-2 pt-1 border-t border-white/5">
-                    <span class="text-slate-500 text-[9px]">Giãn dòng & Căn lề</span>
-                    <span class="text-slate-300 font-semibold">{{ profile.lineHeight }} • {{ profile.textAlign === 'justify' ? 'Căn đều' : 'Căn trái' }}</span>
                   </div>
                 </div>
 
+                <!-- Spacing & Alignment (Line Height, Paragraph Spacing, Text Align) -->
+                <div class="grid grid-cols-3 gap-1.5 text-center text-[10px] font-mono">
+                  <div class="bg-slate-950/40 rounded-lg py-1.5 px-1 border border-white/5">
+                    <span class="block text-[8.5px] text-slate-500 uppercase">Giãn dòng</span>
+                    <span class="text-slate-300 font-semibold">{{ profile.lineHeight }}</span>
+                  </div>
+                  <div class="bg-slate-950/40 rounded-lg py-1.5 px-1 border border-white/5">
+                    <span class="block text-[8.5px] text-slate-500 uppercase">Cách đoạn</span>
+                    <span class="text-slate-300 font-semibold">{{ profile.paragraphSpacing }}</span>
+                  </div>
+                  <div class="bg-slate-950/40 rounded-lg py-1.5 px-1 border border-white/5">
+                    <span class="block text-[8.5px] text-slate-500 uppercase">Căn lề</span>
+                    <span class="text-slate-300 font-semibold">{{ profile.textAlign === 'justify' ? 'Căn đều' : 'Căn trái' }}</span>
+                  </div>
+                </div>
+
+                <!-- Reference Sample Chunks -->
+                @if (profile.analyzedSampleChunks && profile.analyzedSampleChunks.length) {
+                  <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-white/5 text-[9px] font-mono text-slate-400">
+                    <span class="text-slate-500 flex items-center gap-1.5">
+                      <mat-icon class="!text-[11px] !w-3 !h-3 text-cyan-600/80">find_in_page</mat-icon>
+                      Trích mẫu từ:
+                    </span>
+                    <span class="text-cyan-300/90 font-medium">
+                      @for (idx of profile.analyzedSampleChunks; track idx; let last = $last) {
+                        Phân đoạn #{{ idx + 1 }}{{ last ? '' : ', ' }}
+                      }
+                    </span>
+                  </div>
+                }
+
                 <!-- Tooltip -->
-                <div class="absolute bottom-full left-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[260px] text-left z-50 pointer-events-none whitespace-normal">
-                  <div class="font-bold text-indigo-400 mb-1">Quy chuẩn Typography toàn cuốn:</div>
-                  <span>Hệ thống đã phân tích mẫu 3 phần và khóa bộ quy chuẩn thiết kế này vào Prompt AI nhằm đảm bảo mọi khối trang đều nhất quán font chữ, cỡ chữ, và độ giãn lề.</span>
+                <div class="absolute bottom-full left-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[270px] text-left z-50 pointer-events-none whitespace-normal">
+                  <div class="font-bold text-indigo-400 mb-1 flex items-center gap-1">
+                    <mat-icon class="!text-[12px] !w-3 !h-3">auto_awesome</mat-icon>
+                    Quy chuẩn Typography đồng nhất:
+                  </div>
+                  <span>Hệ thống đã phân tích các mẫu đại diện (đầu, giữa, cuối sách) và khóa toàn bộ thông số phông chữ, cỡ chữ, độ giãn dòng, cách đoạn và căn lề vào bộ Prompt AI để đảm bảo toàn bộ cuốn sách đồng nhất 100%.</span>
                 </div>
               </div>
             }

@@ -114,6 +114,8 @@
   }
   .ocr-p {
     color: var(--reader-text) !important;
+    font-size: 1.125rem !important;
+    line-height: 1.75 !important;
   }
   .ocr-blockquote {
     background-color: var(--reader-blockquote-bg) !important;

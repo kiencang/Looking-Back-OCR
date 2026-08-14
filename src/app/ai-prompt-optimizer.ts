@@ -338,20 +338,24 @@ QUY TẮC PHÂN TÍCH:
 - \`styleArchetype\`: Xác định ngắn gọn thể loại tài liệu (ví dụ: "Văn học / Tiểu thuyết cổ điển", "Báo chí / Tạp chí hiện đại", "Sách chuyên khảo khoa học", "Sách giáo khoa / Hành chính", "Thơ ca / Văn nghệ").
 - \`bodyFont\`: Bắt buộc chọn đúng 1 tên font trong 10 font trên.
 - \`headingFont\`: Bắt buộc chọn đúng 1 tên font trong 10 font trên.
-- \`bodyFontSize\`: Chọn '15px', '16px' hoặc '17px' (mặc định '16px').
-- \`lineHeight\`: Chọn '1.6', '1.65' hoặc '1.7' (mặc định '1.65').
+- \`bodyFontSize\`: Chọn trong dải tối ưu cho trải nghiệm đọc sách số thoải mái: '17px', '18px', '19px' hoặc '20px' (MẶC ĐỊNH CHUẨN ĐỌC SÁCH LÀ '18px').
+  * NGUYÊN TẮC CÔNG THÁI HỌC THEO PHÔNG CHỮ:
+    - Font có thân chữ nhỏ (low x-height) như "EB Garamond", "Lora": BẮT BUỘC chọn '18px' hoặc '19px' để văn bản rõ ràng, không bị bé.
+    - Font hiện đại, nét đậm hoặc thân chữ to như "Merriweather", "Be Vietnam Pro", "Inter", "Plus Jakarta Sans", "Roboto": Chọn '17px' hoặc '18px'.
+    - Sách kỹ thuật, báo cáo nhiều bảng biểu, công thức số liệu: Chọn '17px'.
+- \`lineHeight\`: Chọn '1.65', '1.7' hoặc '1.75' (mặc định '1.7' tương ứng với cỡ chữ 18px giúp dòng chữ thông thoáng).
 - \`textAlign\`: Chọn 'justify' (cho văn xuôi/sách đọc) hoặc 'left' (cho sách kỹ thuật/danh mục).
-- \`paragraphSpacing\`: Chọn '12px', '14px' hoặc '16px' (mặc định '14px').
+- \`paragraphSpacing\`: Chọn '14px', '16px' hoặc '18px' (mặc định '16px').
 
 BẮT BUỘC TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (KHÔNG THÊM BẤT KỲ VĂN BẢN NÀO NGOÀI JSON) theo mẫu:
 {
   "styleArchetype": "Văn học / Tiểu thuyết cổ điển",
   "bodyFont": "Lora",
   "headingFont": "Playfair Display",
-  "bodyFontSize": "16px",
-  "lineHeight": "1.65",
+  "bodyFontSize": "18px",
+  "lineHeight": "1.7",
   "textAlign": "justify",
-  "paragraphSpacing": "14px"
+  "paragraphSpacing": "16px"
 }`;
 
     parts.push({ text: analysisPrompt });
@@ -404,10 +408,10 @@ BẮT BUỘC TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (KHÔNG THÊM BẤT
       return {
         bodyFont,
         headingFont,
-        bodyFontSize: parsed.bodyFontSize || '16px',
-        lineHeight: parsed.lineHeight || '1.65',
+        bodyFontSize: parsed.bodyFontSize || '18px',
+        lineHeight: parsed.lineHeight || '1.7',
         textAlign: parsed.textAlign === 'left' ? 'left' : 'justify',
-        paragraphSpacing: parsed.paragraphSpacing || '14px',
+        paragraphSpacing: parsed.paragraphSpacing || '16px',
         styleArchetype: parsed.styleArchetype || 'Văn bản / Sách tiêu chuẩn',
         analyzedSampleChunks: sampleIndices,
         analyzedAt: Date.now()

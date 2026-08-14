@@ -21,10 +21,10 @@ export interface DocumentStyleProfile {
 export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
   bodyFont: 'Lora',
   headingFont: 'Playfair Display',
-  bodyFontSize: '16px',
-  lineHeight: '1.65',
+  bodyFontSize: '18px',
+  lineHeight: '1.7',
   textAlign: 'justify',
-  paragraphSpacing: '14px',
+  paragraphSpacing: '16px',
   styleArchetype: 'Văn học / Sách tiêu chuẩn'
 };
 
@@ -36,9 +36,9 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
     <header class="border-b border-white/5 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-3 sm:py-3.5 flex flex-col lg:grid lg:grid-cols-3 items-center justify-between gap-3">
       
       <!-- Left: Logo + Title -->
-      <div class="flex items-center justify-center lg:justify-start gap-2.5 shrink-0 select-none w-full lg:w-auto lg:justify-self-start">
-        <img src="favicon.svg" alt="Logo" class="h-8 w-8 sm:h-9 sm:w-9 object-contain hover:scale-105 transition-transform duration-200 cursor-pointer shrink-0" referrerpolicy="no-referrer" />
-        <h1 class="text-sm font-bold tracking-tight font-sans bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap">Looking-Back-OCR</h1>
+      <div class="flex items-center justify-center lg:justify-start gap-2.5 shrink-0 w-full lg:w-auto lg:justify-self-start">
+        <img src="favicon.svg" alt="Logo" class="h-8 w-8 sm:h-9 sm:w-9 object-contain hover:scale-105 transition-transform duration-200 cursor-pointer shrink-0 select-none" referrerpolicy="no-referrer" />
+        <h1 class="text-sm font-bold tracking-tight font-sans bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap select-text">Looking-Back-OCR</h1>
       </div>
 
       <!-- Center: Model Switcher Toggle -->
