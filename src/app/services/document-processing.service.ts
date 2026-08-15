@@ -235,6 +235,9 @@ export class DocumentProcessingService {
       // Save initial state to History
       await this.saveCurrentProgressToHistory();
 
+      // Trigger background rendering for remaining chunks asynchronously
+      this.startBackgroundPagesRendering();
+
       this.showSuccess('Chia PDF thành công, chuyển sang bước chuẩn bị OCR.');
       return true;
     } catch (err: any) {
@@ -264,6 +267,35 @@ export class DocumentProcessingService {
     }
     // Trigger signal update so subscribers react
     this.pdfChunks.set([...chunks]);
+  }
+
+  private backgroundRenderingActive = false;
+
+  private async startBackgroundPagesRendering(): Promise<void> {
+    if (this.backgroundRenderingActive) return;
+    this.backgroundRenderingActive = true;
+
+    try {
+      // Delay slightly to give UI breathing room after upload finishes
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const totalChunks = this.pdfChunks().length;
+      for (let i = 0; i < totalChunks; i++) {
+        // If file was changed or cleared during background rendering, stop
+        if (!this.pdfFile()) break;
+
+        const chunk = this.pdfChunks()[i];
+        if (chunk && chunk.pages && chunk.pages.some(p => !p.pageImageUrl)) {
+          await this.ensureChunkPagesRendered(i);
+          // Yield main thread between chunks so UI remains 100% responsive
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+    } catch (e) {
+      console.warn('Background page rendering notice:', e);
+    } finally {
+      this.backgroundRenderingActive = false;
+    }
   }
 
   async ensureDocumentStyleProfile(): Promise<DocumentStyleProfile> {

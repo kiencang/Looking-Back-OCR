@@ -126,8 +126,8 @@ export class PdfProcessor {
     const srcDoc = await PDFDocument.load(arrayBuffer);
     const numPages = srcDoc.getPageCount();
 
-    if (numPages > 1000) {
-      throw new Error(`Tài liệu có ${numPages} trang, vượt quá giới hạn 1000 trang`);
+    if (numPages > 500) {
+      throw new Error(`Tài liệu có ${numPages} trang, vượt quá giới hạn cho phép (tối đa 500 trang). Vui lòng chia nhỏ tài liệu trước khi xử lý.`);
     }
 
     // Initialize pdfjs document for on-demand PNG rendering

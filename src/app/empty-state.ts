@@ -55,7 +55,7 @@ import { MatIconModule } from '@angular/material/icon';
               </h2>
             } @else {
               <span class="text-[11px] font-sans font-medium text-slate-500 text-center uppercase tracking-wider select-none">
-                [Tối đa: 100MB / 1000 trang]
+                [Tối đa: 100MB / 500 trang]
               </span>
             }
           </div>
@@ -66,7 +66,7 @@ import { MatIconModule } from '@angular/material/icon';
               @if (isParsing()) {
                 <span class="text-indigo-300 font-medium">{{ parsingStatus() || 'Hệ thống đang cấu trúc thông tin' }}</span>
               } @else {
-                Hỗ trợ PDF dung lượng lên đến 100MB và tối đa 1000 trang. Kéo thả file vào đây hoặc nhấp để chọn.
+                Hỗ trợ PDF dung lượng lên đến 100MB và tối đa 500 trang. Kéo thả file vào đây hoặc nhấp để chọn.
               }
             </p>
           </div>

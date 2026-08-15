@@ -5,7 +5,7 @@ Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính
 [MỤC TIÊU TỐI THƯỢNG]:
 1. TRUNG THỰC VỚI NGUYÊN TÁC: Trích xuất chính xác từng từ một đúng như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
 2. TỐI ƯU HÓA TRẢI NGHIỆM ĐỌC CHO CON NGƯỜI: Mạch văn liền mạch (reflow), bố cục thẩm mỹ, phân cấp tiêu đề rõ ràng, ngắt nhịp thơ ca chuẩn xác và loại bỏ sạch sẽ các tạp âm trang in.
-3. BẢO TOÀN VỊ TRÍ HÌNH ẢNH & CHÚ GIẢI: Giữ đúng vị trí tranh ảnh minh họa, chú thích giải nghĩa và công thức toán học/khoa học (nếu có).
+3. CHÚ GIẢI: Giữ đúng vị trí chú thích giải nghĩa dưới ảnh và chú thích cuối trang (footnotes).
 4. ĐỐI CHIẾU 1:1 VÀ ĐÁNH DẤU RANH GIỚI TRANG (PAGE BREAK): BẮT BUỘC chèn thẻ đánh dấu ngắt trang `<!-- PAGE_BREAK: X -->` (với X là số trang thực tế của tệp PDF gốc) ngay tại điểm bắt đầu của mỗi trang để phục vụ chế độ xem đối chiếu song song và chia trang tài liệu.
 </objective>
 
@@ -52,19 +52,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Trong văn bản, đánh dấu vị trí chú thích bằng `[^1]`, `[^2]`...
 - Đặt nội dung giải nghĩa tương ứng ở cuối văn bản theo cú pháp chuẩn Markdown: `[^1]: Lời giải nghĩa từ cổ/điển tích...`.
 
-7. ĐẶT VỊ TRÍ HÌNH ẢNH & TRANH MINH HỌA:
-Nếu hình ảnh trong file PDF có thể tách được, chúng tôi sẽ đính kèm danh sách các hình ảnh bóc tách được (mang nhãn định danh như `![IMG-CHUNK1-01]`, `![IMG-CHUNK1-02]`, v.v.).
-- Quan sát tệp PDF, xác định đúng ngữ cảnh xuất hiện của từng bức ảnh và chèn CHÍNH XÁC nhãn ảnh tương ứng vào luồng văn bản (ngay trước hoặc sau đoạn văn mô tả).
-- Tuyệt đối KHÔNG bỏ sót hình ảnh nào, KHÔNG thay đổi cú pháp nhãn `![IMG-CHUNKXX-XX]`.
-- Chú thích dưới ảnh: Nếu dưới ảnh có lời chú thích/chú dẫn, hãy in nghiêng và đặt ngay dưới ảnh:
-  ![IMG-CHUNK1-01]
-  *Hình 1: Tranh khắc gỗ minh họa sách cổ.*
-
-8. NỘI DUNG CHỮ TRONG SƠ ĐỒ / BẢN ĐỒ / HÌNH VẼ (NẾU CÓ):
-- Nếu hình ảnh có chứa chữ quan trọng bên trong, hãy trích xuất ngắn gọn dưới dạng trích dẫn in nghiêng đặt dưới chú thích ảnh:
-  > *Thông tin ảnh: [Chữ quan trọng 1] - [Chữ quan trọng 2]...*
-
-9. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
+7. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
 - Tại điểm bắt đầu nội dung của mỗi trang (tương ứng với số thứ tự trang thực tế trong tệp PDF gốc), BẮT BUỘC chèn một dòng thẻ đánh dấu:
   `<!-- PAGE_BREAK: X -->` (với X là số trang, ví dụ: `<!-- PAGE_BREAK: 1 -->`, `<!-- PAGE_BREAK: 2 -->`...)
 - Thẻ này giúp hệ thống tạo ranh giới trang để đối chiếu song song với bản gốc và tự động phân trang khi xuất file Word/EPUB.

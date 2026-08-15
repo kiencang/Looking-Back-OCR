@@ -91,7 +91,7 @@ import { MatIconModule } from '@angular/material/icon';
                       }
                     </div>
                     <div class="flex items-center flex-wrap gap-2 text-[10.5px] text-slate-400 font-sans pt-0.5">
-                      <span class="font-medium bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-300">{{ item.fileSize }}</span>
+                      <span class="font-medium bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-300">{{ formatFileSize(item.fileSize) }}</span>
                       <span class="text-slate-600">•</span>
                       <span>{{ item.pdfPages?.length || 0 }} trang</span>
                       
@@ -248,5 +248,20 @@ export class HistoryModal {
     // Format to 1 decimal place, stripping trailing .0 if integer
     const formatted = inK % 1 === 0 ? inK.toFixed(0) : inK.toFixed(1);
     return `${formatted}K`;
+  }
+
+  formatFileSize(fileSize: string | undefined): string {
+    if (!fileSize) return '';
+    // If string like "2.45 MB", convert to 1 decimal place "2.5 MB"
+    const match = fileSize.match(/^([\d.]+)\s*([a-zA-Z]+)?$/);
+    if (match) {
+      const num = parseFloat(match[1]);
+      const unit = match[2] || '';
+      if (!isNaN(num)) {
+        const rounded = parseFloat(num.toFixed(1));
+        return unit ? `${rounded} ${unit}` : `${rounded}`;
+      }
+    }
+    return fileSize;
   }
 }
