@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfChunk, DocumentProcessingService } from './services/document-processing.service';
@@ -172,10 +172,10 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 @if (isAnalyzingStyle()) {
                   <span class="inline-flex items-center gap-1 text-[9px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full animate-pulse border border-cyan-500/20 w-fit">
                     <mat-icon class="!text-[10px] !w-2.5 !h-2.5 animate-spin">refresh</mat-icon>
-                    <span>Đang phân tích AI...</span>
+                    <span>Đang phân tích tài liệu...</span>
                   </span>
-                } @else if (documentStyleProfile()) {
-                  <span class="inline-flex text-[9px] font-mono text-emerald-400/90 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 w-fit">
+                } @else if (documentStyleProfile() && showStyleSuccessBadge()) {
+                  <span class="inline-flex text-[9px] font-mono text-emerald-400/90 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 w-fit animate-pulse">
                     Chuẩn hóa 100%
                   </span>
                 }
@@ -226,13 +226,13 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 <!-- Reference Sample Chunks -->
                 @if (profile.analyzedSampleChunks && profile.analyzedSampleChunks.length) {
                   <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-white/5 text-[9px] font-mono text-slate-400">
-                    <span class="text-slate-500 flex items-center gap-1.5">
+                    <span class="text-slate-500 flex items-center gap-1.5 whitespace-nowrap shrink-0">
                       <mat-icon class="!text-[11px] !w-3 !h-3 text-cyan-600/80">find_in_page</mat-icon>
                       Trích mẫu từ:
                     </span>
-                    <span class="text-cyan-300/90 font-medium">
+                    <span class="text-cyan-300/90 font-medium text-right ml-2 line-clamp-1">
                       @for (idx of profile.analyzedSampleChunks; track idx; let last = $last) {
-                        Phân đoạn #{{ idx + 1 }}{{ last ? '' : ', ' }}
+                        Khối #{{ idx + 1 }}{{ last ? '' : ', ' }}
                       }
                     </span>
                   </div>
@@ -255,19 +255,19 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
          <div class="mt-4 border-t border-white/5 pt-4 space-y-2">
            <div class="flex gap-2">
              <button 
-               (click)="startBatch.emit()"
-               [disabled]="isBatchProcessing() || isOptimizing() || isParsing()"
-               class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition border border-indigo-500/30 font-sans shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-indigo-600/50 cursor-pointer">
-               <mat-icon class="text-[18px] w-4.5 h-4.5 flex items-center justify-center">play_circle_filled</mat-icon>
-               Xử lý tất cả
-             </button>
-             
-             <button 
                (click)="stopBatch.emit()"
                [disabled]="!isBatchProcessing() || shouldStopBatch()"
                class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold bg-white/5 hover:bg-rose-500/10 text-slate-300 hover:text-rose-300 rounded-lg transition border border-white/5 font-sans disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
                <mat-icon class="text-[18px] w-4.5 h-4.5 flex items-center justify-center">stop_circle</mat-icon>
                Dừng lại
+             </button>
+             
+             <button 
+               (click)="startBatch.emit()"
+               [disabled]="isBatchProcessing() || isOptimizing() || isParsing()"
+               class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition border border-indigo-500/30 font-sans shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-indigo-600/50 cursor-pointer">
+               <mat-icon class="text-[18px] w-4.5 h-4.5 flex items-center justify-center">play_circle_filled</mat-icon>
+               Xử lý tất cả
              </button>
            </div>
            
@@ -280,7 +280,7 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
 
          <!-- Render Chunks -->
          <div class="mt-4 border-t border-white/5 pt-4 space-y-2">
-          <span class="text-[10px] font-mono tracking-widest text-indigo-400 uppercase font-semibold block mb-2">Các khối cần xử lý bằng AI</span>
+          <span class="text-[10px] font-mono tracking-widest text-indigo-400 uppercase font-semibold block mb-2">Các khối cần xử lý</span>
           
           @for (chunk of pdfChunks(); track chunk.index) {
             <div 
@@ -350,6 +350,21 @@ export class WorkspaceAside {
   optimizationTimeFormatted = this.docService.optimizationTimeFormatted;
   documentStyleProfile = this.docService.documentStyleProfile;
   isAnalyzingStyle = this.docService.isAnalyzingStyle;
+  showStyleSuccessBadge = signal(false);
+
+  constructor() {
+    effect(() => {
+      const profile = this.documentStyleProfile();
+      if (profile) {
+        this.showStyleSuccessBadge.set(true);
+        setTimeout(() => {
+          this.showStyleSuccessBadge.set(false);
+        }, 4000);
+      } else {
+        this.showStyleSuccessBadge.set(false);
+      }
+    }, { allowSignalWrites: true });
+  }
 
   resetPdf = output<void>();
   outputModeChange = output<OutputMode>();
