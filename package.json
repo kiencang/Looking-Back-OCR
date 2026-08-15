@@ -1,6 +1,6 @@
 {
   "name": "ai-studio-angular-app",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -11,6 +11,7 @@ export interface HistoryItem {
   totalChunks: number;
   completedChunks: number;
   selectedModel: string;
+  model?: string;
   selectedOutputMode: string;
   pdfPages?: any[];
   pdfChunks?: any[];
@@ -101,6 +102,7 @@ export class HistoryService {
         totalChunks: docState.pdfChunks.length,
         completedChunks: completedCount,
         selectedModel: docState.selectedModel,
+        model: docState.selectedModel,
         selectedOutputMode: docState.selectedOutputMode,
         pdfPages: docState.pdfPages,
         pdfChunks: docState.pdfChunks,

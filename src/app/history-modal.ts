@@ -96,20 +96,21 @@ import { MatIconModule } from '@angular/material/icon';
                       <span>{{ item.pdfPages?.length || 0 }} trang</span>
                       
                       <!-- Model Badge -->
-                      @if (item.model) {
+                      @if (item.selectedModel || item.model) {
+                        @let currentModel = item.selectedModel || item.model;
                         <span class="text-slate-600">•</span>
                         <span 
                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9.5px] font-medium font-mono border"
-                          [class.bg-amber-500/10]="item.model === 'gemini-flash-latest'"
-                          [class.text-amber-300]="item.model === 'gemini-flash-latest'"
-                          [class.border-amber-500/20]="item.model === 'gemini-flash-latest'"
-                          [class.bg-indigo-500/10]="item.model !== 'gemini-flash-latest'"
-                          [class.text-indigo-300]="item.model !== 'gemini-flash-latest'"
-                          [class.border-indigo-500/20]="item.model !== 'gemini-flash-latest'">
+                          [class.bg-amber-500/10]="currentModel === 'gemini-flash-latest'"
+                          [class.text-amber-300]="currentModel === 'gemini-flash-latest'"
+                          [class.border-amber-500/20]="currentModel === 'gemini-flash-latest'"
+                          [class.bg-indigo-500/10]="currentModel !== 'gemini-flash-latest'"
+                          [class.text-indigo-300]="currentModel !== 'gemini-flash-latest'"
+                          [class.border-indigo-500/20]="currentModel !== 'gemini-flash-latest'">
                           <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none flex items-center justify-center">
-                            {{ item.model === 'gemini-flash-latest' ? 'bolt' : 'spa' }}
+                            {{ currentModel === 'gemini-flash-latest' ? 'bolt' : 'spa' }}
                           </mat-icon>
-                          <span>{{ item.model === 'gemini-flash-latest' ? 'Flash' : 'Lite' }}</span>
+                          <span>{{ currentModel === 'gemini-flash-latest' ? 'Flash' : 'Lite' }}</span>
                         </span>
                       }
                     </div>
