@@ -23,9 +23,12 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - HAI LUỒNG SONG SONG ĐỘC LẬP (Bảng đối chiếu song ngữ, 2 bảng số liệu độc lập):
   * Lúc này mới dùng Flexbox/CSS Grid hai bên: `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`.
 - LIỀN MẠCH VĂN PHONG QUA CỘT & QUA TRANG:
-  * Nếu một câu hoặc từ ở cuối cột 1 / cuối trang n đang viết dở và nối tiếp sang trang sau, KHÔNG tự ý ngắt thẻ `<p>` hay thêm dấu câu giả tạo. Nối câu mạch lạc.
+  * Nếu một câu hoặc từ ở cuối cột phải / cuối trang thứ `n` đang viết dở và nối tiếp sang trang sau (trang `n+1`), KHÔNG tự ý ngắt thẻ `<p>` hay thêm dấu câu giả tạo. 
+  * **Nối câu mạch lạc khi chuyển trang kế tiếp**: để tránh việc bị hụt câu và tạo ra khoảng trống cột phải ở dòng cuối cùng, cho phép AI lấy một phần văn bản nối tiếp ở trang `n+1` để nối vào phần văn bản cuối ở cột phải ở trang `n`.
+    * Ví dụ: cuối trang `n` là nội dung `...và đã biết thế rồi chẳng bao lâu mà coi nhau` và đầu trang `n+1` là nội dung nối tiếp `như đồng-bào vậy. Cái quan-niệm ấy rồi tùy theo vận nước phát-đạt...`, thì thay vì để trang `n` kết thúc lửng lơ và tạo ra khoảng trống dư thừa, thì hãy lấy một phần nhỏ nội dung của trang kế tiếp (cho đến dấu `.`) gần nhất để đưa vào phần cuối của trang trước đó (trang `n`).
+    * Như trường hợp trên, dòng cuối của trang `n` sẽ được điều chỉnh lại là `...và đã biết thế rồi chẳng bao lâu mà coi nhau như đồng-bào vậy.`, nhờ thế dòng cuối của trang `n` sẽ được kết thúc trọn vẹn. Dĩ nhiên phần đầu của trang `n+1` cũng được điều chỉnh để tránh nội dung lặp lại mà nó đã nhường cho trang `n`;
 - Căn lề chuẩn xác: Văn bản văn xuôi cần căn đều (`text-align: justify;`), tiêu đề chính căn giữa (`text-align: center;`), lời đề tặng/chữ ký căn phải (`text-align: right;`).
-- Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` hoặc khoảng cách đoạn `margin-bottom: 12px;`.
+- Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` hoặc khoảng cách đoạn `margin-bottom: 12px;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, chỉ sử dụng nó nếu văn bản gốc cũng đang dùng.
 - Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`
 - Chống xé lẻ phần tử trong cột: Thêm `style="break-inside: avoid; margin: 16px 0;"` cho ảnh, bảng biểu hoặc công thức toán để không bị cắt đôi giữa 2 cột.
 
