@@ -2,8 +2,7 @@
 import { ChangeDetectionStrategy, Component, output, effect, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfChunk, DocumentProcessingService } from './services/document-processing.service';
-import { PdfType, OutputMode } from './header';
+import { DocumentProcessingService } from './services/document-processing.service';
 import { SafeHtml } from '@angular/platform-browser';
 
 @Component({

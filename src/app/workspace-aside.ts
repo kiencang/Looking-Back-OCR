@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, output, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfChunk, DocumentProcessingService } from './services/document-processing.service';
-import { OutputMode, PdfType, DocumentStyleProfile } from './header';
+import { DocumentProcessingService } from './services/document-processing.service';
+import { OutputMode } from './header';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

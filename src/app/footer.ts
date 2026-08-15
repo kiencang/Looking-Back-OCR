@@ -14,7 +14,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
         
         <!-- Left side: Links and Info Metadata -->
         <div class="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-2.5 shrink-0 text-slate-400 font-normal w-full md:w-auto md:justify-self-start">
-          <span class="text-slate-400">v1.0.11</span>
+          <span class="text-slate-400">v1.0.12</span>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
           <a href="https://github.com/kiencang/Looking-Back-OCR" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200 cursor-pointer">GitHub</a>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
