@@ -22,3 +22,8 @@ PDF tiêu chuẩn có cái lợi là sẽ bóc tách được ảnh ở trong fi
 - Markdown: định dạng đơn giản hơn, nhưng lại có khả năng xuất ra EPUB và đặc biệt là Docx, giúp người dùng có thể biên tập thêm khi cần;
 
 Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc không chỉ nội dung mà còn là cả định dạng, hãy dùng cách chuyển đổi HTML/CSS. Còn nếu bạn quan tâm đơn thuần đến việc đọc, muốn tiết kiệm token đầu ra (ví dụ khi bạn dùng API Key trả phí) hãy dùng kiểu chuyển sang Markdown. Ngoài ra nếu có nhu cầu biên tập lại thì chỉ có kiểu Markdown mới giúp bạn có được định dạng Docx.
+
+## Tuyên bố từ chối trách nhiệm
+Công cụ này có thể được sử dụng cho mục đích nghiên cứu và học tập cá nhân.
+
+Looking-Back-OCR cũng như người phát triển nó không đưa ra bất kỳ bảo đảm rõ ràng hay ngụ ý nào, cũng như không tuyên bố rằng công cụ sẽ vận hành hoàn hảo, chính xác hoặc cập nhật. Người phát triển sẽ không chịu trách nhiệm cho bất kỳ tổn thất hay thiệt hại nào phát sinh trực tiếp hoặc gián tiếp liên quan đến hoặc phát sinh từ việc sử dụng công cụ này.
