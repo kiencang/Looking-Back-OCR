@@ -5,6 +5,10 @@ Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản 
 
 Gemini AI có khả năng OCR tài liệu rất tốt, chi phí bằng 0 nếu nhu cầu hàng ngày không quá lớn.
 
+Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (cùng tác giả): https://github.com/kiencang/pdf-2-epub-docx
+
+Điểm khác biệt cơ bản là Looking-Back-OCR tập trung vào sách xưa, và nó xuất ra nhiều định dạng hơn, cũng như mục đích là để con người đọc trực tiếp.
+
 ## 2 kiểu PDF
 Có 2 kiểu định dạng sách PDF chính, là sách `scan` và loại thông thường (mà trong ứng dụng gọi là `tiêu chuẩn`).
 
