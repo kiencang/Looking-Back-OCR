@@ -31,7 +31,7 @@
         [isParsing]="isParsing()"
         [parsingStatus]="parsingStatus()"
         [isScriptLoaded]="isScriptLoaded()"
-        [selectedPdfType]="selectedPdfType()"
+        
         (fileSelected)="processPdfFile($event)">
       </app-empty-state>
     }
@@ -78,13 +78,6 @@
 
   <!-- Footer Component -->
   <app-footer
-    [selectedPdfType]="selectedPdfType()"
-    [isDevMode]="isDevMode()"
-    [hasPages]="pdfPages().length > 0"
-    [isOptimizing]="isOptimizing()"
-    [isParsing]="isParsing()"
-    (pdfTypeChange)="selectedPdfType.set($event)"
-    (toggleDevMode)="isDevMode.set(!isDevMode())"
     (openInstruction)="showInstruction.set(true)">
   </app-footer>
 
@@ -98,7 +91,7 @@
       [reflowSafeHtml]="reflowSafeHtml()"
       [themeStyle]="themeStyle()"
       [outputMode]="selectedOutputMode()"
-      [selectedPdfType]="selectedPdfType()"
+      
       [isAllCompleted]="isAllCompleted()"
       (closeModal)="showFullscreenComparison.set(false)"
       (themeStyleChange)="themeStyle.set($event)"

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfType } from './header';
+
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,10 +65,8 @@ import { PdfType } from './header';
             <p class="text-[11px] text-slate-400 font-sans text-center leading-normal">
               @if (isParsing()) {
                 <span class="text-indigo-300 font-medium">{{ parsingStatus() || 'Hệ thống đang cấu trúc thông tin' }}</span>
-              } @else if (selectedPdfType() === 'scan') {
-                Chế độ <strong>PDF Scan (Mặc định)</strong>: Phù hợp nhất cho PDF dạng scan. Đa số tài liệu/sách cổ sẽ ở định dạng này.
               } @else {
-                Chế độ <strong>PDF Tiêu chuẩn</strong>: Chỉ dùng cho file PDF có layout chuẩn, hệ thống sẽ bóc tách ảnh trong bản gốc để tái tạo vào bản OCR... Sẽ không phù hợp khi áp dụng chế độ này cho file PDF scan.
+                Hỗ trợ PDF dung lượng lên đến 100MB và tối đa 1000 trang. Kéo thả file vào đây hoặc nhấp để chọn.
               }
             </p>
           </div>
@@ -96,7 +94,7 @@ export class EmptyState {
   isParsing = input.required<boolean>();
   parsingStatus = input.required<string>();
   isScriptLoaded = input.required<boolean>();
-  selectedPdfType = input<PdfType>('scan');
+  
 
   fileSelected = output<File>();
 

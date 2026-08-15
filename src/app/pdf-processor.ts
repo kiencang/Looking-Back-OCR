@@ -2,15 +2,15 @@
 import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PdfDb } from './pdf-db';
-import { ImageExtractor } from './image-extractor';
 import { MarkdownRenderer } from './markdown-renderer';
 import { EpubExporter } from './epub-exporter';
 import { DocxExporter } from './docx-exporter';
+import { PDFDocument } from 'pdf-lib';
 
 export interface PdfPageData {
   pageNum: number;
   items: any[];
-  pageImageUrl: string;
+  pageImageUrl: string; // PNG Data URL, scale 1.0 (lazy rendered)
   extractedImages: any[];
 }
 
@@ -28,59 +28,122 @@ export interface SavedImage {
   providedIn: 'root'
 })
 export class PdfProcessor {
-  async extractPdfChunks(file: File, pdfType: 'scan' | 'standard', onProgress: (msg: string) => void): Promise<{ pages: PdfPageData[], chunks: any[] }> {
-    if (!this.pdfjsLib) throw new Error('PDF.js not loaded');
+  private platformId = inject(PLATFORM_ID);
+  private db = new PdfDb(this.platformId);
+  private pdfjsLib: any = null;
+  private currentPdfDoc: any = null;
+  private currentFileName = '';
+  
+  isScriptLoaded = signal(false);
 
-    const fileReader = new FileReader();
-    const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-      fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
-      fileReader.onerror = (err) => reject(err);
-      fileReader.readAsArrayBuffer(file);
-    });
+  async loadPdfEngine(updateStatus: (msg: string) => void, setError: (msg: string) => void): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.pdfjsLib) {
+      this.isScriptLoaded.set(true);
+      return;
+    }
 
-    onProgress('Chuẩn bị phân tích tài liệu...');
-    const loadingTask = this.pdfjsLib.getDocument({ data: arrayBuffer });
-    const pdf = await loadingTask.promise;
+    try {
+      if ((window as any).pdfjsLib) {
+        this.pdfjsLib = (window as any).pdfjsLib;
+        this.isScriptLoaded.set(true);
+        return;
+      }
 
-    if (pdf.numPages > 1000) {
-      throw new Error(`Tài liệu có ${pdf.numPages} trang, vượt quá giới hạn 1000 trang`);
+      updateStatus('Đang nạp trình kết xuất PDF...');
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.async = true;
+
+      await new Promise<void>((resolve, reject) => {
+        script.onload = () => {
+          this.pdfjsLib = (window as any).pdfjsLib;
+          if (this.pdfjsLib) {
+            this.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            this.isScriptLoaded.set(true);
+            resolve();
+          } else {
+            reject(new Error('Không tìm thấy pdfjsLib sau khi nạp script.'));
+          }
+        };
+        script.onerror = () => reject(new Error('Lỗi khi tải thư viện PDF.js'));
+        document.head.appendChild(script);
+      });
+    } catch (e: any) {
+      setError('Lỗi nạp thư viện PDF.js: ' + (e.message || e));
+    }
+  }
+
+  isLoaded(): boolean {
+    return this.isScriptLoaded();
+  }
+
+  getPdfjsLib(): any {
+    return this.pdfjsLib || (typeof window !== 'undefined' ? (window as any).pdfjsLib : null);
+  }
+
+  async loadPdfDocument(file: File): Promise<any> {
+    if (!this.pdfjsLib) {
+      await this.loadPdfEngine(() => undefined, () => undefined);
+    }
+    const lib = this.getPdfjsLib();
+    if (!lib) {
+      throw new Error('Thư viện PDF.js chưa sẵn sàng.');
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const loadingTask = lib.getDocument({ data: arrayBuffer });
+    this.currentPdfDoc = await loadingTask.promise;
+    this.currentFileName = file.name;
+    return this.currentPdfDoc;
+  }
+
+  async renderPageToPng(pageNum: number): Promise<string> {
+    if (!this.currentPdfDoc) return '';
+    try {
+      const page = await this.currentPdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.0 }); // Scale = 1.0 per requirement
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return '';
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: ctx,
+        viewport: viewport
+      };
+      await page.render(renderContext).promise;
+      return canvas.toDataURL('image/png'); // Standard PNG format
+    } catch (err) {
+      console.error(`Error rendering page ${pageNum} to PNG:`, err);
+      return '';
+    }
+  }
+
+  async extractPdfChunks(file: File, onProgress: (msg: string) => void): Promise<{ pages: PdfPageData[], chunks: any[] }> {
+    const arrayBuffer = await file.arrayBuffer();
+    onProgress('Đọc tài liệu PDF...');
+    const srcDoc = await PDFDocument.load(arrayBuffer);
+    const numPages = srcDoc.getPageCount();
+
+    if (numPages > 1000) {
+      throw new Error(`Tài liệu có ${numPages} trang, vượt quá giới hạn 1000 trang`);
+    }
+
+    // Initialize pdfjs document for on-demand PNG rendering
+    try {
+      await this.loadPdfDocument(file);
+    } catch (e) {
+      console.warn('Could not load pdfjsDoc for on-demand rendering:', e);
     }
 
     const itemsExtracted: PdfPageData[] = [];
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      onProgress(`Trích xuất nội dung: Trang ${pageNum} / ${pdf.numPages}...`);
-      const page = await pdf.getPage(pageNum);
-
-      const textContent = await page.getTextContent();
-      const textItems = textContent.items.map((item: any) => ({
-        text: item.str,
-        transform: item.transform,
-        width: item.width,
-        height: item.height,
-      }));
-
-      const viewport = page.getViewport({ scale: 1.5 });
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-      }
-      const pageImageUrl = canvas.toDataURL('image/png');
-
-      let extractedImages: any[] = [];
-      if (pdfType === 'standard') {
-        onProgress(`Tách lập hình ảnh trang ${pageNum}...`);
-        extractedImages = await this.extractImagesFromPage(page);
-      }
-
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
       itemsExtracted.push({
         pageNum,
-        items: textItems,
-        pageImageUrl,
-        extractedImages
+        items: [],
+        pageImageUrl: '',
+        extractedImages: []
       });
     }
 
@@ -113,85 +176,24 @@ export class PdfProcessor {
 
     const generatedChunks = createChunks(itemsExtracted);
 
-    if (pdfType === 'standard') {
-      onProgress('Đang đặt gán nhãn ảnh và lưu vào cơ sở dữ liệu IndexedDB trình duyệt...');
-      let chunkCounter = 1;
-      for (const chunk of generatedChunks) {
-        chunk.id = `Phần ${chunkCounter}`;
-        let imageIdxInChunk = 1;
-        for (const page of chunk.pages) {
-          if (page.extractedImages) {
-            for (const img of page.extractedImages) {
-              const labelKey = `IMG-CHUNK${chunkCounter}-${String(imageIdxInChunk).padStart(2, '0')}`;
-              img.labeledKey = labelKey;
+    let chunkCounter = 1;
+    for (const chunk of generatedChunks) {
+      chunk.id = `Phần ${chunkCounter}`;
+      chunkCounter++;
+    }
 
-              await this.saveImageToDb({
-                id: `${file.name}_${labelKey}`,
-                key: labelKey,
-                fileName: file.name,
-                pageNum: page.pageNum,
-                dataUrl: img.dataUrl,
-                width: img.width,
-                height: img.height
-              });
-              imageIdxInChunk++;
-            }
-          }
+    // On-demand rendering: Render immediately ONLY for chunk 1 (pages in chunk 1)
+    if (generatedChunks.length > 0) {
+      onProgress('Đang render trước ảnh Bản gốc Phần 1...');
+      const firstChunk = generatedChunks[0];
+      for (const page of firstChunk.pages) {
+        if (!page.pageImageUrl) {
+          page.pageImageUrl = await this.renderPageToPng(page.pageNum);
         }
-        chunkCounter++;
-      }
-    } else {
-      let chunkCounter = 1;
-      for (const chunk of generatedChunks) {
-        chunk.id = `Phần ${chunkCounter}`;
-        chunkCounter++;
       }
     }
 
     return { pages: itemsExtracted, chunks: generatedChunks };
-  }
-
-  private platformId = inject(PLATFORM_ID);
-  private db = new PdfDb(this.platformId);
-  
-  isScriptLoaded = signal(false);
-  private pdfjsLib: any = null;
-
-  async loadPdfEngine(updateStatus: (msg: string) => void, setError: (msg: string) => void): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    try {
-      updateStatus('Đang tải thư viện xử lý thông tin PDF...');
-      if ((window as any).pdfjsLib) {
-        this.pdfjsLib = (window as any).pdfjsLib;
-        this.isScriptLoaded.set(true);
-        updateStatus('');
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-      script.onload = () => {
-        this.pdfjsLib = (window as any).pdfjsLib;
-        this.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        this.isScriptLoaded.set(true);
-        updateStatus('');
-      };
-      script.onerror = () => {
-        setError('Không thể tải thư viện PDF.js từ máy chủ CDN. Vui lòng kiểm tra lại kết nối!');
-      };
-      document.head.appendChild(script);
-    } catch (e: any) {
-      setError('Lỗi cài đặt công cụ PDF: ' + e.message);
-    }
-  }
-
-  isLoaded(): boolean {
-    return this.isScriptLoaded() && !!this.pdfjsLib;
-  }
-
-  getPdfjsLib(): any {
-    return this.pdfjsLib;
   }
 
   formatBytes(bytes: number, decimals = 2): string {
@@ -235,13 +237,6 @@ export class PdfProcessor {
   }
 
   /**
-   * Extraction delegation
-   */
-  extractImagesFromPage(page: any): Promise<any[]> {
-    return ImageExtractor.extractImagesFromPage(page, this.pdfjsLib);
-  }
-
-  /**
    * Markdown preview and XHTML compiler rendering delegation
    */
   renderMarkdownToHtml(markdown: string, pdfPages: PdfPageData[]): string {
@@ -281,3 +276,4 @@ export class PdfProcessor {
     return DocxExporter.generateDocx(title, content, pdfPages);
   }
 }
+

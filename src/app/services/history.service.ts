@@ -11,7 +11,6 @@ export interface HistoryItem {
   totalChunks: number;
   completedChunks: number;
   selectedModel: string;
-  selectedPdfType: string;
   selectedOutputMode: string;
   pdfPages?: any[];
   pdfChunks?: any[];
@@ -87,7 +86,6 @@ export class HistoryService {
     pdfPages: any[];
     pdfChunks: any[];
     selectedModel: string;
-    selectedPdfType: string;
     selectedOutputMode: string;
     documentStyleProfile?: any;
   }): Promise<void> {
@@ -103,7 +101,6 @@ export class HistoryService {
         totalChunks: docState.pdfChunks.length,
         completedChunks: completedCount,
         selectedModel: docState.selectedModel,
-        selectedPdfType: docState.selectedPdfType,
         selectedOutputMode: docState.selectedOutputMode,
         pdfPages: docState.pdfPages,
         pdfChunks: docState.pdfChunks,

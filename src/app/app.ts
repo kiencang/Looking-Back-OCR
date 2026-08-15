@@ -65,7 +65,6 @@ export class App {
   isOptimizing = this.docService.isOptimizing;
   isBatchProcessing = this.docService.isBatchProcessing;
   selectedModel = this.docService.selectedModel;
-  selectedPdfType = this.docService.selectedPdfType;
   selectedOutputMode = this.docService.selectedOutputMode;
   parsingStatus = this.docService.parsingStatus;
   apiError = this.docService.apiError;
@@ -74,6 +73,7 @@ export class App {
 
   fileName = this.docService.fileName;
   fileSize = this.docService.fileSize;
+  pdfObjectUrl = this.docService.pdfObjectUrl;
   pdfPages = this.docService.pdfPages;
   pdfChunks = this.docService.pdfChunks;
   activeChunk = this.docService.activeChunk;
@@ -179,7 +179,7 @@ export class App {
   }
 
   // Chunk & Batch Processing
-  selectChunk(idx: number) {
+  async selectChunk(idx: number) {
     this.docService.selectedChunkIndex.set(idx);
     const chunk = this.docService.pdfChunks()[idx];
     if (chunk && chunk.status === 'completed') {
@@ -187,6 +187,8 @@ export class App {
     } else {
       this.selectedTab.set('pdf');
     }
+    // Lazy render pages for this chunk if not yet rendered
+    await this.docService.ensureChunkPagesRendered(idx);
   }
 
   async optimizeChunkWithAI(chunkIndex: number) {

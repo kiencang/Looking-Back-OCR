@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, output, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, effect, inject, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentProcessingService } from './services/document-processing.service';
-import { SafeHtml } from '@angular/platform-browser';
+import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,8 +25,8 @@ import { SafeHtml } from '@angular/platform-browser';
             [class.font-bold]="selectedTab() === 'pdf'"
             [class.text-slate-400]="selectedTab() !== 'pdf'"
             [class.hover:text-slate-200]="selectedTab() !== 'pdf'">
-            <mat-icon class="text-xs">collections</mat-icon>
-            Ảnh & Bản gốc
+            <mat-icon class="text-xs">picture_as_pdf</mat-icon>
+            Bản gốc
           </button>
           
           @if (reflowHtml()) {
@@ -218,55 +218,37 @@ import { SafeHtml } from '@angular/platform-browser';
 
         <!-- Canvas View (Original exact PDF page renders) -->
         @if (selectedTab() === 'pdf') {
-          <div class="w-full max-w-3xl flex flex-col" id="pdf-scroller-layout">
-            <div class="text-center py-2 px-3 mb-3 text-[11px] font-sans block bg-slate-900 border border-white/5 rounded-xl shrink-0 truncate"
-                 [class.text-emerald-400]="selectedPdfType() === 'scan'"
-                 [class.text-sky-400]="selectedPdfType() === 'standard'">
-              @if (selectedPdfType() === 'scan') {
-                📄 Chế độ PDF Scan: Phù hợp nhất cho chuyển đổi PDF dạng scan. Không có khả năng tách ảnh trong file PDF.
-              } @else {
-                📸 Chế độ PDF Tiêu chuẩn: Có khả năng bóc tách ảnh trong file PDF tiêu chuẩn.
-              }
-            </div>
-            
-            <!-- Bounded height scrollable container with customized scrollbar styling -->
-            <div class="max-h-[66vh] overflow-y-auto pr-3 flex flex-col gap-5">
-              <!-- Page renders -->
-              @for (page of (activeChunk()?.pages || []); track page.pageNum) {
-                <div class="border border-white/10 rounded-2xl overflow-hidden bg-slate-950 shadow-md p-4 space-y-4 shrink-0">
-                  <div class="text-xs font-mono text-slate-400 flex justify-between">
-                    <span class="font-bold">Trang số {{ page.pageNum }}</span>
-                    @if (selectedPdfType() === 'standard') {
-                      <span>Số ảnh riêng lẻ tách được: {{ page.extractedImages.length || 0 }} ảnh</span>
-                    } @else {
-                      <span class="text-emerald-400 font-sans text-[11px]">Trang scan trực tiếp</span>
-                    }
+          <div class="w-full max-w-4xl h-full flex flex-col space-y-6 items-center" id="pdf-scroller-layout">
+            @if (activeChunkPages().length > 0) {
+              @for (page of activeChunkPages(); track page.pageNum) {
+                <div class="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 shadow-xl flex flex-col gap-3">
+                  <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-2">
+                    <span class="font-bold text-slate-200">Trang số {{ page.pageNum }}</span>
+                    <span class="text-[10px] text-slate-500 font-mono">Độ phân giải gốc 1:1 (PNG)</span>
                   </div>
                   
-                  <div class="border border-white/5 rounded-xl overflow-hidden max-w-2xl mx-auto">
-                    <img [src]="page.pageImageUrl" alt="Trang {{ page.pageNum }}" class="w-full h-auto object-contain" referrerpolicy="no-referrer" />
-                  </div>
-
-                  @if (selectedPdfType() === 'standard' && page.extractedImages && page.extractedImages.length > 0) {
-                    <div class="border-t border-white/5 pt-4">
-                      <span class="text-[11px] text-slate-400 font-semibold block mb-2 font-sans">Các ảnh lẻ từ trang này:</span>
-                      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        @for (img of page.extractedImages; track img.labeledKey) {
-                          <div class="bg-slate-900 border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                            <button type="button" (click)="zoomImage.emit(img.dataUrl)" class="cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-1" title="Nhấp để phóng to ảnh">
-                              <img [src]="img.dataUrl" alt="{{ img.labeledKey }}" class="h-20 object-contain" referrerpolicy="no-referrer" />
-                            </button>
-                            <span class="text-[10px] font-bold text-indigo-400 mt-2 font-mono">{{ img.labeledKey }}</span>
-                            <span class="text-[8px] text-slate-500 font-mono">{{ img.width }}x{{ img.height }}px</span>
-                          </div>
-                        }
+                  <div class="overflow-hidden rounded-xl bg-slate-950 flex justify-center p-2 border border-white/5 min-h-[200px] items-center">
+                    @if (page.pageImageUrl) {
+                      <img 
+                        [src]="page.pageImageUrl" 
+                        alt="Trang {{ page.pageNum }}" 
+                        class="max-w-full h-auto object-contain rounded shadow-md"
+                        referrerpolicy="no-referrer" />
+                    } @else {
+                      <div class="flex items-center gap-2 text-slate-400 text-xs font-mono py-8">
+                        <mat-icon class="animate-spin text-sm text-indigo-400">sync</mat-icon>
+                        <span>Đang hiển thị bản gốc trang {{ page.pageNum }}...</span>
                       </div>
-                    </div>
-                  }
-
+                    }
+                  </div>
                 </div>
               }
-            </div>
+            } @else {
+              <div class="w-full h-64 flex flex-col items-center justify-center text-slate-400 gap-2 border border-white/5 rounded-2xl bg-slate-900/40">
+                <mat-icon class="text-3xl text-slate-600">picture_as_pdf</mat-icon>
+                <span class="text-xs">Chưa có dữ liệu trang cho khối này</span>
+              </div>
+            }
           </div>
         }
 
@@ -305,18 +287,33 @@ export class WorkspacePreview {
   selectedTab = input.required<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
   public docService = inject(DocumentProcessingService);
+  private sanitizer = inject(DomSanitizer);
   outputMode = this.docService.selectedOutputMode;
   reflowHtml = input.required<string>();
   reflowSafeHtml = input.required<SafeHtml>();
-  selectedPdfType = this.docService.selectedPdfType;
   isDevMode = input.required<boolean>();
   isParsing = this.docService.isParsing;
   isOptimizing = this.docService.isOptimizing;
   activeChunk = this.docService.activeChunk;
   isAllCompleted = this.docService.isAllCompleted;
 
+  activeChunkPages = computed(() => {
+    const chunk = this.activeChunk();
+    if (chunk && chunk.pages && chunk.pages.length > 0) {
+      return chunk.pages;
+    }
+    return this.docService.pdfPages();
+  });
+
   tabChange = output<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyleChange = output<'clean' | 'warm' | 'mono'>();
+
+  safePdfUrl(): SafeResourceUrl | null {
+    const url = this.docService.pdfObjectUrl();
+    if (!url) return null;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
   downloadEpub = output<void>();
   downloadDocx = output<void>();
   downloadEpubForChunk = output<void>();

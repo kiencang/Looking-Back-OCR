@@ -2,7 +2,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { PdfProcessor, PdfPageData } from '../pdf-processor';
 import { AiPromptOptimizer } from '../ai-prompt-optimizer';
-import { ModelType, PdfType, OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
+import { ModelType, OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
 import { translateGeminiError } from '../utils/gemini-error.util';
 import { HistoryService } from './history.service';
 
@@ -32,13 +32,13 @@ export class DocumentProcessingService {
   fileName = signal('');
   fileSize = signal('');
   pdfFile = signal<File | null>(null);
+  pdfObjectUrl = signal<string>('');
   pdfPages = signal<PdfPageData[]>([]);
   pdfChunks = signal<PdfChunk[]>([]);
   currentHistoryId = signal<string | null>(null);
   
   // Settings & Options
   selectedModel = signal<ModelType>('gemini-flash-latest');
-  selectedPdfType = signal<PdfType>('scan');
   selectedOutputMode = signal<OutputMode>('html');
   clientApiKey = signal('');
 
@@ -142,7 +142,6 @@ export class DocumentProcessingService {
       pdfPages: this.pdfPages(),
       pdfChunks: chunks,
       selectedModel: this.selectedModel(),
-      selectedPdfType: this.selectedPdfType(),
       selectedOutputMode: this.selectedOutputMode(),
       documentStyleProfile: this.documentStyleProfile()
     });
@@ -167,9 +166,6 @@ export class DocumentProcessingService {
       if (item.model || item.selectedModel) {
         this.selectedModel.set(item.model || item.selectedModel);
       }
-      if (item.pdfType || item.selectedPdfType) {
-        this.selectedPdfType.set(item.pdfType || item.selectedPdfType);
-      }
       if (item.outputMode || item.selectedOutputMode) {
         this.selectedOutputMode.set(item.outputMode || item.selectedOutputMode);
       }
@@ -192,11 +188,6 @@ export class DocumentProcessingService {
   }
 
   async processPdfFile(file: File): Promise<boolean> {
-    if (!this.pdfProcessor.getPdfjsLib()) {
-      this.apiError.set('Thư viện PDF.js đang được nạp, xin hãy đợi một giây rồi thử lại.');
-      return false;
-    }
-
     if (file.size > 100 * 1024 * 1024) {
       this.apiError.set(`Tài liệu vượt quá giới hạn 100MB (${this.pdfProcessor.formatBytes(file.size)}). Vui lòng chọn tệp nhỏ hơn.`);
       return false;
@@ -211,6 +202,10 @@ export class DocumentProcessingService {
     this.fileName.set(file.name);
     this.fileSize.set(this.pdfProcessor.formatBytes(file.size));
     this.pdfFile.set(file);
+    if (this.pdfObjectUrl()) {
+      URL.revokeObjectURL(this.pdfObjectUrl());
+    }
+    this.pdfObjectUrl.set(URL.createObjectURL(file));
     this.pdfPages.set([]);
     this.pdfChunks.set([]);
     this.selectedChunkIndex.set(0);
@@ -229,7 +224,6 @@ export class DocumentProcessingService {
 
       const { pages, chunks } = await this.pdfProcessor.extractPdfChunks(
         file,
-        this.selectedPdfType(),
         (msg: string) => this.parsingStatus.set(msg)
       );
 
@@ -250,6 +244,26 @@ export class DocumentProcessingService {
       this.isParsing.set(false);
       this.parsingStatus.set('');
     }
+  }
+
+  async ensureChunkPagesRendered(chunkIndex: number): Promise<void> {
+    const chunks = this.pdfChunks();
+    if (chunkIndex < 0 || chunkIndex >= chunks.length) return;
+    const chunk = chunks[chunkIndex];
+    if (!chunk || !chunk.pages) return;
+
+    // Check if any page in this chunk needs PNG rendering
+    const unrenderedPages = chunk.pages.filter(p => !p.pageImageUrl);
+    if (unrenderedPages.length === 0) return;
+
+    for (const page of unrenderedPages) {
+      const dataUrl = await this.pdfProcessor.renderPageToPng(page.pageNum);
+      if (dataUrl) {
+        page.pageImageUrl = dataUrl;
+      }
+    }
+    // Trigger signal update so subscribers react
+    this.pdfChunks.set([...chunks]);
   }
 
   async ensureDocumentStyleProfile(): Promise<DocumentStyleProfile> {
@@ -308,7 +322,6 @@ export class DocumentProcessingService {
     });
 
     const modelName = this.selectedModel();
-    const pdfType = this.selectedPdfType();
     const outputMode = this.selectedOutputMode();
 
     // Ensure style profile is established for consistent typography & design tokens in HTML mode
@@ -328,7 +341,6 @@ export class DocumentProcessingService {
       file,
       chunk,
       outputMode,
-      pdfType,
       styleProfile
     );
 

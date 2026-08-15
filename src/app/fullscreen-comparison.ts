@@ -17,7 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeHtml } from '@angular/platform-browser';
 import { PdfChunk } from './services/document-processing.service';
 import { PdfPageData } from './pdf-processor';
-import { PdfType, OutputMode } from './header';
+import { OutputMode } from './header';
+import { DocumentProcessingService } from './services/document-processing.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -213,28 +214,26 @@ import { PdfType, OutputMode } from './header';
               </div>
 
               <!-- Zoomable PDF Image Page -->
-              <div class="overflow-hidden rounded-xl bg-slate-950 flex justify-center p-2 border border-white/5">
+              <div class="overflow-hidden rounded-xl bg-slate-950 flex justify-center p-2 border border-white/5 min-h-[200px] items-center">
                 <div 
-                  class="transition-transform duration-200 origin-top flex justify-center"
+                  class="transition-transform duration-200 origin-top flex justify-center w-full"
                   [style.transform]="'scale(' + (pdfZoom() / 100) + ')'">
-                  <img 
-                    [src]="page.pageImageUrl" 
-                    alt="Trang {{ page.pageNum }}" 
-                    class="max-w-full h-auto object-contain rounded shadow-md pointer-events-auto"
-                    referrerpolicy="no-referrer" />
+                  @if (page.pageImageUrl) {
+                    <img 
+                      [src]="page.pageImageUrl" 
+                      alt="Trang {{ page.pageNum }}" 
+                      class="max-w-full h-auto object-contain rounded shadow-md pointer-events-auto"
+                      referrerpolicy="no-referrer" />
+                  } @else {
+                    <div class="flex items-center justify-center gap-2 text-slate-400 text-xs font-mono py-12">
+                      <mat-icon class="animate-spin text-sm text-indigo-400">sync</mat-icon>
+                      <span>Đang nạp ảnh gốc trang {{ page.pageNum }}...</span>
+                    </div>
+                  }
                 </div>
               </div>
 
-              @if (selectedPdfType() === 'standard' && page.extractedImages && page.extractedImages.length > 0) {
-                <div class="border-t border-white/5 pt-2 flex items-center gap-2 overflow-x-auto">
-                  <span class="text-[10px] text-slate-500 font-mono uppercase">Ảnh lẻ:</span>
-                  @for (img of page.extractedImages; track img.labeledKey) {
-                    <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-sky-300 font-mono rounded border border-white/5">
-                      {{ img.labeledKey }}
-                    </span>
-                  }
-                </div>
-              }
+              <!-- Extracted images section removed -->
 
             </div>
           }
@@ -301,7 +300,6 @@ export class FullscreenComparison {
   reflowSafeHtml = input.required<SafeHtml>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
   outputMode = input<OutputMode>('html');
-  selectedPdfType = input<PdfType>('scan');
   isAllCompleted = input.required<boolean>();
 
   closeModal = output<void>();
@@ -322,6 +320,8 @@ export class FullscreenComparison {
   currentPageNum = signal<number>(1);
   maxPageNum = signal<number>(1);
 
+  public docService = inject(DocumentProcessingService);
+
   constructor() {
     effect(() => {
       const chunk = this.activeChunk();
@@ -331,6 +331,10 @@ export class FullscreenComparison {
         this.currentPages.set(chunk.pages);
         this.currentPageNum.set(chunk.pages[0].pageNum);
         this.maxPageNum.set(chunk.pages[chunk.pages.length - 1].pageNum);
+        // Ensure pages in this chunk are rendered to PNG
+        if (chunk.index !== undefined) {
+          this.docService.ensureChunkPagesRendered(chunk.index);
+        }
       } else if (allPages && allPages.length > 0) {
         this.currentPages.set(allPages);
         this.currentPageNum.set(allPages[0].pageNum);

@@ -261,7 +261,7 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
     pdfBase64: string,
     promptText: string,
     chunk: PdfChunk,
-    pdfType: 'scan' | 'standard' = 'scan',
+    
     outputMode: OutputMode = 'markdown',
     styleProfile?: DocumentStyleProfile | null
   ): any[] {
@@ -283,40 +283,14 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
 
     let localizedInstructions = '';
     if (outputMode === 'html') {
-      if (pdfType === 'scan') {
-        localizedInstructions = `${promptText}${designTokensBlock}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
-      } else {
-        localizedInstructions = `${promptText}${designTokensBlock}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã HTML/CSS sạch đẹp, bảo toàn cấu trúc và ngữ cảnh thị giác, rồi chèn đúng thẻ ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
-      }
+      localizedInstructions = `${promptText}${designTokensBlock}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
     } else {
-      if (pdfType === 'scan') {
-        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
-      } else {
-        localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ PDF TIÊU CHUẨN - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc kĩ và xử lý toàn bộ nội dung của tệp PDF đính kèm này cùng các hình ảnh gốc liên quan, sau đó chuyển đổi thành mã Markdown sạch đẹp, bảo toàn cấu trúc và ngữ cảnh, rồi chèn đúng nhãn ảnh tương ứng.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
-      }
+      localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm dưới đây đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
     }
     
     parts.push({ text: localizedInstructions });
 
-    // 3. For standard PDF only: Map out and attach the extracted images that occurred within the target page range
-    if (pdfType === 'standard') {
-      chunk.pages.forEach(page => {
-        if (page.extractedImages) {
-          page.extractedImages.forEach((img: any) => {
-            const rawBase64 = img.dataUrl.split(',')[1];
-            parts.push({
-              text: `\nDưới đây là dữ liệu hình ảnh bóc được mang nhãn [${img.labeledKey}]:\n`
-            });
-            parts.push({
-              inlineData: {
-                mimeType: 'image/png',
-                data: rawBase64
-              }
-            });
-          });
-        }
-      });
-    }
+    // Removed images mapping logic for standard PDF
 
     return parts;
   }
@@ -330,7 +304,7 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
     file: File,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    pdfType: 'scan' | 'standard' = 'scan',
+    
     styleProfile?: DocumentStyleProfile | null
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
     // Acquire sliced PDF or fallback to original
@@ -343,7 +317,7 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
     }
 
     const basePrompt = await this.getPromptTemplate(outputMode);
-    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, pdfType, outputMode, styleProfile);
+    const parts = this.buildMultimodalParts(pdfBase64, basePrompt, chunk, outputMode, styleProfile);
 
     // Call individual content generation REST endpoint
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;

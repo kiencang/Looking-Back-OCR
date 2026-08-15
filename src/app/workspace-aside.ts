@@ -20,14 +20,7 @@ import { OutputMode } from './header';
           <div class="absolute top-0 right-0 p-3 text-slate-700">
             <mat-icon class="text-3xl">picture_as_pdf</mat-icon>
           </div>
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-[10px] font-mono tracking-widest uppercase font-semibold block"
-                  [class.text-emerald-400]="selectedPdfType() === 'scan'"
-                  [class.text-sky-400]="selectedPdfType() === 'standard'">
-              {{ selectedPdfType() === 'scan' ? '📸 Sách Scan' : '📄 PDF Tiêu chuẩn' }}
-            </span>
-          </div>
-          <h3 class="text-sm font-bold text-slate-200 truncate pr-6 font-sans" title="{{ fileName() }}">{{ fileName() }}</h3>
+          <h3 class="text-sm font-bold text-slate-200 truncate pr-6 font-sans mb-1" title="{{ fileName() }}">{{ fileName() }}</h3>
           
           <div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-white/5 text-center">
             <div class="bg-slate-950/50 rounded-xl p-2.5">
@@ -35,12 +28,8 @@ import { OutputMode } from './header';
               <span class="text-sm font-bold text-slate-200 font-mono">{{ totalPageCount() }}</span>
             </div>
             <div class="bg-slate-950/50 rounded-xl p-2.5">
-              <span class="block text-[10px] text-slate-400 uppercase font-sans">Loại tài liệu</span>
-              @if (selectedPdfType() === 'scan') {
-                <span class="text-xs font-bold text-emerald-400 font-sans">Bản Scan</span>
-              } @else {
-                <span class="text-xs font-bold text-sky-400 font-sans">Tiêu chuẩn</span>
-              }
+              <span class="block text-[10px] text-slate-400 uppercase font-sans">Dung lượng</span>
+              <span class="text-xs font-bold text-slate-300 font-mono">{{ fileSize() || 'N/A' }}</span>
             </div>
           </div>
 
@@ -338,7 +327,6 @@ export class WorkspaceAside {
   fileSize = this.docService.fileSize;
   totalPageCount = this.docService.totalPageCount;
   extractedImagesCount = this.docService.extractedImagesCount;
-  selectedPdfType = this.docService.selectedPdfType;
   selectedOutputMode = this.docService.selectedOutputMode;
   isOutputModeLocked = this.docService.isOutputModeLocked;
   isBatchProcessing = this.docService.isBatchProcessing;

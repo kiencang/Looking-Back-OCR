@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
-export type ModelType = 'gemini-flash-latest' | 'gemini-flash-lite-latest' | 'gemma-4-26b-a4b-it';
-export type PdfType = 'scan' | 'standard';
+export type ModelType = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
 export type OutputMode = 'markdown' | 'html';
 
 export interface DocumentStyleProfile {

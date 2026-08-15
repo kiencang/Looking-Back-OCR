@@ -112,24 +112,6 @@ import { MatIconModule } from '@angular/material/icon';
                           <span>{{ item.model === 'gemini-flash-latest' ? 'Flash' : 'Lite' }}</span>
                         </span>
                       }
-
-                      <!-- PDF Type Badge -->
-                      @if (item.pdfType) {
-                        <span class="text-slate-600">•</span>
-                        <span 
-                          class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9.5px] font-medium font-sans border"
-                          [class.bg-emerald-500/10]="item.pdfType === 'scan'"
-                          [class.text-emerald-300]="item.pdfType === 'scan'"
-                          [class.border-emerald-500/20]="item.pdfType === 'scan'"
-                          [class.bg-sky-500/10]="item.pdfType === 'standard'"
-                          [class.text-sky-300]="item.pdfType === 'standard'"
-                          [class.border-sky-500/20]="item.pdfType === 'standard'">
-                          <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none flex items-center justify-center">
-                            {{ item.pdfType === 'scan' ? 'menu_book' : 'photo_library' }}
-                          </mat-icon>
-                          <span>{{ item.pdfType === 'scan' ? 'Sách Scan' : 'Tiêu chuẩn' }}</span>
-                        </span>
-                      }
                     </div>
 
                     <!-- Token Usage Row -->
