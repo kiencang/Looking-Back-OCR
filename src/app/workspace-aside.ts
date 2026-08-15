@@ -363,7 +363,7 @@ export class WorkspaceAside {
       } else {
         this.showStyleSuccessBadge.set(false);
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   resetPdf = output<void>();
