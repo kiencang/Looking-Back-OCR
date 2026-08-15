@@ -22,11 +22,13 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   * Trình duyệt sẽ tự động rót dòng chữ từ chân cột 1 lên đỉnh cột 2 và cân bằng chiều cao 2 cột bằng nhau chằn chặn, không bao giờ bị hụt chữ hay ngắt câu vô lý.
 - HAI LUỒNG SONG SONG ĐỘC LẬP (Bảng đối chiếu song ngữ, 2 bảng số liệu độc lập):
   * Lúc này mới dùng Flexbox/CSS Grid hai bên: `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`.
-- LIỀN MẠCH VĂN PHONG QUA CỘT & QUA TRANG:
-  * Nếu một câu hoặc từ ở cuối cột phải / cuối trang thứ `n` đang viết dở và nối tiếp sang trang sau (trang `n+1`), KHÔNG tự ý ngắt thẻ `<p>` hay thêm dấu câu giả tạo. 
-  * **Nối câu mạch lạc khi chuyển trang kế tiếp**: để tránh việc bị hụt câu và tạo ra khoảng trống cột phải ở dòng cuối cùng, cho phép AI lấy một phần văn bản nối tiếp ở đầu trang `n+1` để nối vào dòng cuối ở cột phải ở trang `n`.
-    * Ví dụ: cuối trang `n` là nội dung `...và đã biết thế rồi chẳng bao lâu mà coi nhau` (bị ngắt đột ngột, tạo ra khoảng trống cuối cột phải) và đầu trang `n+1` là nội dung nối tiếp `như đồng-bào vậy. Cái quan-niệm ấy rồi tùy theo vận nước phát-đạt...`. Lúc đó thay vì để trang `n` kết thúc lửng lơ và tạo ra khoảng trống dư thừa, thì hãy lấy một phần nhỏ nội dung của trang kế tiếp, cho đến dấu `.` gần nhất để đưa vào phần cuối của dòng thuộc trang trước đó (trang `n`).
-    * Như trường hợp trên, dòng cuối của trang `n` sẽ được điều chỉnh lại là `...và đã biết thế rồi chẳng bao lâu mà coi nhau như đồng-bào vậy.`, nhờ thế dòng cuối của trang `n` sẽ được kết thúc trọn vẹn. Dĩ nhiên phần đầu của trang `n+1` cũng được điều chỉnh để tránh nội dung lặp lại mà nó đã nhường cho trang `n`;
+- LIỀN MẠCH VĂN PHONG QUA CỘT & QUA TRANG (NGUYÊN BẢN & KHÔNG CẮT GHÉP):
+  * Nếu một câu hoặc từ ở cuối cột phải / cuối trang thứ `n` đang viết dở và vắt dòng sang trang sau (trang `n+1`):
+    - KHÔNG tự ý thêm dấu chấm câu `.` hay kết thúc câu giả tạo ở cuối trang `n`.
+    - KHÔNG tự ý ngắt thẻ `<p>` bất hợp lý nếu đoạn văn vẫn đang chảy liên tục.
+    - KHÔNG di dời hoặc cắt ghép câu chữ từ trang `n+1` sang trang `n` (trang nào giữ nguyên vẹn nội dung của trang đó để đảm bảo tính trung thực 100% với bản gốc).
+    - Ở đầu trang `n+1`, tiếp tục phần còn lại của câu một cách tự nhiên (giữ nguyên chữ thường/in hoa như bản gốc).
+    - Đảm bảo khi các trang nối tiếp nhau, người đọc và hệ thống xuất Word/HTML nhận được dòng chảy văn bản tự nhiên, không bị chắp vá sai vị trí.
 - Căn lề chuẩn xác: Văn bản văn xuôi cần căn đều (`text-align: justify;`), tiêu đề chính căn giữa (`text-align: center;`), lời đề tặng/chữ ký căn phải (`text-align: right;`).
 - Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` hoặc khoảng cách đoạn `margin-bottom: 12px;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, chỉ sử dụng nó nếu văn bản gốc cũng đang dùng.
 - Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`. Nhưng cần quan sát để thiết kế khéo léo, hết sức tránh trường hợp chữ cái lớn đầu đoạn bị xa cách không gian với các ký tự còn lại của cùng từ đó.

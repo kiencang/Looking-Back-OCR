@@ -169,11 +169,6 @@ export class App {
       return;
     }
     this.selectedOutputMode.set(mode);
-    if (mode === 'html') {
-      this.showSuccess('Đã kích hoạt chế độ Bảo toàn (HTML/CSS): Tái hiện chính xác định dạng và bố cục của bản gốc.');
-    } else {
-      this.showSuccess('Đã kích hoạt chế độ Đơn giản (Markdown): Tiết kiệm token, dòng văn bản liền mạch tối ưu.');
-    }
   }
 
   // Chunk & Batch Processing
