@@ -1,5 +1,10 @@
 OCR tài liệu, sách xưa tiếng Việt bằng Gemini. Đang trong quá trình phát triển và thử nghiệm.
 
+## Tại sao tồn tại
+Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do bản chất sách gốc bị mờ (theo thời gian) hoặc do công nghệ scan không đủ tốt để tạo ra phiên bản nét đọc được ngay.
+
+Looking-Back-OCR ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng), bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
+
 ## Công nghệ
 Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản trên AI Studio để tiết kiệm chi phí tối đa.
 
