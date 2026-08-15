@@ -1,1 +1,20 @@
 OCR tài liệu, sách xưa tiếng Việt bằng Gemini. Đang trong quá trình phát triển và thử nghiệm.
+
+## Công nghệ
+Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản trên AI Studio để tiết kiệm chi phí tối đa.
+
+Gemini AI có khả năng OCR tài liệu rất tốt, chi phí bằng 0 nếu nhu cầu hàng ngày không quá lớn.
+
+## 2 kiểu PDF
+Có 2 kiểu định dạng sách PDF chính, là sách `scan` và loại thông thường (mà trong ứng dụng gọi là `tiêu chuẩn`).
+
+Đa số sách xưa đều sẽ là định dạng PDF scan, và mặc định ở ứng dụng này bật chế độ PDF scan. Nó sẽ OCR được văn bản trong sách và tái tạo lại.
+
+PDF tiêu chuẩn có cái lợi là sẽ bóc tách được ảnh ở trong file PDF, còn file PDF scan thì chính bản thân nó cũng như dạng ảnh rồi, và công cụ này sẽ không bóc tách được ảnh nằm trong PDF scan.
+
+## 2 kiểu tái tạo
+Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
+- HTML/CSS: định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản HTML/CSS cũng chia 2 cột. Không chỉ có thể nó cũng tìm font chữ có hình dáng `hao hao` nội dung gốc;
+- Markdown: định dạng đơn giản hơn, nhưng lại có khả năng xuất ra EPUB và đặc biệt là Docx, giúp người dùng có thể biên tập thêm khi cần;
+
+Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc không chỉ nội dung mà còn là cả định dạng, hãy dùng cách chuyển đổi HTML/CSS. Còn nếu bạn quan tâm đơn thuần đến việc đọc, muốn tiết kiệm token đầu ra (ví dụ khi bạn dùng API Key trả phí) hãy dùng kiểu chuyển sang Markdown. Ngoài ra nếu có nhu cầu biên tập lại thì chỉ có kiểu Markdown mới giúp bạn có được định dạng Docx.
