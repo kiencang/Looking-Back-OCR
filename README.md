@@ -8,9 +8,9 @@ Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp
 Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng ngưỡng miễn phí hàng ngày tương đổi rộng rãi của họ).
 
 ## Tại sao tồn tại
-Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do bản chất sách gốc bị mờ hoặc do công nghệ scan không đủ tốt để tạo ra phiên bản nét đọc được ngay.
+Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do **bản chất sách gốc bị mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
 
-Looking-Back-OCR ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng), bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
+**Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng) là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
 
 ## Công nghệ
 Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản trên AI Studio để tiết kiệm chi phí tối đa.
