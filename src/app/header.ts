@@ -46,8 +46,7 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
         
         <!-- Toggle: Model Switcher (Flash vs Lite) -->
         <div class="flex items-center bg-slate-900/90 border border-white/5 rounded-full p-0.5 shadow-inner relative select-none shrink-0 transition-opacity duration-200 w-[148px]"
-             [class.opacity-50]="isOptimizing() || isParsing()"
-             [class.pointer-events-none]="isOptimizing() || isParsing()"
+             [class.opacity-50]="isOptimizing() || isParsing() || isModelLocked()"
              id="model-toggle-wrapper">
           <!-- Active indicator pill background -->
           <div 
@@ -71,11 +70,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             id="toggle-btn-flash"
             type="button"
             (click)="onModelSelect('gemini-flash-latest')"
-            [disabled]="isOptimizing() || isParsing()"
+            [disabled]="isOptimizing() || isParsing() || isModelLocked()"
             class="relative w-[72px] h-7 rounded-full flex items-center justify-center gap-1 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed"
             [class.text-amber-400]="selectedModel() === 'gemini-flash-latest'"
             [class.text-slate-400]="selectedModel() !== 'gemini-flash-latest'"
-            [class.hover:text-slate-200]="selectedModel() !== 'gemini-flash-latest'">
+            [class.hover:text-slate-200]="selectedModel() !== 'gemini-flash-latest' && !isModelLocked()">
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-amber-400]="selectedModel() === 'gemini-flash-latest'">bolt</mat-icon>
             <span>Flash</span>
             
@@ -83,6 +82,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
               <span class="font-bold text-amber-400 block mb-0.5">Flash (mặc định):</span>
               Thích hợp xử lý tài liệu phức tạp, sách cổ và thơ phú.
+              @if (isModelLocked()) {
+                <span class="block mt-1 pt-1 border-t border-white/10 text-amber-300 font-medium">
+                  🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                </span>
+              }
             </div>
           </button>
 
@@ -91,11 +95,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             id="toggle-btn-lite"
             type="button"
             (click)="onModelSelect('gemini-flash-lite-latest')"
-            [disabled]="isOptimizing() || isParsing()"
+            [disabled]="isOptimizing() || isParsing() || isModelLocked()"
             class="relative w-[72px] h-7 rounded-full flex items-center justify-center gap-1 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed"
             [class.text-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'"
             [class.text-slate-400]="selectedModel() !== 'gemini-flash-lite-latest'"
-            [class.hover:text-slate-200]="selectedModel() !== 'gemini-flash-lite-latest'">
+            [class.hover:text-slate-200]="selectedModel() !== 'gemini-flash-lite-latest' && !isModelLocked()">
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'">spa</mat-icon>
             <span>Lite</span>
 
@@ -103,6 +107,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
               <span class="font-bold text-indigo-400 block mb-0.5">Lite:</span>
               Tối ưu tốc độ cao cho các tài liệu có cấu trúc đơn giản.
+              @if (isModelLocked()) {
+                <span class="block mt-1 pt-1 border-t border-white/10 text-indigo-300 font-medium">
+                  🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                </span>
+              }
             </div>
           </button>
         </div>
@@ -153,13 +162,14 @@ export class Header {
   historyCount = input.required<number>();
   isOptimizing = input.required<boolean>();
   isParsing = input.required<boolean>();
+  isModelLocked = input<boolean>(false);
 
   modelChange = output<ModelType>();
   openHistory = output<void>();
   openApiKey = output<void>();
 
   onModelSelect(model: ModelType) {
-    if (this.isOptimizing() || this.isParsing()) return;
+    if (this.isOptimizing() || this.isParsing() || this.isModelLocked()) return;
     this.modelChange.emit(model);
   }
 }

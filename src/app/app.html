@@ -8,6 +8,7 @@
     [historyCount]="historyItems().length"
     [isOptimizing]="isOptimizing()"
     [isParsing]="isParsing()"
+    [isModelLocked]="isOutputModeLocked()"
     (modelChange)="selectedModel.set($event)"
     (openHistory)="showHistoryModal.set(true)"
     (openApiKey)="openApiKeyModal()">
