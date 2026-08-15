@@ -112,27 +112,24 @@ export class MarkdownRenderer {
       }
     });
 
-    const imageRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\]/gi;
-    const processedMarkdown = preprocessedMarkdownWithPages.replace(imageRegex, (match, key) => {
-      // Find image by exact labeledKey first (case insensitive)
+    const getImageObj = (key: string) => {
       let img = allImages.find(i => i.labeledKey === key || i.labeledKey?.toLowerCase() === key.toLowerCase());
       if (!img) {
-        // Fallback for legacy simple index
         const indexStr = key.replace(/\D/g, '');
         const indexVal = parseInt(indexStr, 10) - 1;
         img = allImages[indexVal];
       }
+      return img;
+    };
+
+    // Replace image tags with standard compact markdown image syntax: ![key](dataUrl)
+    const imageRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\](?:\((.*?)\))?/gi;
+    const processedMarkdown = preprocessedMarkdownWithPages.replace(imageRegex, (match, key) => {
+      const img = getImageObj(key);
       if (img) {
-        return `\n<div class="my-8 border border-slate-100 rounded-3xl overflow-hidden shadow-sm bg-white p-3 max-w-2xl mx-auto-fluid no-print">
-  <div class="relative bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center max-h-[30rem] p-3">
-    <img src="${img.dataUrl}" alt="${key}" class="max-w-full max-h-full object-contain hover:scale-[1.01] transition-transform duration-300 cursor-zoom-in" onclick="window.zoomPdfImage && window.zoomPdfImage(this.src)" referrerpolicy="no-referrer" />
-  </div>
-</div>\n`;
-      } else {
-        return `\n<div class="pdf-image-placeholder my-6 border border-dashed border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center bg-slate-50">
-  <span class="text-xs text-slate-400 font-mono">Đang nạp ảnh ${key}...</span>
-</div>\n`;
+        return `![${key}](${img.dataUrl})`;
       }
+      return `![${key}](data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="40"><rect width="100" height="40" fill="%23f1f5f9"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%2394a3b8">${key}</text></svg>)`;
     });
 
     // Protect LaTeX math formulas and MathML tags from being modified by marked parser
@@ -186,7 +183,7 @@ export class MarkdownRenderer {
 
     let html = '';
     try {
-      html = marked.parse(preprocessed, { breaks: true, async: false }) as string;
+      html = marked.parse(preprocessed, { breaks: true, gfm: true, async: false }) as string;
     } catch(e) {
       console.warn("marked error", e);
       html = `<pre>${processedMarkdown}</pre>`;
@@ -195,10 +192,10 @@ export class MarkdownRenderer {
     // Restore protected math blocks
     for (let i = 0; i < mathPlaceholderIndex; i++) {
       const placeholder = `MATHPLACEHOLDERID${i}END`;
-      // Use split/join to replace all occurrences globally, in case marked duplicate or we need global replace
       html = html.split(placeholder).join(mathBlocks[i]);
     }
 
+    // Enhance typography and prose styling with clean Tailwind classes
     let rendered = html;
     rendered = rendered.replace(/<h1(.*?)>/g, '<h1 class="ocr-h1 text-3xl font-extrabold font-sans tracking-tight mt-8 mb-4 border-b pb-2 break-words"$1>')
                        .replace(/<h2(.*?)>/g, '<h2 class="ocr-h2 text-2xl font-bold font-sans tracking-tight mt-6 mb-3 border-b pb-1.5 break-words"$1>')
@@ -208,15 +205,16 @@ export class MarkdownRenderer {
                        .replace(/<blockquote(.*?)>/g, '<blockquote class="ocr-blockquote border-l-4 pl-4 py-1.5 my-4 italic rounded-r-lg break-words"$1>')
                        .replace(/<ul(.*?)>/g, '<ul class="ocr-ul list-disc list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
                        .replace(/<ol(.*?)>/g, '<ol class="ocr-ol list-decimal list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
-                       .replace(/<table(.*?)>/g, '<div class="overflow-x-auto my-6"><table class="ocr-table w-full text-left text-xs border rounded-xl overflow-hidden shadow-sm break-words"$1>')
+                       .replace(/<table(.*?)>/g, '<div class="overflow-x-auto my-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900"><table class="ocr-table w-full text-left text-sm table-auto border-collapse break-words"$1>')
                        .replace(/<\/table>/g, '</table></div>')
-                       .replace(/<thead(.*?)>/g, '<thead class="ocr-thead border-b font-bold"$1>')
-                       .replace(/<th(.*?)>/g, '<th class="font-bold p-3"$1>')
-                       .replace(/<tbody(.*?)>/g, '<tbody class="divide-y border-b"$1>')
-                       .replace(/<td(.*?)>/g, '<td class="ocr-td p-3 transition-colors"$1>')
+                       .replace(/<thead(.*?)>/g, '<thead class="ocr-thead border-b border-slate-200 dark:border-slate-800 font-semibold text-xs tracking-wider uppercase bg-slate-50/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300"$1>')
+                       .replace(/<th(.*?)>/g, '<th class="font-semibold px-4 py-3 align-middle"$1>')
+                       .replace(/<tbody(.*?)>/g, '<tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"$1>')
+                       .replace(/<td(.*?)>/g, '<td class="ocr-td px-4 py-3 align-middle transition-colors"$1>')
                        .replace(/<pre(.*?)>/g, '<pre class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto mb-4 border border-white/5"$1>')
                        .replace(/(?<!<pre[^>]*>)<code(.*?)>/g, '<code class="ocr-code-inline px-1.5 py-0.5 font-mono text-xs rounded border break-words"$1>')
-                       .replace(/<a(.*?)>/g, '<a class="text-indigo-500 hover:text-indigo-400 underline break-words font-medium transition-colors cursor-pointer" rel="noopener noreferrer" target="_blank"$1>');
+                       .replace(/<a(.*?)>/g, '<a class="text-indigo-500 hover:text-indigo-400 underline break-words font-medium transition-colors cursor-pointer" rel="noopener noreferrer" target="_blank"$1>')
+                       .replace(/<img(.*?)>/g, '<img class="ocr-preview-img object-contain rounded-xl border border-slate-200/60 dark:border-slate-800 cursor-zoom-in my-3 hover:scale-[1.01] transition-transform" onclick="window.zoomPdfImage && window.zoomPdfImage(this.src)" referrerpolicy="no-referrer"$1>');
 
     return rendered;
   }

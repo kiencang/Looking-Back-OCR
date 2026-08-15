@@ -24,6 +24,8 @@ export interface InlineToken {
   italic: boolean;
   code: boolean;
   math: boolean;
+  superScript?: boolean;
+  subScript?: boolean;
 }
 
 function isAlphanumeric(char: string | undefined): boolean {
@@ -36,16 +38,18 @@ function parseRecursive(
   bold: boolean,
   italic: boolean,
   code: boolean,
-  math = false
+  math = false,
+  superScript = false,
+  subScript = false
 ): InlineToken[] {
   if (!s) return [];
 
   if (math) {
-    return [{ text: s, bold, italic, code, math: true }];
+    return [{ text: s, bold, italic, code, math: true, superScript, subScript }];
   }
 
   if (code) {
-    return [{ text: s, bold, italic, code, math: false }];
+    return [{ text: s, bold, italic, code, math: false, superScript, subScript }];
   }
 
   let bestMatch: {
@@ -57,6 +61,8 @@ function parseRecursive(
     nextItalic: boolean;
     nextCode: boolean;
     nextMath: boolean;
+    nextSuperScript: boolean;
+    nextSubScript: boolean;
   } | null = null;
 
   for (let i = 0; i < s.length; i++) {
@@ -77,13 +83,97 @@ function parseRecursive(
           nextBold: bold,
           nextItalic: italic,
           nextCode: code,
-          nextMath: true
+          nextMath: true,
+          nextSuperScript: superScript,
+          nextSubScript: subScript
         };
         break;
       }
     }
 
-    // 0. Display Math: $$formula$$
+    // 0.1 HTML Superscript: <sup>text</sup>
+    if (s.toLowerCase().startsWith('<sup>', i)) {
+      const endTag = '</sup>';
+      const closerIdx = s.toLowerCase().indexOf(endTag, i + 5);
+      if (closerIdx !== -1) {
+        bestMatch = {
+          tag: '<sup>',
+          start: i,
+          end: closerIdx + endTag.length - 1,
+          inner: s.substring(i + 5, closerIdx),
+          nextBold: bold,
+          nextItalic: italic,
+          nextCode: code,
+          nextMath: false,
+          nextSuperScript: true,
+          nextSubScript: false
+        };
+        break;
+      }
+    }
+
+    // 0.2 HTML Subscript: <sub>text</sub>
+    if (s.toLowerCase().startsWith('<sub>', i)) {
+      const endTag = '</sub>';
+      const closerIdx = s.toLowerCase().indexOf(endTag, i + 5);
+      if (closerIdx !== -1) {
+        bestMatch = {
+          tag: '<sub>',
+          start: i,
+          end: closerIdx + endTag.length - 1,
+          inner: s.substring(i + 5, closerIdx),
+          nextBold: bold,
+          nextItalic: italic,
+          nextCode: code,
+          nextMath: false,
+          nextSuperScript: false,
+          nextSubScript: true
+        };
+        break;
+      }
+    }
+
+    // 0.3 Markdown Caret Superscript: ^text^
+    if (char === '^' && !isWhitespace(s[i + 1])) {
+      const closerIdx = s.indexOf('^', i + 1);
+      if (closerIdx !== -1 && !isWhitespace(s[closerIdx - 1])) {
+        bestMatch = {
+          tag: '^',
+          start: i,
+          end: closerIdx,
+          inner: s.substring(i + 1, closerIdx),
+          nextBold: bold,
+          nextItalic: italic,
+          nextCode: code,
+          nextMath: false,
+          nextSuperScript: true,
+          nextSubScript: false
+        };
+        break;
+      }
+    }
+
+    // 0.4 Markdown Tilde Subscript: ~text~ (not ~~strike~~)
+    if (char === '~' && !s.startsWith('~~', i) && !isWhitespace(s[i + 1])) {
+      const closerIdx = s.indexOf('~', i + 1);
+      if (closerIdx !== -1 && !s.startsWith('~~', closerIdx) && !isWhitespace(s[closerIdx - 1])) {
+        bestMatch = {
+          tag: '~',
+          start: i,
+          end: closerIdx,
+          inner: s.substring(i + 1, closerIdx),
+          nextBold: bold,
+          nextItalic: italic,
+          nextCode: code,
+          nextMath: false,
+          nextSuperScript: false,
+          nextSubScript: true
+        };
+        break;
+      }
+    }
+
+    // 0.5 Display Math: $$formula$$
     if (s.startsWith('$$', i)) {
       const closerIdx = s.indexOf('$$', i + 2);
       if (closerIdx !== -1) {
@@ -95,13 +185,15 @@ function parseRecursive(
           nextBold: bold,
           nextItalic: italic,
           nextCode: code,
-          nextMath: true
+          nextMath: true,
+          nextSuperScript: superScript,
+          nextSubScript: subScript
         };
         break;
       }
     }
 
-    // 0.5. Inline Math: $formula$
+    // 0.6 Inline Math: $formula$
     if (char === '$' && !s.startsWith('$$', i)) {
       if (i > 0 && s[i - 1] === '\\') {
         // Escaped \$ -> Skip
@@ -116,7 +208,9 @@ function parseRecursive(
             nextBold: bold,
             nextItalic: italic,
             nextCode: code,
-            nextMath: true
+            nextMath: true,
+            nextSuperScript: superScript,
+            nextSubScript: subScript
           };
           break;
         }
@@ -139,7 +233,9 @@ function parseRecursive(
               nextBold: bold,
               nextItalic: italic,
               nextCode: true,
-              nextMath: false
+              nextMath: false,
+              nextSuperScript: superScript,
+              nextSubScript: subScript
             };
             break;
           }
@@ -169,7 +265,9 @@ function parseRecursive(
               nextBold: true,
               nextItalic: true,
               nextCode: code,
-              nextMath: false
+              nextMath: false,
+              nextSuperScript: superScript,
+              nextSubScript: subScript
             };
             break;
           }
@@ -199,7 +297,9 @@ function parseRecursive(
               nextBold: true,
               nextItalic: italic,
               nextCode: code,
-              nextMath: false
+              nextMath: false,
+              nextSuperScript: superScript,
+              nextSubScript: subScript
             };
             break;
           }
@@ -230,7 +330,9 @@ function parseRecursive(
             nextBold: true,
             nextItalic: italic,
             nextCode: code,
-            nextMath: false
+            nextMath: false,
+            nextSuperScript: superScript,
+            nextSubScript: subScript
           };
           break;
         }
@@ -260,7 +362,9 @@ function parseRecursive(
             nextBold: bold,
             nextItalic: true,
             nextCode: code,
-            nextMath: false
+            nextMath: false,
+            nextSuperScript: superScript,
+            nextSubScript: subScript
           };
           break;
         }
@@ -290,7 +394,9 @@ function parseRecursive(
             nextBold: bold,
             nextItalic: true,
             nextCode: code,
-            nextMath: false
+            nextMath: false,
+            nextSuperScript: superScript,
+            nextSubScript: subScript
           };
           break;
         }
@@ -304,23 +410,31 @@ function parseRecursive(
 
     const tokens: InlineToken[] = [];
     if (beforeText) {
-      tokens.push(...parseRecursive(beforeText, bold, italic, code, false));
+      tokens.push(...parseRecursive(beforeText, bold, italic, code, false, superScript, subScript));
     }
 
-    tokens.push(...parseRecursive(bestMatch.inner, bestMatch.nextBold, bestMatch.nextItalic, bestMatch.nextCode, bestMatch.nextMath));
+    tokens.push(...parseRecursive(
+      bestMatch.inner,
+      bestMatch.nextBold,
+      bestMatch.nextItalic,
+      bestMatch.nextCode,
+      bestMatch.nextMath,
+      bestMatch.nextSuperScript,
+      bestMatch.nextSubScript
+    ));
 
     if (afterText) {
-      tokens.push(...parseRecursive(afterText, bold, italic, code, false));
+      tokens.push(...parseRecursive(afterText, bold, italic, code, false, superScript, subScript));
     }
 
     return tokens;
   }
 
-  return [{ text: s, bold, italic, code, math: false }];
+  return [{ text: s, bold, italic, code, math: false, superScript, subScript }];
 }
 
 export function tokenizeInline(text: string): InlineToken[] {
-  return parseRecursive(text, false, false, false, false);
+  return parseRecursive(text, false, false, false, false, false, false);
 }
 
 export function cleanLatexMath(latex: string): string {

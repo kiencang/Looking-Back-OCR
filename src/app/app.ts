@@ -96,7 +96,14 @@ export class App {
   zoomImageUrl = signal<string | null>(null);
 
   // Computed HTML Renderers
-  reflowHtml = computed(() => this.activeChunk()?.reflowHtml || '');
+  reflowHtml = computed(() => {
+    const chunk = this.activeChunk();
+    if (!chunk) return '';
+    if (chunk.markdownContent && this.selectedOutputMode() === 'markdown') {
+      return this.pdfProcessor.renderMarkdownToHtml(chunk.markdownContent, chunk.pages);
+    }
+    return chunk.reflowHtml || '';
+  });
   reflowSafeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.reflowHtml()));
 
   private successTimeout: any = null;

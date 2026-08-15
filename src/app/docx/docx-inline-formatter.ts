@@ -40,8 +40,10 @@ export function createElementsFromText(
       text: textVal,
       bold: token.bold || undefined,
       italics: italics || token.italic || undefined,
+      superScript: token.superScript || undefined,
+      subScript: token.subScript || undefined,
       font: token.code ? 'Consolas' : defaultFont,
-      size: token.code ? 19 : defaultSize,
+      size: token.code ? 19 : (token.superScript || token.subScript ? Math.max(16, defaultSize - 4) : defaultSize),
       color: color || (token.code ? 'A855F7' : undefined),
     });
   });

@@ -52,6 +52,143 @@ export class DocxExporter {
       return img;
     };
 
+    /**
+     * Parses text that may contain one or more ![IMG-CHUNK...] placeholders
+     * and produces an array of Paragraph objects (with text runs and image runs).
+     */
+    const createParagraphsWithImages = (
+      text: string,
+      maxImageWidth = 560,
+      options?: {
+        italics?: boolean;
+        color?: string;
+        alignment?: (typeof AlignmentType)[keyof typeof AlignmentType];
+        indent?: { left: number };
+        bullet?: { level: number };
+        spacing?: { before?: number; after?: number };
+      }
+    ): Paragraph[] => {
+      const imgRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\]/gi;
+      const paragraphs: Paragraph[] = [];
+
+      if (!imgRegex.test(text)) {
+        paragraphs.push(
+          new Paragraph({
+            children: createElementsFromText(text, options?.italics, options?.color),
+            alignment: options?.alignment,
+            indent: options?.indent,
+            bullet: options?.bullet,
+            spacing: options?.spacing || { after: 120 },
+          })
+        );
+        return paragraphs;
+      }
+
+      imgRegex.lastIndex = 0;
+      let lastStop = 0;
+      let match: RegExpExecArray | null;
+
+      while ((match = imgRegex.exec(text)) !== null) {
+        const matchIndex = match.index;
+        const key = match[1];
+
+        if (matchIndex > lastStop) {
+          const preText = text.substring(lastStop, matchIndex).trim();
+          if (preText) {
+            paragraphs.push(
+              new Paragraph({
+                children: createElementsFromText(preText, options?.italics, options?.color),
+                alignment: options?.alignment,
+                indent: options?.indent,
+                bullet: options?.bullet,
+                spacing: options?.spacing || { after: 120 },
+              })
+            );
+          }
+        }
+
+        const imgObj = findImage(key);
+        if (imgObj) {
+          try {
+            let displayWidth = imgObj.width || 400;
+            let displayHeight = imgObj.height || 300;
+
+            if (displayWidth > maxImageWidth) {
+              const ratio = maxImageWidth / displayWidth;
+              displayWidth = maxImageWidth;
+              displayHeight = Math.floor(displayHeight * ratio);
+            }
+
+            const uint8Arr = convertDataUrlToUint8Array(imgObj.dataUrl);
+
+            paragraphs.push(
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: uint8Arr,
+                    transformation: {
+                      width: displayWidth,
+                      height: displayHeight,
+                    },
+                    type: 'png',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 160, after: 160 },
+              })
+            );
+          } catch {
+            paragraphs.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `[Lỗi hiển thị ảnh: ${key}]`,
+                    color: 'EF4444',
+                    italics: true,
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 120, after: 120 },
+              })
+            );
+          }
+        } else {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `[Đang tải ảnh: ${key}]`,
+                  color: '6B7280',
+                  italics: true,
+                }),
+              ],
+              alignment: AlignmentType.CENTER,
+              spacing: { before: 120, after: 120 },
+            })
+          );
+        }
+
+        lastStop = imgRegex.lastIndex;
+      }
+
+      if (lastStop < text.length) {
+        const postText = text.substring(lastStop).trim();
+        if (postText) {
+          paragraphs.push(
+            new Paragraph({
+              children: createElementsFromText(postText, options?.italics, options?.color),
+              alignment: options?.alignment,
+              indent: options?.indent,
+              bullet: options?.bullet,
+              spacing: options?.spacing || { after: 120 },
+            })
+          );
+        }
+      }
+
+      return paragraphs;
+    };
+
     const children: any[] = [];
 
     const lines = compiledMarkdown.split('\n');
@@ -111,7 +248,11 @@ export class DocxExporter {
           idx++;
         }
         try {
-          children.push(DocxTableBuilder.parseMarkdownTable(tableLines));
+          children.push(
+            DocxTableBuilder.parseMarkdownTable(tableLines, (cellText, maxW) =>
+              createParagraphsWithImages(cellText, maxW, { spacing: { before: 80, after: 80 } })
+            )
+          );
         } catch {
           tableLines.forEach(l => {
             children.push(
@@ -176,13 +317,13 @@ export class DocxExporter {
       // Blockquotes
       if (trimmedLine.startsWith('>')) {
         const quoteText = trimmedLine.replace(/^>\s*/, '');
-        children.push(
-          new Paragraph({
-            children: createElementsFromText(quoteText, true, '4B5563'),
-            indent: { left: 720 },
-            spacing: { before: 120, after: 120 },
-          })
-        );
+        const quoteParas = createParagraphsWithImages(quoteText, 500, {
+          italics: true,
+          color: '4B5563',
+          indent: { left: 720 },
+          spacing: { before: 120, after: 120 },
+        });
+        children.push(...quoteParas);
         idx++;
         continue;
       }
@@ -190,13 +331,11 @@ export class DocxExporter {
       // Unordered Lists
       if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ') || trimmedLine.startsWith('+ ')) {
         const bulletText = trimmedLine.substring(2);
-        children.push(
-          new Paragraph({
-            children: createElementsFromText(bulletText),
-            bullet: { level: 0 },
-            spacing: { after: 100 },
-          })
-        );
+        const listParas = createParagraphsWithImages(bulletText, 500, {
+          bullet: { level: 0 },
+          spacing: { after: 100 },
+        });
+        children.push(...listParas);
         idx++;
         continue;
       }
@@ -206,138 +345,40 @@ export class DocxExporter {
       if (numberedMatch) {
         const numStr = numberedMatch[1];
         const ordText = numberedMatch[2];
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `${numStr}. `,
-                bold: true,
-                font: 'Calibri',
-                size: 22,
-              }),
-              ...createElementsFromText(ordText),
-            ],
-            indent: { left: 720 },
-            spacing: { after: 100 },
-          })
-        );
+        const numParas = createParagraphsWithImages(ordText, 500, {
+          indent: { left: 720 },
+          spacing: { after: 100 },
+        });
+        // Attach number prefix to the first paragraph
+        if (numParas.length > 0) {
+          const firstPara = numParas[0];
+          (firstPara as any).root = (firstPara as any).root || [];
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `${numStr}. `,
+                  bold: true,
+                  font: 'Calibri',
+                  size: 22,
+                }),
+                ...createElementsFromText(ordText),
+              ],
+              indent: { left: 720 },
+              spacing: { after: 100 },
+            })
+          );
+        }
         idx++;
         continue;
       }
 
-      // Image Extraction within Paragraph
-      const imgRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\]/gi;
-      const hasImage = imgRegex.test(trimmedLine);
-      if (hasImage) {
-        imgRegex.lastIndex = 0;
-        let lastStop = 0;
-        let match;
-
-        while ((match = imgRegex.exec(trimmedLine)) !== null) {
-          const matchIndex = match.index;
-          const key = match[1];
-
-          if (matchIndex > lastStop) {
-            const preText = trimmedLine.substring(lastStop, matchIndex).trim();
-            if (preText) {
-              children.push(
-                new Paragraph({
-                  children: createElementsFromText(preText),
-                  spacing: { after: 120 },
-                })
-              );
-            }
-          }
-
-          const imgObj = findImage(key);
-          if (imgObj) {
-            try {
-              const maxW = 560;
-              let displayWidth = imgObj.width || 400;
-              let displayHeight = imgObj.height || 300;
-
-              if (displayWidth > maxW) {
-                const ratio = maxW / displayWidth;
-                displayWidth = maxW;
-                displayHeight = Math.floor(displayHeight * ratio);
-              }
-
-              const uint8Arr = convertDataUrlToUint8Array(imgObj.dataUrl);
-
-              children.push(
-                new Paragraph({
-                  children: [
-                    new ImageRun({
-                      data: uint8Arr,
-                      transformation: {
-                        width: displayWidth,
-                        height: displayHeight,
-                      },
-                      type: 'png',
-                    }),
-                  ],
-                  alignment: AlignmentType.CENTER,
-                  spacing: { before: 240, after: 240 },
-                })
-              );
-            } catch {
-              children.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `[Lỗi hiển thị ảnh: ${key}]`,
-                      color: 'EF4444',
-                      italics: true,
-                    }),
-                  ],
-                  alignment: AlignmentType.CENTER,
-                  spacing: { before: 120, after: 120 },
-                })
-              );
-            }
-          } else {
-            children.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `[Đang tải ảnh: ${key}]`,
-                    color: '6B7280',
-                    italics: true,
-                  }),
-                ],
-                alignment: AlignmentType.CENTER,
-                spacing: { before: 120, after: 120 },
-              })
-            );
-          }
-
-          lastStop = imgRegex.lastIndex;
-        }
-
-        if (lastStop < trimmedLine.length) {
-          const postText = trimmedLine.substring(lastStop).trim();
-          if (postText) {
-            children.push(
-              new Paragraph({
-                children: createElementsFromText(postText),
-                spacing: { after: 120 },
-              })
-            );
-          }
-        }
-
-        idx++;
-        continue;
-      }
-
-      // Default plain text line
-      children.push(
-        new Paragraph({
-          children: createElementsFromText(trimmedLine),
-          alignment: AlignmentType.JUSTIFIED,
-          spacing: { after: 120 },
-        })
-      );
+      // Standard Paragraph with potential images
+      const paras = createParagraphsWithImages(trimmedLine, 560, {
+        alignment: AlignmentType.JUSTIFIED,
+        spacing: { after: 120 },
+      });
+      children.push(...paras);
 
       idx++;
     }

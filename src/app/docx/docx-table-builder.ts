@@ -12,9 +12,13 @@ import { createElementsFromText } from './docx-inline-formatter';
 
 export class DocxTableBuilder {
   /**
-   * Parses Markdown table lines and converts them into a native docx Table
+   * Parses Markdown table lines and converts them into a native docx Table,
+   * supporting embedded images and formatted text inside table cells.
    */
-  static parseMarkdownTable(tableLines: string[]): Table {
+  static parseMarkdownTable(
+    tableLines: string[],
+    createCellParagraphs?: (text: string, maxImageWidth?: number) => Paragraph[]
+  ): Table {
     const rowsData = tableLines.filter(line => {
       const clean = line.trim();
       if (/^[|:\-\s]+$/.test(clean)) return false;
@@ -30,13 +34,25 @@ export class DocxTableBuilder {
       if (line.endsWith('|')) cols.pop();
 
       const cells = cols.map(colText => {
-        return new TableCell({
-          children: [
+        let cellParagraphs: Paragraph[];
+        if (createCellParagraphs) {
+          // Table cell max image width (e.g. 240px) to fit nicely in columns
+          cellParagraphs = createCellParagraphs(colText, 240);
+        } else {
+          cellParagraphs = [
             new Paragraph({
               children: createElementsFromText(colText),
               spacing: { before: 80, after: 80 },
             }),
-          ],
+          ];
+        }
+
+        if (cellParagraphs.length === 0) {
+          cellParagraphs = [new Paragraph({ children: [] })];
+        }
+
+        return new TableCell({
+          children: cellParagraphs,
           shading: rIndex === 0 ? { fill: 'F2F5F9' } : undefined, // Light elegant header shading
           verticalAlign: VerticalAlign.CENTER,
         });
