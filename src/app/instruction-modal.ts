@@ -42,24 +42,24 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="flex gap-3">
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">1</div>
             <div>
-              <p class="text-sm font-bold text-slate-100 mb-1.5">Tải lên tài liệu PDF</p>
-              <p>Kéo thả trực tiếp tệp tin PDF hoặc nhấp chọn tệp từ máy tính. Ứng dụng sẽ tách các ảnh từ tài liệu gốc để chuẩn bị cho việc tái cấu trúc lại thành EPUB. Việc tách ảnh được thực hiện thông qua thiết bị của người dùng, giai đoạn này chưa dùng đến AI.</p>
+              <p class="text-sm font-bold text-slate-100 mb-1.5">Nhập API Key</p>
+              <p>Ứng dụng cần API Key từ Gemini để hoạt động, bạn cần vào AI Studio để lấy khóa này. Click vào button "Nhập API Key" ở trên cùng bên tay phải để biết cách làm.</p>
             </div>
           </div>
 
           <div class="flex gap-3">
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">2</div>
             <div>
-              <p class="text-sm font-bold text-slate-100 mb-1.5">Nhập API Key</p>
-              <p>Bản cấu trúc gốc từ tài liệu PDF & các ảnh được trích xuất từ bước trước cần AI để ráp nối lại với nhau tạo thành dữ liệu hoàn chỉnh. Điền khóa API Key của bạn ở phần <code class="bg-slate-950 px-1 py-0.5 text-indigo-400 font-mono rounded">Nhập API Key</code> để xử lý công việc trong giai đoạn này.</p>
+              <p class="text-sm font-bold text-slate-100 mb-1.5">Tải lên tài liệu PDF</p>
+              <p>Kéo thả trực tiếp tệp tin PDF hoặc nhấp chọn tệp từ máy tính. Các tùy chọn mặc định như model AI là Flash, và kiểu tài liệu là PDF Scan phù hợp trong phần lớn trường hợp, nhất là sách cổ.</p>
             </div>
           </div>
 
           <div class="flex gap-3">
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">3</div>
             <div>
-              <p class="text-sm font-bold text-slate-100 mb-1.5">Đổi định dạng sang EPUB & DOCX</p>
-              <p>Hệ thống tự động gói dữ liệu thành tệp sách EPUB & định dạng DOCX, hỗ trợ tải về lưu trữ. EPUB xem tốt trên các máy đọc sách phổ thông như Kindle, iPad, v.v... DOCX là định dạng chuyên cho mục đích soạn thảo văn bản.<br/><br/>Và quan trọng nhất đầu vào là định dạng EPUB giúp dịch thuật rất tiện lợi & có bảo toàn ảnh.</p>
+              <p class="text-sm font-bold text-slate-100 mb-1.5">OCR tài liệu</p>
+              <p>Công cụ sẽ tách file PDF lớn thành nhiều phần khác nhau và xử lý dần dần. Ở cột trái, tùy chọn mặc định chuyển PDF -> "Bảo toàn" là chọn lựa phù hợp trong phần lớn trường hợp, giúp đầu ra có cấu trúc, bố cục tương tự bản gốc.</p>
             </div>
           </div>
 

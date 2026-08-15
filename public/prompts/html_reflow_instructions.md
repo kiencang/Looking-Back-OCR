@@ -3,8 +3,8 @@ Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính
 
 <objective>
 [MỤC TIÊU TỐI THƯỢNG]:
-1. TRUNG THỰC VỚI NGUYÊN TÁC: Trích xuất chính xác 100% từng từ, số liệu, công thức như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
-2. BẢO TOÀN TỐI ĐA BỐ CỤC THỊ GIÁC (LAYOUT PRESERVATION): Tái tạo cấu trúc cột báo chí (multi-column), bảng biểu phức tạp (gộp ô, đường viền), hộp ghi chú (callout box), căn lề (text-align), ngắt nhịp thơ ca, màu nền và màu chữ nổi bật bằng HTML5 ngữ nghĩa và Inline CSS an toàn.
+1. **TRUNG THỰC VỚI NGUYÊN TÁC**: Trích xuất chính xác 100% từng từ, số liệu, công thức như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
+2. **BẢO TOÀN TỐI ĐA BỐ CỤC THỊ GIÁC (LAYOUT PRESERVATION)**: Tái tạo cấu trúc cột báo chí (multi-column), bảng biểu phức tạp (gộp ô, đường viền), hộp ghi chú (callout box), căn lề (text-align), ngắt nhịp thơ ca, màu nền và màu chữ nổi bật bằng HTML5 ngữ nghĩa (Semantic HTML5) và Inline CSS an toàn.
 3. BẢO TOÀN VỊ TRÍ HÌNH ẢNH & CHÚ GIẢI: Giữ đúng vị trí tranh ảnh minh họa, chú thích giải nghĩa dưới ảnh và chú thích cuối trang (footnotes).
 4. ĐỐI CHIẾU 1:1 VÀ ĐÁNH DẤU RANH GIỚI TRANG (PAGE BREAK): BẮT BUỘC chèn thẻ đánh dấu ngắt trang `<!-- PAGE_BREAK: X -->` (với X là số trang thực tế của tệp PDF gốc) ngay tại điểm bắt đầu của mỗi trang để phục vụ chế độ xem đối chiếu song song và phân trang tài liệu.
 </objective>
@@ -15,7 +15,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 1. CẤU TRÚC DÀN TRANG & CỘT BÁO CHÍ (MULTI-COLUMN & FLUID CONTINUOUS FLOW):
 - VĂN BẢN ĐA CỘT LIỀN MẠCH (Báo chí, tạp chí, sách in 2-3 cột):
   * TUYỆT ĐỐI KHÔNG chia thủ công thành 2 thẻ <div> riêng biệt bằng flexbox (vì sẽ làm hụt chân cột 1, gãy đôi câu văn và tạo khoảng trống thừa ở cuối cột).
-  * BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT khối container duy nhất sử dụng CSS Multi-Columns:
+  * BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT khối container duy nhất sử dụng **CSS Multi-Columns**:
     `<div style="columns: 2; column-gap: 28px; column-fill: balance; text-align: justify;" class="multi-column-flow">`
       `<p style="margin-bottom: 12px; line-height: 1.6;">Nội dung đoạn văn liên tục chảy tự nhiên từ cột 1 sang cột 2...</p>`
     `</div>`
@@ -24,12 +24,12 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   * Lúc này mới dùng Flexbox/CSS Grid hai bên: `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`.
 - LIỀN MẠCH VĂN PHONG QUA CỘT & QUA TRANG:
   * Nếu một câu hoặc từ ở cuối cột phải / cuối trang thứ `n` đang viết dở và nối tiếp sang trang sau (trang `n+1`), KHÔNG tự ý ngắt thẻ `<p>` hay thêm dấu câu giả tạo. 
-  * **Nối câu mạch lạc khi chuyển trang kế tiếp**: để tránh việc bị hụt câu và tạo ra khoảng trống cột phải ở dòng cuối cùng, cho phép AI lấy một phần văn bản nối tiếp ở trang `n+1` để nối vào phần văn bản cuối ở cột phải ở trang `n`.
-    * Ví dụ: cuối trang `n` là nội dung `...và đã biết thế rồi chẳng bao lâu mà coi nhau` và đầu trang `n+1` là nội dung nối tiếp `như đồng-bào vậy. Cái quan-niệm ấy rồi tùy theo vận nước phát-đạt...`, thì thay vì để trang `n` kết thúc lửng lơ và tạo ra khoảng trống dư thừa, thì hãy lấy một phần nhỏ nội dung của trang kế tiếp (cho đến dấu `.`) gần nhất để đưa vào phần cuối của trang trước đó (trang `n`).
+  * **Nối câu mạch lạc khi chuyển trang kế tiếp**: để tránh việc bị hụt câu và tạo ra khoảng trống cột phải ở dòng cuối cùng, cho phép AI lấy một phần văn bản nối tiếp ở đầu trang `n+1` để nối vào dòng cuối ở cột phải ở trang `n`.
+    * Ví dụ: cuối trang `n` là nội dung `...và đã biết thế rồi chẳng bao lâu mà coi nhau` (bị ngắt đột ngột, tạo ra khoảng trống cuối cột phải) và đầu trang `n+1` là nội dung nối tiếp `như đồng-bào vậy. Cái quan-niệm ấy rồi tùy theo vận nước phát-đạt...`. Lúc đó thay vì để trang `n` kết thúc lửng lơ và tạo ra khoảng trống dư thừa, thì hãy lấy một phần nhỏ nội dung của trang kế tiếp, cho đến dấu `.` gần nhất để đưa vào phần cuối của dòng thuộc trang trước đó (trang `n`).
     * Như trường hợp trên, dòng cuối của trang `n` sẽ được điều chỉnh lại là `...và đã biết thế rồi chẳng bao lâu mà coi nhau như đồng-bào vậy.`, nhờ thế dòng cuối của trang `n` sẽ được kết thúc trọn vẹn. Dĩ nhiên phần đầu của trang `n+1` cũng được điều chỉnh để tránh nội dung lặp lại mà nó đã nhường cho trang `n`;
 - Căn lề chuẩn xác: Văn bản văn xuôi cần căn đều (`text-align: justify;`), tiêu đề chính căn giữa (`text-align: center;`), lời đề tặng/chữ ký căn phải (`text-align: right;`).
 - Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` hoặc khoảng cách đoạn `margin-bottom: 12px;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, chỉ sử dụng nó nếu văn bản gốc cũng đang dùng.
-- Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`
+- Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`. Nhưng cần quan sát để thiết kế khéo léo, hết sức tránh trường hợp chữ cái lớn đầu đoạn bị xa cách không gian với các ký tự còn lại của cùng từ đó.
 - Chống xé lẻ phần tử trong cột: Thêm `style="break-inside: avoid; margin: 16px 0;"` cho ảnh, bảng biểu hoặc công thức toán để không bị cắt đôi giữa 2 cột.
 
 2. BẢNG BIỂU PHỨC TẠP (COMPLEX TABLES):
@@ -48,13 +48,16 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Giữ nguyên từng dòng thơ bằng thẻ `<p style="margin: 4px 0; font-style: italic;">` hoặc bọc trong khối `<blockquote style="margin: 16px 0; padding-left: 20px; border-left: 3px solid #cbd5e1;">`.
 - Câu đối song song: Dùng Flexbox hai bên `<div style="display: flex; justify-content: space-around; font-weight: bold; margin: 16px 0;">`.
 - Tôn trọng nguyên bản chính tả cổ: Giữ nguyên cách dùng từ cổ, chữ Hán - Nôm, không tự ý hiện đại hóa.
+- Xử lý chữ Hán - Nôm mờ rách:
+  + Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
+  + Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác, dùng `<mark style="background-color: #fef08a; padding: 0 2px;">[?]</mark>`.
 
 5. PHÂN CẤP TIÊU ĐỀ & ĐỊNH DẠNG CHỮ (TYPOGRAPHY):
-- Tiêu đề: Sử dụng `<h1>`, `<h2>`, `<h3>` kèm kích thước và độ đậm phù hợp (`<h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 16px; text-align: center;">...</h1>`).
+- Tiêu đề: Sử dụng `<h1>`, `<h2>`, `<h3>` kèm kích thước và độ đậm phù hợp, ví dụ (`<h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 16px; text-align: center;">...</h1>`).
 - Nhấn mạnh: Dùng `<strong>` cho in đậm, `<em>` cho in nghiêng, `<u>` cho gạch chân (nếu bản gốc có).
 
 6. CÔNG THỨC TOÁN HỌC & KHOA HỌC:
-- Dùng cú pháp LaTeX chuẩn: `\( công_thức \)` cho công thức trên cùng dòng, `\[ công_thức \]` cho phương trình đứng riêng một khối có căn giữa `style="text-align: center; margin: 12px 0;"`.
+- Dùng **cú pháp LaTeX** chuẩn: `\( công_thức \)` cho công thức trên cùng dòng, `\[ công_thức \]` cho phương trình đứng riêng một khối có căn giữa `style="text-align: center; margin: 12px 0;"`.
 
 7. CHÚ THÍCH CUỐI TRANG (FOOTNOTES):
 - Đánh dấu số chú thích dạng chỉ số trên: `<sup>[1]</sup>`.

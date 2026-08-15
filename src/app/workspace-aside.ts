@@ -101,7 +101,7 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 [class.text-slate-400]="selectedOutputMode() !== 'markdown'"
                 [class.hover:text-slate-200]="selectedOutputMode() !== 'markdown' && !isOutputModeLocked()">
                 <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-cyan-400]="selectedOutputMode() === 'markdown'">article</mat-icon>
-                <span>Markdown</span>
+                <span>Đơn giản</span>
                 @if (isOutputModeLocked() && selectedOutputMode() === 'markdown') {
                   <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
                 }
@@ -109,12 +109,12 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 <!-- Tooltip: positioned above, aligned to left -->
                 <div class="absolute bottom-full left-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[250px] text-left z-50 pointer-events-none whitespace-normal">
                   <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-cyan-400">Markdown (Tiết kiệm token):</span>
+                    <span class="font-bold text-cyan-400">Giữ bố cục đơn giản (Markdown):</span>
                     @if (isOutputModeLocked()) {
                       <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
                     }
                   </div>
-                  <span>Nối dòng mượt mà, định dạng chuẩn, tiết kiệm token tối đa. Rất phù hợp xuất EPUB và Word.</span>
+                  <span>Đầu ra có cấu trúc đơn giản, tiết kiệm token tối đa. Rất phù hợp để xuất EPUB và Word.</span>
                   @if (isOutputModeLocked()) {
                     <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
                       🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
@@ -134,7 +134,7 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 [class.text-slate-400]="selectedOutputMode() !== 'html'"
                 [class.hover:text-slate-200]="selectedOutputMode() !== 'html' && !isOutputModeLocked()">
                 <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-emerald-400]="selectedOutputMode() === 'html'">code</mat-icon>
-                <span>HTML/CSS</span>
+                <span>Bảo toàn</span>
                 @if (isOutputModeLocked() && selectedOutputMode() === 'html') {
                   <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
                 }
@@ -142,12 +142,12 @@ import { OutputMode, PdfType, DocumentStyleProfile } from './header';
                 <!-- Tooltip: positioned above, aligned to right -->
                 <div class="absolute bottom-full right-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[250px] text-left z-50 pointer-events-none whitespace-normal">
                   <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-emerald-400">HTML/CSS (Bảo toàn bố cục):</span>
+                    <span class="font-bold text-emerald-400">Bảo toàn bố cục (HTML/CSS):</span>
                     @if (isOutputModeLocked()) {
                       <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
                     }
                   </div>
-                  <span>Tái hiện chính xác diện mạo, bố cục đa cột, căn lề, viền hộp và bảng biểu phức tạp của bản gốc.</span>
+                  <span>Cố gắng tái hiện chính xác định dạng, bố cục đa cột, căn lề, font chữ và bảng biểu phức tạp của bản gốc.</span>
                   @if (isOutputModeLocked()) {
                     <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
                       🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
