@@ -1,4 +1,6 @@
-OCR tài liệu, sách xưa tiếng Việt bằng Gemini. Đang trong quá trình phát triển và thử nghiệm.
+OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini. Đang trong quá trình phát triển và thử nghiệm.
+
+Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true
 
 ## Tại sao tồn tại
 Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do bản chất sách gốc bị mờ (theo thời gian) hoặc do công nghệ scan không đủ tốt để tạo ra phiên bản nét đọc được ngay.
