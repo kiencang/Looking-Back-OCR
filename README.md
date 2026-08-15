@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="images/looking-back-ocr.png" alt="Giao diện của công cụ ocr...">
+   <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
+</p>
+
 OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini. Đang trong quá trình phát triển và thử nghiệm.
 
 Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true
