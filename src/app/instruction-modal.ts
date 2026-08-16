@@ -34,7 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
           <div>
             <h3 class="text-lg font-bold text-white font-sans">Hướng dẫn sử dụng</h3>
-            <p class="text-[11px] text-slate-400">Cách chuyển PDF thành định dạng tài liệu DOCX</p>
+            <p class="text-[11px] text-slate-400">Cách chuyển file PDF scan thành định dạng dễ đọc hơn</p>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ import { MatIconModule } from '@angular/material/icon';
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">2</div>
             <div>
               <p class="text-sm font-bold text-slate-100 mb-1.5">Tải lên tài liệu PDF</p>
-              <p>Kéo thả trực tiếp tệp tin PDF hoặc nhấp chọn tệp từ máy tính. Các tùy chọn mặc định như model AI là Flash, và kiểu tài liệu là PDF Scan phù hợp trong phần lớn trường hợp, nhất là sách cổ.</p>
+              <p>Kéo thả trực tiếp tệp tin PDF hoặc nhấp chọn tệp từ máy tính. Tùy chọn mặc định model AI là Flash thường thích hợp nhất để phân tích đa số các file PDF. Còn model Lite chỉ đủ dùng cho các file rất đơn giản.</p>
             </div>
           </div>
 
