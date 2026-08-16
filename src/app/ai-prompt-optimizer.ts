@@ -348,30 +348,38 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
 
     if (!apiResponse.ok) {
       const errorData = await apiResponse.json().catch(() => ({}));
-      const originalError = errorData?.error?.message || `Lỗi HTTP ${apiResponse.status}`;
-      throw new Error(`Google API phản hồi thất bại: ${originalError}`);
+      const originalError = errorData?.error?.message || `HTTP ${apiResponse.status} ${apiResponse.statusText}`;
+      const statusDetails = errorData?.error?.status || '';
+      throw new Error(`Google API (HTTP ${apiResponse.status}${statusDetails ? ' - ' + statusDetails : ''}): ${originalError}`);
     }
 
     const resData = await apiResponse.json();
     let rawOutput = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     if (!rawOutput) {
-      const finishReason = resData?.candidates?.[0]?.finishReason;
+      const promptBlockReason = resData?.promptFeedback?.blockReason;
+      if (promptBlockReason) {
+        throw new Error(`Yêu cầu bị chặn từ Google Gemini (Prompt Blocked: ${promptBlockReason})`);
+      }
+
+      const candidateObj = resData?.candidates?.[0];
+      const finishReason = candidateObj?.finishReason;
       if (finishReason) {
         switch (finishReason) {
           case 'SAFETY':
-            throw new Error('Lỗi: Tài liệu bị hệ thống từ chối xử lý do chứa nội dung vi phạm tiêu chuẩn an toàn (ví dụ: bạo lực, nhạy cảm...).');
+            throw new Error('Lỗi từ AI: Tài liệu bị bộ lọc an toàn Google từ chối xử lý (SAFETY).');
           case 'RECITATION':
-            throw new Error('Lỗi: Tài liệu bị từ chối xử lý do nghi ngờ vi phạm bản quyền hoặc chứa nội dung sao chép nguyên văn.');
+            throw new Error('Lỗi từ AI: Tài liệu bị từ chối do nghi ngờ bản quyền/sao chép (RECITATION).');
           case 'MAX_TOKENS':
-            throw new Error('Lỗi: Tài liệu quá dài hoặc quá phức tạp để xử lý trong một lần. Vui lòng cắt nhỏ file PDF.');
+            throw new Error('Lỗi từ AI: Độ dài vượt quá số token tối đa cho phép (MAX_TOKENS).');
           case 'OTHER':
-            throw new Error('Lỗi: AI từ chối phản hồi vì lý do không xác định (Mã lỗi: OTHER).');
+            throw new Error('Lỗi từ AI: AI từ chối phản hồi vì lý do không xác định (OTHER).');
           default:
-            throw new Error(`Lỗi: AI từ chối phản hồi (Lý do: ${finishReason}).`);
+            throw new Error(`Lỗi từ AI: AI từ chối phản hồi (Lý do: ${finishReason}).`);
         }
       } else {
-        throw new Error('Lỗi từ AI: Không nhận được dữ liệu văn bản phản hồi.');
+        const jsonDetail = JSON.stringify(resData);
+        throw new Error(`Lỗi từ AI: Không nhận được dữ liệu văn bản phản hồi. Chi tiết từ Gemini API: ${jsonDetail}`);
       }
     }
 

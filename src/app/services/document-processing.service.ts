@@ -131,21 +131,41 @@ export class DocumentProcessingService {
     this.successMessage.set('');
   }
 
-  async saveCurrentProgressToHistory(): Promise<void> {
-    const file = this.pdfFile();
-    const chunks = this.pdfChunks();
-    if (!file || chunks.length === 0) return;
+  private isSavingHistory = false;
+  private saveHistoryQueue: (() => void)[] = [];
 
-    await this.historyService.saveCurrentProgressToHistory({
-      fileName: this.fileName(),
-      fileSize: this.fileSize(),
-      pdfPages: this.pdfPages(),
-      pdfChunks: chunks,
-      selectedModel: this.selectedModel(),
-      selectedOutputMode: this.selectedOutputMode(),
-      documentStyleProfile: this.documentStyleProfile(),
-      pdfFileBlob: file
-    });
+  async saveCurrentProgressToHistory(): Promise<void> {
+    if (this.isSavingHistory) {
+      await new Promise<void>(resolve => {
+        this.saveHistoryQueue.push(resolve);
+      });
+    }
+    this.isSavingHistory = true;
+
+    try {
+      const file = this.pdfFile();
+      const chunks = this.pdfChunks();
+      if (!file || chunks.length === 0) return;
+
+      await this.historyService.saveCurrentProgressToHistory({
+        fileName: this.fileName(),
+        fileSize: this.fileSize(),
+        pdfPages: this.pdfPages(),
+        pdfChunks: chunks,
+        selectedModel: this.selectedModel(),
+        selectedOutputMode: this.selectedOutputMode(),
+        documentStyleProfile: this.documentStyleProfile(),
+        pdfFileBlob: file
+      });
+    } catch (e) {
+      console.warn('Lỗi khi lưu lịch sử tiến trình:', e);
+    } finally {
+      this.isSavingHistory = false;
+      const next = this.saveHistoryQueue.shift();
+      if (next) {
+        next();
+      }
+    }
   }
 
   async restoreFromHistoryItem(item: any): Promise<void> {
@@ -311,6 +331,14 @@ export class DocumentProcessingService {
   async ensureDocumentStyleProfile(): Promise<DocumentStyleProfile> {
     const currentProfile = this.documentStyleProfile();
     if (currentProfile) return currentProfile;
+
+    // Nếu đang có tiến trình phân tích phong cách chạy song song, chờ cho đến khi hoàn thành
+    if (this.isAnalyzingStyle()) {
+      while (this.isAnalyzingStyle()) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+      return this.documentStyleProfile() || { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+    }
 
     const file = this.pdfFile();
     const chunks = this.pdfChunks();
@@ -482,6 +510,13 @@ export class DocumentProcessingService {
     this.startTimer();
 
     try {
+      // Trước khi chạy các chunk song song, nếu dùng outputMode là 'html', hãy đảm bảo Style Profile đã được phân tích hoàn tất.
+      // Việc gọi hàm này tuần tự ở đây giúp tránh được xung đột tranh chấp (race condition) gửi đúp yêu cầu phân tích style
+      // từ các tiến trình chunk chạy song song bên dưới.
+      if (this.selectedOutputMode() === 'html' && !this.documentStyleProfile()) {
+        await this.ensureDocumentStyleProfile();
+      }
+
       for (let i = 0; i < pendingIndices.length; i += 2) {
         if (this.shouldStopBatch()) {
           this.showSuccess('Đã nhận lệnh dừng. Các khối còn lại tạm dừng.');
