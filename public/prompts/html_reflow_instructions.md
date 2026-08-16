@@ -13,6 +13,9 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 
 <rules>
 1. CẤU TRÚC DÀN TRANG & CỘT BÁO CHÍ (MULTI-COLUMN & FLUID CONTINUOUS FLOW):
+- PHÂN BIỆT RÕ DẤU GẠCH NỐI (HYPHEN):
+  * TUYỆT ĐỐI GIỮ NGUYÊN các dấu gạch nối trong từ ghép Quốc ngữ cổ thuộc nguyên tác (Ví dụ: "bản-báo", "công-luận", "thiết-tưởng", "An-nam", "quốc-ngữ"). Đây là chính tả lịch sử văn học, không được tự ý xóa hoặc hiện đại hóa thành "bản báo", "công luận".
+  * CHỈ ĐƯỢC PHÉP ghép nối và xóa dấu gạch nối đối với trường hợp một từ đơn bị bẻ đôi ngẫu nhiên do hết dòng giấy vật lý (Ví dụ: "lịch- \n sử" ghép lại thành "lịch sử").
 - VĂN BẢN ĐA CỘT LIỀN MẠCH (Báo chí, tạp chí, sách in 2-3 cột):
   * TUYỆT ĐỐI KHÔNG chia thủ công thành 2 thẻ <div> riêng biệt bằng flexbox (vì sẽ làm hụt chân cột 1, gãy đôi câu văn và tạo khoảng trống thừa ở cuối cột).
   * BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT khối container duy nhất sử dụng **CSS Multi-Columns**:
@@ -51,8 +54,11 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Câu đối song song: Dùng Flexbox hai bên `<div style="display: flex; justify-content: space-around; font-weight: bold; margin: 16px 0;">`.
 - Tôn trọng nguyên bản chính tả cổ: Giữ nguyên cách dùng từ cổ, chữ Hán - Nôm, không tự ý hiện đại hóa.
 - Xử lý chữ Hán - Nôm mờ rách:
-  + Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
-  + Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác, dùng `<mark style="background-color: #fef08a; padding: 0 2px;">[?]</mark>`.
+  * Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
+  * Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác, dùng `<mark style="background-color: #fef08a; padding: 0 2px;">[?]</mark>`.
+- KHÔNG GÂY LỖI TOFU BOX (Ô vuông hiển thị):
+  * Tất cả các chữ Hán hoặc chữ Nôm inline đan xen trong dòng chữ Quốc ngữ BẮT BUỘC phải được nhận diện chính xác và bọc trong thẻ span chỉ định font chữ CJK Serif tương thích cao:
+    `<span style="font-family: 'Noto Serif CJK TC', 'Noto Serif CJK SC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;">阮攸</span>`
 
 5. PHÂN CẤP TIÊU ĐỀ & ĐỊNH DẠNG CHỮ (TYPOGRAPHY):
 - Tiêu đề: Sử dụng `<h1>`, `<h2>`, `<h3>` kèm kích thước và độ đậm phù hợp, ví dụ (`<h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 16px; text-align: center;">...</h1>`).
@@ -67,6 +73,10 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   `<div class="footnotes" style="margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.85rem; color: #475569;">`
     `<p><sup>[1]</sup> Lời giải nghĩa từ ngữ...</p>`
   `</div>`
+ - XỬ LÝ TIÊU ĐỀ LẶP ĐẦU TRANG (RUNNING HEADERS):
+  * Tuyệt đối KHÔNG trộn các tiêu đề đầu trang lặp lại (Ví dụ: "NAM PHONG 84", "86 NAM PHONG") vào giữa các đoạn văn đang chảy liên tục qua trang.
+  * Hãy tách chúng ra và định dạng thành một thanh thông tin mỏng, tinh tế, căn giữa và có màu chữ mờ nằm ngay sau vạch chia trang để không làm phiền luồng đọc của độc giả:
+    `<div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em;">NAM PHONG (Trang X)</div>` 
 
 8. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
 - Tại điểm bắt đầu nội dung của mỗi trang (tương ứng với số thứ tự trang thực tế trong tệp PDF gốc), BẮT BUỘC chèn một dòng thẻ đánh dấu:

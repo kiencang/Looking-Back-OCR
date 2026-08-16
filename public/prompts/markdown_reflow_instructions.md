@@ -23,6 +23,9 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Bỏ qua hoàn toàn: Tiêu đề đầu trang (Running Header), tiêu đề chân trang lặp lại (Footer), số trang (Page numbers), vạch kẻ trang trí mép giấy, watermark.
 - Dọn dẹp tạp âm scan: Bỏ các đốm mực ố, ký tự rác vô nghĩa do scan mờ hoặc nếp gấp gáy sách gây ra.
 - Thống nhất dấu câu thẩm mỹ: Sử dụng dấu ngoặc kép chuẩn ("nội dung"), bảo toàn dấu gạch ngang dài giải thích (— em-dash).
+- PHÂN BIỆT GẠCH NỐI CHÍNH TẢ CỔ:
+  * Tuyệt đối GIỮ NGUYÊN dấu gạch nối của các từ ghép thời kỳ Quốc ngữ cổ (Ví dụ: "bản-báo", "công-luận", "thiết-tưởng", "An-nam"). Không được "hiện đại hóa" bằng cách xóa dấu gạch nối của những từ ghép này.
+  * Chỉ loại bỏ dấu gạch nối nếu đó là từ đơn bị bẻ đôi khi xuống dòng (Ví dụ: "lịch- \n sử" -> "lịch sử").
 
 3. ĐẶC THÙ SÁCH CỔ, VĂN HỌC & TÀI LIỆU LỊCH SỬ TIẾNG VIỆT:
 - Tôn trọng nguyên bản chính tả cổ: Giữ nguyên cách dùng từ, cách phiên âm cổ, dấu câu theo lối xưa hoặc chữ Hán - Nôm nguyên gốc. KHÔNG tự ý "sửa sang hiện đại hóa" làm mất đi giá trị lịch sử của văn bản cổ.
@@ -31,8 +34,11 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   > Chữ tài chữ mệnh khéo là ghét nhau.
 - Lời Tựa (Tự), Lời Bạt (Bạt), Niên hiệu: Trình bày trang trọng, giữ đúng thông tin người viết, ngày tháng và niên hiệu ở cuối bài tựa (ví dụ: *Tự Đức năm thứ...*, *Bảo Đại năm...*).
 - Xử lý chữ Hán - Nôm mờ rách:
-  + Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
-  + Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác: Dùng `[?]` hoặc `[Hán/Nôm: ?]`.
+  * Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
+  * Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác: Dùng `[?]` hoặc `[Hán/Nôm: ?]`.
+- GIỮ NGUYÊN CHỮ HÁN - NÔM INLINE:
+  * Khi xuất chữ Hán - Nôm inline đan xen ngay sau từ Quốc ngữ (Ví dụ: "Nguyễn-Du 阮攸", "Tố-Như 素如"), phải giữ nguyên vị trí và ký tự Unicode chuẩn để phục vụ xuất bản EPUB/Word chính xác.
+  * Tránh tách rời chữ Drop Cap hoa đầu dòng (Ví dụ: "T" và "ÁC-giả" phải được ghép lại mượt mà thành "Tác-giả" hoặc "**T**ác-giả").
 
 4. PHÂN CẤP CẤU TRÚC MARKDOWN CHUẨN (TYPOGRAPHY):
 - Tiêu đề (Headings): Dùng cú pháp `#` (H1 cho tên sách/chương lớn, `##` cho mục lớn, `###` cho tiểu mục). Tuyệt đối không dùng gạch dưới `===` hay `---`.
