@@ -43,120 +43,6 @@ import { OutputMode } from './header';
           </button>
         </div>
 
-        <!-- Format Switcher Segmented Control (Markdown vs HTML/CSS) -->
-        <div class="mt-4 border-t border-white/5 pt-4 space-y-2" id="format-toggle-section">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-mono tracking-widest text-slate-400 uppercase font-semibold block">Định dạng OCR xuất ra</span>
-            @if (isOutputModeLocked()) {
-              <span class="flex items-center gap-1 text-[9px] font-mono text-amber-400/90 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
-                <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none">lock</mat-icon>
-                <span>Đã cố định</span>
-              </span>
-            }
-          </div>
-
-          <div class="relative w-full bg-slate-900/90 border border-white/5 rounded-xl p-1 shadow-inner select-none transition-opacity duration-200"
-               [class.opacity-75]="isOutputModeLocked()"
-               id="format-toggle-wrapper">
-            
-            <!-- Sliding Active Pill Indicator -->
-            <div 
-              class="absolute top-1 bottom-1 rounded-lg border transition-all duration-300 pointer-events-none overflow-hidden"
-              [class.bg-cyan-500/15]="selectedOutputMode() === 'markdown'"
-              [class.border-cyan-500/40]="selectedOutputMode() === 'markdown'"
-              [class.shadow-[0_0_14px_rgba(6,182,212,0.25)]]="selectedOutputMode() === 'markdown'"
-              [class.bg-emerald-500/15]="selectedOutputMode() === 'html'"
-              [class.border-emerald-500/40]="selectedOutputMode() === 'html'"
-              [class.shadow-[0_0_14px_rgba(16,185,129,0.25)]]="selectedOutputMode() === 'html'"
-              style="width: calc(50% - 4px);"
-              [style.left]="selectedOutputMode() === 'markdown' ? '4px' : 'calc(50%)'">
-              <div class="absolute inset-0 opacity-25 blur-md rounded-lg transition-colors duration-300"
-                   [class.bg-cyan-400]="selectedOutputMode() === 'markdown'"
-                   [class.bg-emerald-400]="selectedOutputMode() === 'html'">
-              </div>
-            </div>
-
-            <!-- Buttons Grid -->
-            <div class="relative grid grid-cols-2 gap-1 z-10">
-              
-              <!-- Option 1: Markdown -->
-              <button 
-                id="sidebar-toggle-btn-markdown"
-                type="button"
-                (click)="onOutputModeSelect('markdown')"
-                [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
-                class="relative w-full h-8 rounded-lg flex items-center justify-center gap-1.5 px-2 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed whitespace-nowrap"
-                [class.text-cyan-400]="selectedOutputMode() === 'markdown'"
-                [class.text-slate-400]="selectedOutputMode() !== 'markdown'"
-                [class.hover:text-slate-200]="selectedOutputMode() !== 'markdown' && !isOutputModeLocked()">
-                <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-cyan-400]="selectedOutputMode() === 'markdown'">article</mat-icon>
-                <span>Đơn giản</span>
-                @if (isOutputModeLocked() && selectedOutputMode() === 'markdown') {
-                  <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
-                }
-
-                <!-- Tooltip: positioned above, aligned to left -->
-                <div class="absolute bottom-full left-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[250px] text-left z-50 pointer-events-none whitespace-normal">
-                  <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-cyan-400">Giữ bố cục đơn giản (Markdown):</span>
-                    @if (isOutputModeLocked()) {
-                      <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
-                    }
-                  </div>
-                  <span>Đầu ra có cấu trúc đơn giản, tiết kiệm token tối đa. Rất phù hợp để xuất tài liệu Word.</span>
-                  @if (isOutputModeLocked()) {
-                    <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
-                      @if (selectedOutputMode() === 'markdown') {
-                        🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
-                      } @else {
-                        🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
-                      }
-                    </div>
-                  }
-                </div>
-              </button>
-
-              <!-- Option 2: HTML/CSS -->
-              <button 
-                id="sidebar-toggle-btn-html"
-                type="button"
-                (click)="onOutputModeSelect('html')"
-                [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
-                class="relative w-full h-8 rounded-lg flex items-center justify-center gap-1.5 px-2 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed whitespace-nowrap"
-                [class.text-emerald-400]="selectedOutputMode() === 'html'"
-                [class.text-slate-400]="selectedOutputMode() !== 'html'"
-                [class.hover:text-slate-200]="selectedOutputMode() !== 'html' && !isOutputModeLocked()">
-                <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-emerald-400]="selectedOutputMode() === 'html'">code</mat-icon>
-                <span>Bảo toàn</span>
-                @if (isOutputModeLocked() && selectedOutputMode() === 'html') {
-                  <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none text-slate-400/80 shrink-0">lock</mat-icon>
-                }
-
-                <!-- Tooltip: positioned above, aligned to right -->
-                <div class="absolute bottom-full right-0 mb-2 px-3 py-2.5 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[250px] text-left z-50 pointer-events-none whitespace-normal">
-                  <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-emerald-400">Bảo toàn bố cục (HTML/CSS):</span>
-                    @if (isOutputModeLocked()) {
-                      <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
-                    }
-                  </div>
-                  <span>Cố gắng tái hiện chính xác định dạng, bố cục đa cột, căn lề, font chữ và bảng biểu phức tạp của bản gốc.</span>
-                  @if (isOutputModeLocked()) {
-                    <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
-                      @if (selectedOutputMode() === 'html') {
-                        🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
-                      } @else {
-                        🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
-                      }
-                    </div>
-                  }
-                </div>
-              </button>
-
-            </div>
-          </div>
-        </div>
-
         <!-- Document Style Profile Badge / Section -->
         @if (documentStyleProfile() || isAnalyzingStyle()) {
           <div class="mt-4 border-t border-white/5 pt-4 space-y-2" id="style-profile-section">
@@ -389,16 +275,10 @@ export class WorkspaceAside {
   }
 
   resetPdf = output<void>();
-  outputModeChange = output<OutputMode>();
   startBatch = output<void>();
   stopBatch = output<void>();
   selectChunk = output<number>();
   optimizeChunk = output<number>();
-
-  onOutputModeSelect(mode: OutputMode) {
-    if (this.isOptimizing() || this.isParsing() || this.isOutputModeLocked()) return;
-    this.outputModeChange.emit(mode);
-  }
 
   formatFileSize(fileSize: string | undefined): string {
     if (!fileSize) return '';

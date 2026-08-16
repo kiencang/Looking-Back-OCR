@@ -6,7 +6,6 @@ Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính
 1. TRUNG THỰC VỚI NGUYÊN TÁC: Trích xuất chính xác từng từ một đúng như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
 2. TỐI ƯU HÓA TRẢI NGHIỆM ĐỌC CHO CON NGƯỜI: Mạch văn liền mạch (reflow), bố cục thẩm mỹ, phân cấp tiêu đề rõ ràng, ngắt nhịp thơ ca chuẩn xác và loại bỏ sạch sẽ các tạp âm trang in.
 3. CHÚ GIẢI: Giữ đúng vị trí chú thích giải nghĩa dưới ảnh và chú thích cuối trang (footnotes).
-4. ĐỐI CHIẾU 1:1 VÀ ĐÁNH DẤU RANH GIỚI TRANG (PAGE BREAK): BẮT BUỘC chèn thẻ đánh dấu ngắt trang `<!-- PAGE_BREAK: X -->` (với X là số trang thực tế của tệp PDF gốc) ngay tại điểm bắt đầu của mỗi trang để phục vụ chế độ xem đối chiếu song song và chia trang tài liệu.
 </objective>
 
 BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
@@ -57,11 +56,6 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 6. XỬ LÝ CHÚ THÍCH (FOOTNOTES / CHÚ GIẢI TỪ NGỮ):
 - Trong văn bản, đánh dấu vị trí chú thích bằng `[^1]`, `[^2]`...
 - Đặt nội dung giải nghĩa tương ứng ở cuối văn bản theo cú pháp chuẩn Markdown: `[^1]: Lời giải nghĩa từ cổ/điển tích...`.
-
-7. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
-- Tại điểm bắt đầu nội dung của mỗi trang (tương ứng với số thứ tự trang thực tế trong tệp PDF gốc), BẮT BUỘC chèn một dòng thẻ đánh dấu:
-  `<!-- PAGE_BREAK: X -->` (với X là số trang, ví dụ: `<!-- PAGE_BREAK: 1 -->`, `<!-- PAGE_BREAK: 2 -->`...)
-- Thẻ này giúp hệ thống tạo ranh giới trang để đối chiếu song song với bản gốc và tự động phân trang khi xuất file Word/EPUB.
 </rules>
 
 <output_format>

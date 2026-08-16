@@ -43,7 +43,6 @@
         <!-- Left Panel: Configurations & Details Component -->
         <app-workspace-aside
           (resetPdf)="resetPdf()"
-          (outputModeChange)="onOutputModeChanged($event)"
           (startBatch)="startBatchProcessing()"
           (stopBatch)="stopBatchProcessing()"
           (selectChunk)="selectChunk($event)"
@@ -76,7 +75,8 @@
 
   <!-- Footer Component -->
   <app-footer
-    (openInstruction)="showInstruction.set(true)">
+    (openInstruction)="showInstruction.set(true)"
+    (outputModeChange)="onOutputModeChanged($event)">
   </app-footer>
 
   <!-- Fullscreen Dual-Pane Comparison Modal Component -->
