@@ -41,6 +41,7 @@ export class DocumentProcessingService {
   selectedModel = signal<ModelType>('gemini-flash-latest');
   selectedOutputMode = signal<OutputMode>('html');
   clientApiKey = signal('');
+  metaApiKey = signal('');
 
   // Execution State
   isParsing = signal(false);
@@ -342,8 +343,9 @@ export class DocumentProcessingService {
 
     const file = this.pdfFile();
     const chunks = this.pdfChunks();
-    const apiKey = this.clientApiKey().trim();
     const modelName = this.selectedModel();
+    const isMeta = modelName === 'muse-spark-1.2-contributor';
+    const apiKey = (isMeta ? this.metaApiKey() : this.clientApiKey()).trim();
 
     if (!file || chunks.length === 0 || !apiKey) {
       const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
@@ -379,9 +381,20 @@ export class DocumentProcessingService {
       throw new Error('Không tìm thấy file nguồn hoặc phần phân chia.');
     }
 
-    const apiKey = this.clientApiKey().trim();
-    if (!apiKey) {
-      throw new Error('Vui lòng cấu hình Gemini API Key trước khi thực hiện.');
+    const modelName = this.selectedModel();
+    const isMeta = modelName === 'muse-spark-1.2-contributor';
+
+    let apiKey = '';
+    if (isMeta) {
+      apiKey = this.metaApiKey().trim();
+      if (!apiKey) {
+        throw new Error('Vui lòng cấu hình Meta API Key ở mục "Nhập API Key" trước khi thực hiện mô hình Muse.');
+      }
+    } else {
+      apiKey = this.clientApiKey().trim();
+      if (!apiKey) {
+        throw new Error('Vui lòng cấu hình Gemini API Key trước khi thực hiện.');
+      }
     }
 
     // update state in chunks to processing
@@ -391,7 +404,6 @@ export class DocumentProcessingService {
        return newCs;
     });
 
-    const modelName = this.selectedModel();
     const outputMode = this.selectedOutputMode();
 
     // Ensure style profile is established for consistent typography & design tokens in HTML mode
@@ -405,14 +417,23 @@ export class DocumentProcessingService {
     }
 
     // Optimize layout and map structures using the AiPromptOptimizer module
-    const { rawMarkdown, inputTokens, outputTokens } = await this.aiOptimizer.optimizeChunk(
-      apiKey,
-      modelName,
-      file,
-      chunk,
-      outputMode,
-      styleProfile
-    );
+    const { rawMarkdown, inputTokens, outputTokens } = isMeta
+      ? await this.aiOptimizer.optimizeChunkWithMeta(
+          apiKey,
+          modelName,
+          file,
+          chunk,
+          outputMode,
+          styleProfile
+        )
+      : await this.aiOptimizer.optimizeChunk(
+          apiKey,
+          modelName,
+          file,
+          chunk,
+          outputMode,
+          styleProfile
+        );
 
     // Parse output to HTML preview based on selected mode
     const renderedHtml = this.pdfProcessor.renderContent(rawMarkdown, chunk.pages, outputMode);
@@ -441,10 +462,17 @@ export class DocumentProcessingService {
       return false;
     }
 
-    const apiKey = this.clientApiKey().trim();
-    if (!apiKey) {
-      this.apiError.set('Vui lòng điền Gemini API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải.');
-      return false;
+    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
+    if (isMeta) {
+      if (!this.metaApiKey().trim()) {
+        this.apiError.set('Vui lòng điền Meta API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải để sử dụng mô hình Muse.');
+        return false;
+      }
+    } else {
+      if (!this.clientApiKey().trim()) {
+        this.apiError.set('Vui lòng điền Gemini API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải.');
+        return false;
+      }
     }
 
     this.selectedChunkIndex.set(chunkIndex);
@@ -459,7 +487,7 @@ export class DocumentProcessingService {
       await this.saveCurrentProgressToHistory();
       return true;
     } catch (err: any) {
-      const translated = translateGeminiError(err.message || err);
+      const translated = isMeta ? (err.message || String(err)) : translateGeminiError(err.message || err);
       this.apiError.set(translated);
       this.pdfChunks.update(cs => {
         const newCs = [...cs];
@@ -485,10 +513,17 @@ export class DocumentProcessingService {
       return;
     }
 
-    const apiKey = this.clientApiKey().trim();
-    if (!apiKey) {
-      this.apiError.set('Vui lòng điền Gemini API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải.');
-      return;
+    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
+    if (isMeta) {
+      if (!this.metaApiKey().trim()) {
+        this.apiError.set('Vui lòng điền Meta API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải để sử dụng mô hình Muse.');
+        return;
+      }
+    } else {
+      if (!this.clientApiKey().trim()) {
+        this.apiError.set('Vui lòng điền Gemini API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải.');
+        return;
+      }
     }
 
     const chunks = this.pdfChunks();
@@ -541,7 +576,7 @@ export class DocumentProcessingService {
         this.showSuccess('Hoàn thành xử lý tất cả các phần thành công.');
       }
     } catch (err: any) {
-      this.apiError.set(translateGeminiError(err.message || err));
+      this.apiError.set(isMeta ? (err.message || String(err)) : translateGeminiError(err.message || err));
     } finally {
       this.isBatchProcessing.set(false);
       this.isOptimizing.set(false);
@@ -557,12 +592,13 @@ export class DocumentProcessingService {
   }
 
   private async processSingleChunkForBatch(chunkIndex: number): Promise<boolean> {
+    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
     try {
       this.selectedChunkIndex.set(chunkIndex);
       await this.executeChunkOptimization(chunkIndex);
       return true;
     } catch (err: any) {
-      const translated = translateGeminiError(err.message || err);
+      const translated = isMeta ? (err.message || String(err)) : translateGeminiError(err.message || err);
       this.apiError.set(translated);
       this.pdfChunks.update(cs => {
         const newCs = [...cs];

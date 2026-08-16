@@ -1,6 +1,6 @@
 {
   "name": "ai-studio-angular-app",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -25,6 +25,7 @@
     "katex": "^0.17.0",
     "marked": "^18.0.4",
     "motion": "^12.23.24",
+    "openai": "^7.4.0",
     "pdf-lib": "^1.17.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

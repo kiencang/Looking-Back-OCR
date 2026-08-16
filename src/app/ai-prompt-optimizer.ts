@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { PDFDocument } from 'pdf-lib';
+import OpenAI from 'openai';
 import { PdfChunk } from './services/document-processing.service';
 import { DocumentStyleProfile, DEFAULT_STYLE_PROFILE, OutputMode } from './header';
 
@@ -140,13 +141,42 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
   * <h1> (Chương / Tiêu đề chính): font-size: ${h1Size}; font-weight: ${h1Weight}; font-family: ${headingFontStack};
   * <h2> (Mục lớn / Bài viết): font-size: ${h2Size}; font-weight: ${h2Weight}; font-family: ${headingFontStack};
   * <h3> (Mục nhỏ / Tiêu đề phụ): font-size: ${h3Size}; font-weight: ${h3Weight}; font-family: ${headingFontStack};
-  * <h4> (Tiểu mục): font-size: ${profile.h4FontSize || '1.1em'}; font-weight: 600; font-family: ${headingFontStack};
 
 * NGUYÊN TẮC BẤT BIẾN KHI XUẤT HTML/CSS:
 1. KHÔNG tự ý chèn font lạ nào khác ngoài "${profile.bodyFont}" và "${profile.headingFont}".
 2. KHÔNG tự đặt max-width hoặc chiều rộng cố định cho toàn trang (khung trang chuẩn sẽ do hệ thống quản lý).
-3. BẮT BUỘC áp dụng đúng tỷ lệ Heading Scale (${h1Size} > ${h2Size} > ${h3Size} > ${profile.h4FontSize || '1.1em'}) cho các thẻ tiêu đề để đảm bảo tính đồng nhất giữa tất cả các trang/chunk.
+3. BẮT BUỘC áp dụng đúng tỷ lệ Heading Scale (${h1Size} > ${h2Size} > ${h3Size}) cho các thẻ tiêu đề để đảm bảo tính đồng nhất giữa tất cả các trang/chunk.
 </document_design_tokens>`;
+  }
+
+  /**
+   * Helper to merge multiple sample page ranges into a single sample PDF Base64 string
+   */
+  async buildSamplePdf(file: File, sampleChunks: PdfChunk[]): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const srcDoc = await PDFDocument.load(arrayBuffer);
+    const subDoc = await PDFDocument.create();
+    const pageCount = srcDoc.getPageCount();
+
+    const pageIndicesToCopy: number[] = [];
+    for (const chunk of sampleChunks) {
+      for (let p = chunk.startPageNum; p <= chunk.endPageNum; p++) {
+        const idx = p - 1;
+        if (idx >= 0 && idx < pageCount && !pageIndicesToCopy.includes(idx)) {
+          pageIndicesToCopy.push(idx);
+        }
+      }
+    }
+
+    if (pageIndicesToCopy.length === 0) {
+      return this.fileToBase64(file);
+    }
+
+    const copiedPages = await subDoc.copyPages(srcDoc, pageIndicesToCopy);
+    copiedPages.forEach((page) => subDoc.addPage(page));
+
+    const subPdfBytes = await subDoc.save();
+    return this.uint8ArrayToBase64(subPdfBytes);
   }
 
   /**
@@ -171,6 +201,123 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       sampleIndices.push(chunks.length - 1);
     }
 
+    const sampleChunks = sampleIndices.map((i) => chunks[i]);
+    const analysisPrompt = await this.getStyleAnalysisPrompt();
+
+    const validFonts = [
+      'Lora', 'Merriweather', 'EB Garamond', 'Playfair Display',
+      'Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat',
+      'Roboto', 'JetBrains Mono'
+    ];
+
+    const parseProfileFromJson = (rawText: string): DocumentStyleProfile => {
+      let cleanText = rawText;
+      if (cleanText.includes('```')) {
+        const match = cleanText.match(/```(?:json)?([\s\S]*?)```/i);
+        if (match && match[1]) cleanText = match[1].trim();
+      }
+
+      const parsed = JSON.parse(cleanText);
+      const bodyFont = validFonts.includes(parsed.bodyFont) ? parsed.bodyFont : 'Lora';
+      const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Playfair Display';
+
+      return {
+        bodyFont,
+        headingFont,
+        bodyFontSize: parsed.bodyFontSize || '18px',
+        lineHeight: parsed.lineHeight || '1.7',
+        textAlign: parsed.textAlign === 'left' ? 'left' : 'justify',
+        paragraphSpacing: parsed.paragraphSpacing || '16px',
+        styleArchetype: parsed.styleArchetype || 'Văn bản / Sách tiêu chuẩn',
+        h1FontSize: parsed.h1FontSize || '2.1em',
+        h1FontWeight: parsed.h1FontWeight || '700',
+        h2FontSize: parsed.h2FontSize || '1.6em',
+        h2FontWeight: parsed.h2FontWeight || '700',
+        h3FontSize: parsed.h3FontSize || '1.3em',
+        h3FontWeight: parsed.h3FontWeight || '600',
+        analyzedSampleChunks: sampleIndices,
+        analyzedAt: Date.now()
+      };
+    };
+
+    // --- NHÁNH 1: META AI (MUSE) ---
+    if (modelName === 'muse-spark-1.2-contributor' || modelName.startsWith('muse-')) {
+      try {
+        const samplePdfBase64 = await this.buildSamplePdf(file, sampleChunks);
+        const fileDataUri = samplePdfBase64.startsWith('data:')
+          ? samplePdfBase64
+          : `data:application/pdf;base64,${samplePdfBase64}`;
+
+        const metaModelTarget = modelName;
+        const client = new OpenAI({
+          baseURL: 'https://api.meta.ai/v1',
+          apiKey: apiKey,
+          dangerouslyAllowBrowser: true
+        });
+
+        const resData: any = await (client as any).responses.create({
+          model: metaModelTarget,
+          temperature: 0.1,
+          top_p: 1.0,
+          reasoning: {
+            effort: 'high'
+          },
+          input: [
+            {
+              type: 'message',
+              role: 'user',
+              content: [
+                {
+                  type: 'input_text',
+                  text: analysisPrompt
+                },
+                {
+                  type: 'input_file',
+                  filename: 'sample_style_analysis_chunks.pdf',
+                  file_data: fileDataUri
+                }
+              ]
+            }
+          ]
+        });
+
+        let textOutput = '';
+        if (typeof resData?.output_text === 'string' && resData.output_text.trim()) {
+          textOutput = resData.output_text;
+        } else if (Array.isArray(resData?.output) && resData.output.length > 0) {
+          const messageOutput = resData.output.find((out: any) => out?.type === 'message' && out?.role === 'assistant');
+          if (messageOutput && Array.isArray(messageOutput.content)) {
+            textOutput = messageOutput.content.map((c: any) => c?.text || c?.val || c?.content || '').join('');
+          }
+          if (!textOutput) {
+            const firstOut = resData.output[0] as any;
+            if (typeof firstOut === 'string') {
+              textOutput = firstOut;
+            } else if (firstOut && typeof firstOut === 'object' && 'content' in firstOut) {
+              const content = (firstOut as { content: any }).content;
+              if (typeof content === 'string') {
+                textOutput = content;
+              } else if (Array.isArray(content)) {
+                textOutput = content.map((c: any) => (c?.text || c?.val || c?.content || '') as string).join('');
+              }
+            }
+          }
+        } else if (Array.isArray(resData?.choices) && (resData.choices[0] as any)?.message?.content) {
+          textOutput = (resData.choices[0] as any).message.content;
+        } else if (typeof resData?.text === 'string') {
+          textOutput = resData.text;
+        }
+
+        if (textOutput) {
+          return parseProfileFromJson(textOutput);
+        }
+      } catch (metaErr) {
+        console.warn('Lỗi phân tích phong cách qua Meta AI, sử dụng cấu hình mặc định:', metaErr);
+        return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
+      }
+    }
+
+    // --- NHÁNH 2: GOOGLE GEMINI ---
     const parts: any[] = [];
     for (const idx of sampleIndices) {
       const sampleChunk = chunks[idx];
@@ -202,7 +349,6 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       }
     }
 
-    const analysisPrompt = await this.getStyleAnalysisPrompt();
     parts.push({ text: analysisPrompt });
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -228,49 +374,15 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       });
 
       if (!response.ok) {
-        console.warn('Lỗi API phân tích phong cách, sử dụng cấu hình mặc định:', response.status);
+        console.warn('Lỗi API phân tích phong cách Gemini, sử dụng cấu hình mặc định:', response.status);
         return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
       }
 
       const data = await response.json();
-      let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      
-      if (rawText.includes('```')) {
-        const match = rawText.match(/```(?:json)?([\s\S]*?)```/i);
-        if (match && match[1]) rawText = match[1].trim();
-      }
-
-      const parsed = JSON.parse(rawText);
-      const validFonts = [
-        'Lora', 'Merriweather', 'EB Garamond', 'Playfair Display',
-        'Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat',
-        'Roboto', 'JetBrains Mono'
-      ];
-
-      const bodyFont = validFonts.includes(parsed.bodyFont) ? parsed.bodyFont : 'Lora';
-      const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Playfair Display';
-
-      return {
-        bodyFont,
-        headingFont,
-        bodyFontSize: parsed.bodyFontSize || '18px',
-        lineHeight: parsed.lineHeight || '1.7',
-        textAlign: parsed.textAlign === 'left' ? 'left' : 'justify',
-        paragraphSpacing: parsed.paragraphSpacing || '16px',
-        styleArchetype: parsed.styleArchetype || 'Văn bản / Sách tiêu chuẩn',
-        h1FontSize: parsed.h1FontSize || '2.1em',
-        h1FontWeight: parsed.h1FontWeight || '700',
-        h2FontSize: parsed.h2FontSize || '1.6em',
-        h2FontWeight: parsed.h2FontWeight || '700',
-        h3FontSize: parsed.h3FontSize || '1.3em',
-        h3FontWeight: parsed.h3FontWeight || '600',
-        h4FontSize: parsed.h4FontSize || '1.1em',
-        h4FontWeight: parsed.h4FontWeight || '600',
-        analyzedSampleChunks: sampleIndices,
-        analyzedAt: Date.now()
-      };
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      return parseProfileFromJson(rawText);
     } catch (err) {
-      console.warn('Lỗi phân tích phong cách thiết kế tài liệu, sử dụng cấu hình mặc định:', err);
+      console.warn('Lỗi phân tích phong cách thiết kế tài liệu Gemini, sử dụng cấu hình mặc định:', err);
       return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
     }
   }
@@ -438,6 +550,178 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       rawMarkdown: rawOutput,
       inputTokens,
       outputTokens
+    };
+  }
+
+  /**
+   * Executes Content Generation from Meta AI API (https://api.meta.ai/v1/responses),
+   * accepts sliced PDF directly in Base64 format and returns optimized Markdown/HTML output
+   */
+  async optimizeChunkWithMeta(
+    apiKey: string,
+    modelName: string,
+    file: File,
+    chunk: PdfChunk,
+    outputMode: OutputMode = 'markdown',
+    styleProfile?: DocumentStyleProfile | null
+  ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
+    // Acquire sliced PDF or fallback to original
+    let pdfBase64 = '';
+    try {
+      pdfBase64 = await this.splitPdf(file, chunk.startPageNum, chunk.endPageNum);
+    } catch (splitErr) {
+      console.warn('Lỗi phân tách PDF bằng pdf-lib, quay lại gửi cả tệp:', splitErr);
+      pdfBase64 = await this.fileToBase64(file);
+    }
+
+    const basePrompt = await this.getPromptTemplate(outputMode);
+
+    let systemInstructionText = '';
+    let userPromptText = '';
+
+    if (outputMode === 'html') {
+      systemInstructionText = basePrompt;
+
+      let designTokensBlock = '';
+      if (styleProfile) {
+        designTokensBlock = `\n\n${this.formatDesignTokensBlock(styleProfile)}\n`;
+      }
+
+      userPromptText = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+    } else {
+      systemInstructionText = 'Bạn là một chuyên gia OCR văn bản tiếng Việt và tái cấu trúc tài liệu sang định dạng Markdown sạch đẹp, bảo toàn 100% nội dung gốc.';
+      userPromptText = `${basePrompt}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+    }
+
+    const inputMessages: any[] = [];
+    if (systemInstructionText) {
+      inputMessages.push({
+        role: 'system',
+        content: [
+          {
+            type: 'input_text',
+            text: systemInstructionText
+          }
+        ]
+      });
+    }
+
+    inputMessages.push({
+      role: 'user',
+      content: [
+        {
+          type: 'input_file',
+          file_data: pdfBase64,
+          mime_type: 'application/pdf'
+        },
+        {
+          type: 'input_text',
+          text: userPromptText
+        }
+      ]
+    });
+
+    const metaModelTarget = modelName;
+
+    // Initialize OpenAI client configured for Meta AI endpoint
+    const client = new OpenAI({
+      baseURL: 'https://api.meta.ai/v1',
+      apiKey: apiKey,
+      dangerouslyAllowBrowser: true
+    });
+
+    const fileDataUri = pdfBase64.startsWith('data:') ? pdfBase64 : `data:application/pdf;base64,${pdfBase64}`;
+
+    let resData: any;
+    try {
+      resData = await (client as any).responses.create({
+        model: metaModelTarget,
+        temperature: 0.1,
+        top_p: 1.0,
+        reasoning: {
+          effort: 'high'
+        },
+        input: [
+          {
+            type: 'message',
+            role: 'user',
+            content: [
+              {
+                type: 'input_text',
+                text: `${systemInstructionText ? systemInstructionText + '\n\n' : ''}${userPromptText}`
+              },
+              {
+                type: 'input_file',
+                filename: `chunk_${chunk.index + 1}_pages_${chunk.startPageNum}-${chunk.endPageNum}.pdf`,
+                file_data: fileDataUri
+              }
+            ]
+          }
+        ]
+      });
+    } catch (apiError: any) {
+      const errMessage = apiError?.message || apiError?.error?.message || JSON.stringify(apiError);
+      throw new Error(`Meta AI API Error: ${errMessage}`);
+    }
+
+    let textOutput = '';
+    if (typeof resData?.output_text === 'string' && resData.output_text.trim()) {
+      textOutput = resData.output_text;
+    } else if (Array.isArray(resData?.output) && resData.output.length > 0) {
+      const messageOutput = resData.output.find((out: any) => out?.type === 'message' && out?.role === 'assistant');
+      if (messageOutput && Array.isArray(messageOutput.content)) {
+        textOutput = messageOutput.content.map((c: any) => c?.text || c?.val || c?.content || '').join('');
+      }
+
+      if (!textOutput) {
+        const firstOut = resData.output[0] as any;
+        if (typeof firstOut === 'string') {
+          textOutput = firstOut;
+        } else if (firstOut && typeof firstOut === 'object' && 'content' in firstOut) {
+          const content = (firstOut as { content: any }).content;
+          if (typeof content === 'string') {
+            textOutput = content;
+          } else if (Array.isArray(content)) {
+            textOutput = content.map((c: any) => (c?.text || c?.val || c?.content || '') as string).join('');
+          }
+        }
+      }
+    } else if (Array.isArray(resData?.choices) && (resData.choices[0] as any)?.message?.content) {
+      textOutput = (resData.choices[0] as any).message.content;
+    } else if (typeof resData?.text === 'string') {
+      textOutput = resData.text;
+    }
+
+    if (!textOutput) {
+      const rawJsonString = JSON.stringify(resData);
+      throw new Error(`Meta AI không tìm thấy nội dung văn bản phản hồi. Chi tiết phản hồi: ${rawJsonString?.substring(0, 300)}...`);
+    }
+
+    // Secondary sanitization: remove Markdown/HTML code fences if returned
+    if (textOutput.includes('```')) {
+      const match = textOutput.match(/```(?:markdown|html|xml)?([\s\S]*?)```/i);
+      if (match && match[1]) {
+        textOutput = match[1].trim();
+      }
+    }
+
+    const usage: any = resData?.usage || resData?.usageMetadata || {};
+    let inputTokens = usage?.prompt_tokens ?? usage?.input_tokens ?? usage?.input_token_count ?? (typeof resData?.input_tokens === 'number' ? resData.input_tokens : (typeof resData?.prompt_tokens === 'number' ? resData.prompt_tokens : 0));
+    let outputTokens = usage?.completion_tokens ?? usage?.output_tokens ?? usage?.output_token_count ?? (typeof resData?.output_tokens === 'number' ? resData.output_tokens : (typeof resData?.completion_tokens === 'number' ? resData.completion_tokens : 0));
+
+    // Fallback if API response did not include token counters
+    if (typeof inputTokens !== 'number' || inputTokens <= 0) {
+      const pageCount = (chunk.endPageNum - chunk.startPageNum + 1) || 1;
+      inputTokens = pageCount * 500 + Math.ceil(userPromptText.length / 4);
+    }
+    if (typeof outputTokens !== 'number' || outputTokens <= 0) {
+      outputTokens = Math.max(1, Math.ceil(textOutput.length / 4));
+    }
+
+    return {
+      rawMarkdown: textOutput,
+      inputTokens: typeof inputTokens === 'number' ? inputTokens : 0,
+      outputTokens: typeof outputTokens === 'number' ? outputTokens : 0
     };
   }
 }

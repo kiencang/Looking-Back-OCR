@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
-export type ModelType = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
+export type ModelType = 'gemini-flash-latest' | 'gemini-flash-lite-latest' | 'muse-spark-1.2-contributor';
 export type OutputMode = 'markdown' | 'html';
 
 export interface DocumentStyleProfile {
@@ -19,8 +19,6 @@ export interface DocumentStyleProfile {
   h2FontWeight?: string;
   h3FontSize?: string;
   h3FontWeight?: string;
-  h4FontSize?: string;
-  h4FontWeight?: string;
   analyzedSampleChunks?: number[];
   analyzedAt?: number;
 }
@@ -38,9 +36,7 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
   h2FontSize: '1.6em',
   h2FontWeight: '700',
   h3FontSize: '1.3em',
-  h3FontWeight: '600',
-  h4FontSize: '1.1em',
-  h4FontWeight: '600'
+  h3FontWeight: '600'
 };
 
 @Component({
@@ -58,9 +54,8 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
 
       <!-- Center: Model Switcher Toggle -->
       <div class="flex items-center justify-center shrink-0 lg:justify-self-center">
-        
-        <!-- Toggle: Model Switcher (Flash vs Lite) -->
-        <div class="flex items-center bg-slate-900/90 border border-white/5 rounded-full p-0.5 shadow-inner relative select-none shrink-0 transition-opacity duration-200 w-[148px]"
+        <!-- Toggle: Model Switcher (Flash vs Lite vs Muse) -->
+        <div class="flex items-center bg-slate-900/90 border border-white/5 rounded-full p-0.5 shadow-inner relative select-none shrink-0 transition-opacity duration-200 w-[220px]"
              [class.opacity-50]="isOptimizing() || isParsing() || isModelLocked()"
              id="model-toggle-wrapper">
           <!-- Active indicator pill background -->
@@ -72,11 +67,15 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             [class.bg-indigo-500/10]="selectedModel() === 'gemini-flash-lite-latest'"
             [class.border-indigo-500/30]="selectedModel() === 'gemini-flash-lite-latest'"
             [class.shadow-[0_0_14px_rgba(99,102,241,0.25)]]="selectedModel() === 'gemini-flash-lite-latest'"
+            [class.bg-emerald-500/10]="selectedModel() === 'muse-spark-1.2-contributor'"
+            [class.border-emerald-500/30]="selectedModel() === 'muse-spark-1.2-contributor'"
+            [class.shadow-[0_0_14px_rgba(16,185,129,0.25)]]="selectedModel() === 'muse-spark-1.2-contributor'"
             style="width: 72px;"
-            [style.left.px]="selectedModel() === 'gemini-flash-latest' ? 2 : 74">
+            [style.left.px]="selectedModel() === 'gemini-flash-latest' ? 2 : (selectedModel() === 'gemini-flash-lite-latest' ? 74 : 146)">
             <div class="absolute inset-0 opacity-20 blur-md rounded-full transition-colors duration-300"
                  [class.bg-amber-400]="selectedModel() === 'gemini-flash-latest'"
-                 [class.bg-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'">
+                 [class.bg-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'"
+                 [class.bg-emerald-400]="selectedModel() === 'muse-spark-1.2-contributor'">
             </div>
           </div>
 
@@ -121,7 +120,6 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             [class.hover:text-slate-200]="selectedModel() !== 'gemini-flash-lite-latest' && !isModelLocked()">
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'">spa</mat-icon>
             <span>Lite</span>
-
             <!-- Tooltip -->
             <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
               <span class="font-bold text-indigo-400 block mb-0.5">Lite:</span>
@@ -129,6 +127,34 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-indigo-300 font-medium">
                   @if (selectedModel() === 'gemini-flash-lite-latest') {
+                    🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
+                  } @else {
+                    🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
+                  }
+                </span>
+              }
+            </div>
+          </button>
+
+          <!-- Option 3: Muse Spark -->
+          <button 
+            id="toggle-btn-muse"
+            type="button"
+            (click)="onModelSelect('muse-spark-1.2-contributor')"
+            [disabled]="isOptimizing() || isParsing() || isModelLocked()"
+            class="relative w-[72px] h-7 rounded-full flex items-center justify-center gap-1 text-[11px] font-bold font-sans transition-all duration-200 outline-none cursor-pointer group disabled:cursor-not-allowed"
+            [class.text-emerald-400]="selectedModel() === 'muse-spark-1.2-contributor'"
+            [class.text-slate-400]="selectedModel() !== 'muse-spark-1.2-contributor'"
+            [class.hover:text-slate-200]="selectedModel() !== 'muse-spark-1.2-contributor' && !isModelLocked()">
+            <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-emerald-400]="selectedModel() === 'muse-spark-1.2-contributor'">auto_awesome</mat-icon>
+            <span>Muse</span>
+            <!-- Tooltip -->
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
+              <span class="font-bold text-emerald-400 block mb-0.5">Muse Spark:</span>
+              Model Meta AI với khả năng nhận diện hình ảnh xuất sắc.
+              @if (isModelLocked()) {
+                <span class="block mt-1 pt-1 border-t border-white/10 text-emerald-300 font-medium">
+                  @if (selectedModel() === 'muse-spark-1.2-contributor') {
                     🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
                   } @else {
                     🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.

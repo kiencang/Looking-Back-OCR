@@ -129,8 +129,9 @@
   @if (showApiKeyModal()) {
     <app-api-key-modal
       [clientApiKey]="clientApiKey()"
+      [metaApiKey]="metaApiKey()"
       (closeModal)="showApiKeyModal.set(false)"
-      (save)="saveApiKey($event)"
+      (save)="saveApiKeys($event)"
       (clearKey)="clearApiKeyModal()">
     </app-api-key-modal>
   }

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, output, inject, signal, effect } fr
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentProcessingService } from './services/document-processing.service';
-import { OutputMode } from './header';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -112,7 +111,7 @@ import { OutputMode } from './header';
                     <mat-icon class="!w-3 !h-3 !text-[12px] text-indigo-400">format_size</mat-icon>
                     Tỷ lệ tiêu đề (Heading Scale)
                   </span>
-                  <div class="grid grid-cols-4 gap-1.5 text-center font-mono">
+                  <div class="grid grid-cols-3 gap-1.5 text-center font-mono">
                     <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
                       <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H1</span>
                       <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h1FontSize || '2.1em' }}</span>
@@ -124,10 +123,6 @@ import { OutputMode } from './header';
                     <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
                       <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H3</span>
                       <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h3FontSize || '1.3em' }}</span>
-                    </div>
-                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
-                      <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H4</span>
-                      <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h4FontSize || '1.1em' }}</span>
                     </div>
                   </div>
                 </div>

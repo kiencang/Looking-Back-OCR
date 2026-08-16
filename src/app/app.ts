@@ -70,6 +70,7 @@ export class App {
   apiError = this.docService.apiError;
   successMessage = this.docService.successMessage;
   clientApiKey = this.docService.clientApiKey;
+  metaApiKey = this.docService.metaApiKey;
 
   fileName = this.docService.fileName;
   fileSize = this.docService.fileSize;
@@ -139,6 +140,9 @@ export class App {
       // Load API Key from safe browser storage
       const savedKey = localStorage.getItem('user_gemini_api_key') || '';
       this.clientApiKey.set(savedKey);
+
+      const savedMetaKey = localStorage.getItem('user_meta_api_key') || '';
+      this.metaApiKey.set(savedMetaKey);
 
       // Global zoom helper for rendered HTML images
       (window as any).zoomPdfImage = (src: string) => {
@@ -214,21 +218,36 @@ export class App {
     this.showApiKeyModal.set(true);
   }
 
-  saveApiKey(rawKey: string) {
-    const trimmed = rawKey.trim();
-    if (trimmed && (/[\u0080-\uFFFF]/.test(trimmed) || trimmed.includes(' '))) {
-      this.apiError.set('🔴 Lỗi định dạng API Key: API Key cá nhân bạn nhập chứa ký tự không hợp lệ (như dấu cách, tiếng Việt có dấu). Vui lòng kiểm tra lại.');
+  saveApiKeys(keys: {geminiKey: string, metaKey: string}) {
+    const trimmedGemini = keys.geminiKey.trim();
+    if (trimmedGemini && (/[\u0080-\uFFFF]/.test(trimmedGemini) || trimmedGemini.includes(' '))) {
+      this.apiError.set('🔴 Lỗi định dạng API Key: API Key Gemini bạn nhập chứa ký tự không hợp lệ. Vui lòng kiểm tra lại.');
       return;
     }
-    this.clientApiKey.set(trimmed);
-    localStorage.setItem('user_gemini_api_key', trimmed);
+
+    const trimmedMeta = keys.metaKey.trim();
+    if (trimmedMeta && (/[\u0080-\uFFFF]/.test(trimmedMeta) || trimmedMeta.includes(' '))) {
+      this.apiError.set('🔴 Lỗi định dạng API Key: API Key Meta bạn nhập chứa ký tự không hợp lệ. Vui lòng kiểm tra lại.');
+      return;
+    }
+
+    this.clientApiKey.set(trimmedGemini);
+    localStorage.setItem('user_gemini_api_key', trimmedGemini);
+    
+    this.metaApiKey.set(trimmedMeta);
+    localStorage.setItem('user_meta_api_key', trimmedMeta);
+    
     this.showApiKeyModal.set(false);
-    this.showSuccess('Đã cấu hình API Key thành công.');
+    this.showSuccess('Đã lưu cấu hình API Key thành công.');
   }
 
   clearApiKeyModal() {
     this.clientApiKey.set('');
     localStorage.removeItem('user_gemini_api_key');
+    
+    this.metaApiKey.set('');
+    localStorage.removeItem('user_meta_api_key');
+    
     this.showApiKeyModal.set(false);
     this.showSuccess('Đã xóa cấu hình API Key cá nhân.');
   }
