@@ -29,7 +29,7 @@ import { OutputMode } from './header';
             </div>
             <div class="bg-slate-950/50 rounded-xl p-2.5">
               <span class="block text-[10px] text-slate-400 uppercase font-sans">Dung lượng</span>
-              <span class="text-xs font-bold text-slate-300 font-mono">{{ fileSize() || 'N/A' }}</span>
+              <span class="text-xs font-bold text-slate-300 font-mono">{{ formatFileSize(fileSize()) || 'N/A' }}</span>
             </div>
           </div>
 
@@ -106,7 +106,11 @@ import { OutputMode } from './header';
                   <span>Đầu ra có cấu trúc đơn giản, tiết kiệm token tối đa. Rất phù hợp để xuất EPUB và Word.</span>
                   @if (isOutputModeLocked()) {
                     <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
-                      🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                      @if (selectedOutputMode() === 'markdown') {
+                        🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
+                      } @else {
+                        🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
+                      }
                     </div>
                   }
                 </div>
@@ -139,7 +143,11 @@ import { OutputMode } from './header';
                   <span>Cố gắng tái hiện chính xác định dạng, bố cục đa cột, căn lề, font chữ và bảng biểu phức tạp của bản gốc.</span>
                   @if (isOutputModeLocked()) {
                     <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
-                      🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                      @if (selectedOutputMode() === 'html') {
+                        🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
+                      } @else {
+                        🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
+                      }
                     </div>
                   }
                 </div>
@@ -301,7 +309,7 @@ import { OutputMode } from './header';
                     (click)="optimizeChunk.emit($index); $event.stopPropagation()"
                     [disabled]="isOptimizing()"
                     class="text-[10px] bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white px-2 py-1 rounded disabled:opacity-50 font-semibold shadow shadow-indigo-500/20 cursor-pointer">
-                    Xử lý phần này
+                    Xử lý riêng phần này
                   </button>
                 }
               </div>
@@ -364,5 +372,19 @@ export class WorkspaceAside {
   onOutputModeSelect(mode: OutputMode) {
     if (this.isOptimizing() || this.isParsing() || this.isOutputModeLocked()) return;
     this.outputModeChange.emit(mode);
+  }
+
+  formatFileSize(fileSize: string | undefined): string {
+    if (!fileSize) return '';
+    const match = fileSize.match(/^([\d.]+)\s*([a-zA-Z]+)?$/);
+    if (match) {
+      const num = parseFloat(match[1]);
+      const unit = match[2] || '';
+      if (!isNaN(num)) {
+        const rounded = parseFloat(num.toFixed(1));
+        return unit ? `${rounded} ${unit}` : `${rounded}`;
+      }
+    }
+    return fileSize;
   }
 }

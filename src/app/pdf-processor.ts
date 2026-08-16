@@ -10,7 +10,7 @@ import { PDFDocument } from 'pdf-lib';
 export interface PdfPageData {
   pageNum: number;
   items: any[];
-  pageImageUrl: string; // PNG Data URL, scale 1.0 (lazy rendered)
+  pageImageUrl: string; // PNG Data URL, scale 1.4 (lazy rendered)
   extractedImages: any[];
 }
 
@@ -100,8 +100,8 @@ export class PdfProcessor {
   async renderPageToPng(pageNum: number): Promise<string> {
     if (!this.currentPdfDoc) return '';
     try {
-      const page = await this.currentPdfDoc.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.0 }); // Scale = 1.0 per requirement
+       const page = await this.currentPdfDoc.getPage(pageNum);
+       const viewport = page.getViewport({ scale: 1.4 }); // Scale = 1.4 per requirement
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       if (!ctx) return '';
@@ -196,7 +196,7 @@ export class PdfProcessor {
     return { pages: itemsExtracted, chunks: generatedChunks };
   }
 
-  formatBytes(bytes: number, decimals = 2): string {
+  formatBytes(bytes: number, decimals = 1): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;

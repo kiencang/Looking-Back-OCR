@@ -83,7 +83,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
               Thích hợp xử lý tài liệu phức tạp, sách cổ và thơ phú.
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-amber-300 font-medium">
-                  🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                  @if (selectedModel() === 'gemini-flash-latest') {
+                    🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
+                  } @else {
+                    🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
+                  }
                 </span>
               }
             </div>
@@ -108,7 +112,11 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
               Tối ưu tốc độ cao cho các tài liệu có cấu trúc đơn giản.
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-indigo-300 font-medium">
-                  🔒 Đã cố định cho tài liệu này vì đã có phần được xử lý.
+                  @if (selectedModel() === 'gemini-flash-lite-latest') {
+                    🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
+                  } @else {
+                    🔒 Không thể chuyển đổi vì tài liệu đã có phần được xử lý.
+                  }
                 </span>
               }
             </div>

@@ -77,7 +77,7 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
               class="py-2.5 px-3 bg-indigo-950/80 hover:bg-indigo-900/80 text-indigo-300 hover:text-indigo-100 border border-indigo-500/30 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer focus:outline-none shrink-0"
               title="Mở chế độ toàn màn hình để đối chiếu song song với bản gốc">
               <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">open_in_full</mat-icon>
-              <span class="hidden sm:inline">Toàn màn hình</span>
+              <span class="hidden sm:inline">Đối chiếu bản gốc</span>
             </button>
           }
 
