@@ -43,10 +43,24 @@ export function generateHtmlDocument(options: HtmlTemplateOptions): string {
     .multi-column-flow, [style*="column-count"], [style*="columns:"], [class*="columns-"] {
       column-fill: balance !important;
       -webkit-column-fill: balance !important;
-      orphans: 2 !important;
-      widows: 2 !important;
       hyphens: auto !important;
       -webkit-hyphens: auto !important;
+    }
+    .multi-column-flow p, [style*="column-count"] p, [style*="columns:"] p, [class*="columns-"] p {
+      orphans: 1 !important;
+      widows: 1 !important;
+      break-inside: auto !important;
+      -webkit-column-break-inside: auto !important;
+      margin-top: 0 !important;
+      margin-bottom: 1lh !important;
+    }
+    .book-indent-style p {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      text-indent: 1.5em !important;
+    }
+    .book-indent-style h1 + p, .book-indent-style h2 + p, .book-indent-style h3 + p, .book-indent-style img + p {
+      text-indent: 0 !important;
     }
     .break-inside-avoid, figure, table, blockquote, img, math, pre {
       break-inside: avoid !important;

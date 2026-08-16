@@ -17,7 +17,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   * TUYỆT ĐỐI KHÔNG chia thủ công thành 2 thẻ <div> riêng biệt bằng flexbox (vì sẽ làm hụt chân cột 1, gãy đôi câu văn và tạo khoảng trống thừa ở cuối cột).
   * BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT khối container duy nhất sử dụng **CSS Multi-Columns**:
     `<div style="columns: 2; column-gap: 28px; column-fill: balance; text-align: justify;" class="multi-column-flow">`
-      `<p style="margin-bottom: 12px; line-height: 1.6;">Nội dung đoạn văn liên tục chảy tự nhiên từ cột 1 sang cột 2...</p>`
+      `<p style="margin-bottom: 1lh; line-height: 1.6;">Nội dung đoạn văn liên tục chảy tự nhiên từ cột 1 sang cột 2...</p>`
     `</div>`
   * Trình duyệt sẽ tự động rót dòng chữ từ chân cột 1 lên đỉnh cột 2 và cân bằng chiều cao 2 cột bằng nhau chằn chặn, không bao giờ bị hụt chữ hay ngắt câu vô lý.
 - HAI LUỒNG SONG SONG ĐỘC LẬP (Bảng đối chiếu song ngữ, 2 bảng số liệu độc lập):
@@ -30,7 +30,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
     - Ở đầu trang `n+1`, tiếp tục phần còn lại của câu một cách tự nhiên (giữ nguyên chữ thường/in hoa như bản gốc).
     - Đảm bảo khi các trang nối tiếp nhau, người đọc và hệ thống xuất Word/HTML nhận được dòng chảy văn bản tự nhiên, không bị chắp vá sai vị trí.
 - Căn lề chuẩn xác: Văn bản văn xuôi cần căn đều (`text-align: justify;`), tiêu đề chính căn giữa (`text-align: center;`), lời đề tặng/chữ ký căn phải (`text-align: right;`).
-- Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` hoặc khoảng cách đoạn `margin-bottom: 12px;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, chỉ sử dụng nó nếu văn bản gốc cũng đang dùng.
+- Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` và đặt `margin-bottom: 0;` (phong cách sách cổ điển). Hoặc sử dụng khoảng cách đoạn tuyệt đối chính xác bằng bội số dòng `margin-bottom: 1lh;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, chỉ sử dụng nó nếu văn bản gốc cũng đang dùng.
 - Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`. Nhưng cần quan sát để thiết kế khéo léo, hết sức tránh trường hợp chữ cái lớn đầu đoạn bị xa cách không gian với các ký tự còn lại của cùng từ đó.
 - Chống xé lẻ phần tử trong cột: Thêm `style="break-inside: avoid; margin: 16px 0;"` cho ảnh, bảng biểu hoặc công thức toán để không bị cắt đôi giữa 2 cột.
 

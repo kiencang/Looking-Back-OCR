@@ -17,6 +17,7 @@ export interface HistoryItem {
   pdfChunks?: any[];
   pdfFileData?: any;
   documentStyleProfile?: any;
+  pdfFileBlob?: Blob;
 }
 
 @Injectable({
@@ -89,6 +90,7 @@ export class HistoryService {
     selectedModel: string;
     selectedOutputMode: string;
     documentStyleProfile?: any;
+    pdfFileBlob?: Blob;
   }): Promise<void> {
     if (!docState.fileName || docState.pdfChunks.length === 0) return;
 
@@ -106,7 +108,8 @@ export class HistoryService {
         selectedOutputMode: docState.selectedOutputMode,
         pdfPages: docState.pdfPages,
         pdfChunks: docState.pdfChunks,
-        documentStyleProfile: docState.documentStyleProfile
+        documentStyleProfile: docState.documentStyleProfile,
+        pdfFileBlob: docState.pdfFileBlob
       };
 
       await this.saveHistoryItemAndTrim(historyItem);

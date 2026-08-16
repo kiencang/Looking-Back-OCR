@@ -143,7 +143,8 @@ export class DocumentProcessingService {
       pdfChunks: chunks,
       selectedModel: this.selectedModel(),
       selectedOutputMode: this.selectedOutputMode(),
-      documentStyleProfile: this.documentStyleProfile()
+      documentStyleProfile: this.documentStyleProfile(),
+      pdfFileBlob: file
     });
   }
 
@@ -156,6 +157,15 @@ export class DocumentProcessingService {
       if (item.pdfFileBlob) {
         const restoredFile = new File([item.pdfFileBlob], item.fileName, { type: 'application/pdf' });
         this.pdfFile.set(restoredFile);
+        if (this.pdfObjectUrl()) {
+          URL.revokeObjectURL(this.pdfObjectUrl());
+        }
+        this.pdfObjectUrl.set(URL.createObjectURL(restoredFile));
+        try {
+          await this.pdfProcessor.loadPdfDocument(restoredFile);
+        } catch (e) {
+          console.warn('Could not load restored pdfjsDoc:', e);
+        }
       }
       this.fileName.set(item.fileName);
       this.fileSize.set(item.fileSize);
