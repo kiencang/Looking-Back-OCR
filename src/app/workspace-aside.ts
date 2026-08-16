@@ -103,7 +103,7 @@ import { OutputMode } from './header';
                       <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded font-medium">Đã khóa</span>
                     }
                   </div>
-                  <span>Đầu ra có cấu trúc đơn giản, tiết kiệm token tối đa. Rất phù hợp để xuất EPUB và Word.</span>
+                  <span>Đầu ra có cấu trúc đơn giản, tiết kiệm token tối đa. Rất phù hợp để xuất tài liệu Word.</span>
                   @if (isOutputModeLocked()) {
                     <div class="mt-1.5 pt-1.5 border-t border-white/10 text-amber-400/90 text-[9px]">
                       @if (selectedOutputMode() === 'markdown') {

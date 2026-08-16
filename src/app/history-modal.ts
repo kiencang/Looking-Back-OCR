@@ -41,7 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
           <!-- Description spans full width beneath -->
           <p class="text-[11px] text-slate-400 font-sans leading-relaxed">
-            Lưu lại tối đa 10 tệp tin gần đây nhất của bạn. Các lưu trữ này chỉ lưu tại trình duyệt mà bạn đang dùng & chúng có thể bị mất nếu bạn xóa dữ liệu web. Luôn chủ động tải về định dạng EPUB & DOCX hoàn chỉnh sau khi chuyển đổi xong để lưu trữ lâu dài.
+            Lưu lại tối đa 10 tệp tin gần đây nhất của bạn. Các lưu trữ này chỉ lưu tại trình duyệt mà bạn đang dùng & chúng có thể bị mất nếu bạn xóa dữ liệu web. Luôn chủ động tải về định dạng DOCX hoàn chỉnh sau khi chuyển đổi xong để lưu trữ lâu dài.
           </p>
         </div>
 

@@ -59,10 +59,8 @@
           [isDevMode]="isDevMode()"
           (tabChange)="selectedTab.set($event)"
           (themeStyleChange)="themeStyle.set($event)"
-          (downloadEpub)="downloadEpubFile()"
           (downloadDocx)="downloadDocxFile()"
           (downloadDocxForChunk)="downloadChunkDocxFile()"
-          (downloadEpubForChunk)="downloadChunkEpubFile()"
           (downloadMarkdownForChunk)="downloadChunkMarkdownFile()"
           (downloadHtmlForChunk)="downloadChunkHtmlFile()"
           (downloadMarkdown)="downloadMarkdownFile()"
@@ -96,7 +94,6 @@
       (closeModal)="showFullscreenComparison.set(false)"
       (themeStyleChange)="themeStyle.set($event)"
       (downloadDocx)="downloadDocxFile()"
-      (downloadEpub)="downloadEpubFile()"
       (downloadMarkdown)="downloadMarkdownFile()"
       (downloadHtml)="downloadHtmlFile()">
     </app-fullscreen-comparison>

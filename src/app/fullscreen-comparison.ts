@@ -150,13 +150,6 @@ import { DocumentProcessingService } from './services/document-processing.servic
                 <mat-icon class="text-xs">description</mat-icon>
                 <span>Word</span>
               </button>
-              <button 
-                (click)="downloadEpub.emit()"
-                class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
-                title="Tải EPUB">
-                <mat-icon class="text-xs">book</mat-icon>
-                <span>EPUB</span>
-              </button>
             }
           </div>
         }
@@ -305,7 +298,6 @@ export class FullscreenComparison {
   closeModal = output<void>();
   themeStyleChange = output<'clean' | 'warm' | 'mono'>();
   downloadDocx = output<void>();
-  downloadEpub = output<void>();
   downloadMarkdown = output<void>();
   downloadHtml = output<void>();
 

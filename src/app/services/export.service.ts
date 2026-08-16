@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { PdfProcessor, PdfPageData } from '../pdf-processor';
 import { generateHtmlDocument } from '../utils/html-template-builder';
-import { DocumentStyleProfile, OutputMode, DEFAULT_STYLE_PROFILE } from '../header';
+import { DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
 import { PdfChunk } from './document-processing.service';
 
 @Injectable({
@@ -30,28 +30,6 @@ export class ExportService {
     const match = chunk.id.match(/\d+/);
     const pSuffix = match ? `_p${match[0]}` : `_${chunk.id.replace(/\s+/g, '')}`;
     return `${base}${pSuffix}`;
-  }
-
-  async exportFullEpub(
-    fileName: string,
-    chunks: PdfChunk[],
-    pages: PdfPageData[],
-    outputMode: OutputMode
-  ): Promise<void> {
-    const activeMarkdown = chunks.map(c => c.markdownContent).join('\n\n');
-    const title = this.getCleanFileName(fileName);
-    const blob = await this.pdfProcessor.generateEpub(title, activeMarkdown, pages, outputMode);
-    this.triggerBrowserDownload(blob, `${title}.epub`);
-  }
-
-  async exportChunkEpub(
-    fileName: string,
-    chunk: PdfChunk,
-    outputMode: OutputMode
-  ): Promise<void> {
-    const title = this.getChunkFileName(fileName, chunk);
-    const blob = await this.pdfProcessor.generateEpub(title, chunk.markdownContent, chunk.pages, outputMode);
-    this.triggerBrowserDownload(blob, `${title}.epub`);
   }
 
   async exportFullDocx(

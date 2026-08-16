@@ -34,7 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
           <div>
             <h3 class="text-lg font-bold text-white font-sans">Hướng dẫn sử dụng</h3>
-            <p class="text-[11px] text-slate-400">Cách chuyển PDF thành định dạng sách EPUB & DOCX</p>
+            <p class="text-[11px] text-slate-400">Cách chuyển PDF thành định dạng tài liệu DOCX</p>
           </div>
         </div>
 

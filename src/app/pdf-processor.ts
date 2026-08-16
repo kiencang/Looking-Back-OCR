@@ -3,7 +3,6 @@ import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PdfDb } from './pdf-db';
 import { MarkdownRenderer } from './markdown-renderer';
-import { EpubExporter } from './epub-exporter';
 import { DocxExporter } from './docx-exporter';
 import { PDFDocument } from 'pdf-lib';
 
@@ -252,21 +251,6 @@ export class PdfProcessor {
       return MarkdownRenderer.renderHtmlContent(content, pdfPages);
     }
     return MarkdownRenderer.renderMarkdownToHtml(content, pdfPages);
-  }
-
-  markdownToXhtml(markdown: string): string {
-    return MarkdownRenderer.markdownToXhtml(markdown);
-  }
-
-  htmlToXhtml(htmlContent: string): string {
-    return MarkdownRenderer.htmlToXhtml(htmlContent);
-  }
-
-  /**
-   * EPUB generation builder delegation
-   */
-  generateEpub(title: string, content: string, pdfPages: PdfPageData[], outputMode: 'markdown' | 'html' = 'markdown'): Promise<Blob> {
-    return EpubExporter.generateEpub(title, content, pdfPages, outputMode);
   }
 
   /**

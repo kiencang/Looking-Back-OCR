@@ -117,22 +117,6 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                 </div>
               </div>
 
-              <!-- EPUB Export Wrapper (Markdown mode) -->
-              <div class="relative group">
-                <button 
-                  (click)="downloadEpub.emit()"
-                  [disabled]="isParsing() || isOptimizing()"
-                  class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-emerald-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
-                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">book</mat-icon>
-                  <span>Tải EPUB (đầy đủ)</span>
-                </button>
-                <!-- Tailwind Tooltip Downwards -->
-                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
-                  Tải sách điện tử định dạng EPUB 3 đầy đủ
-                  <!-- Tooltip Arrow Pointing Up -->
-                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
-                </div>
-              </div>
             }
           }
         </div>
@@ -168,13 +152,6 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                     class="py-1.5 px-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
                     <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">description</mat-icon>
                     <span>Tải Docx ({{ activeChunk()?.id | lowercase }})</span>
-                  </button>
-                  <button 
-                    (click)="downloadEpubForChunk.emit()"
-                    [disabled]="isParsing() || isOptimizing()"
-                    class="py-1.5 px-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 active:bg-emerald-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
-                    <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">book</mat-icon>
-                    <span>Tải EPUB ({{ activeChunk()?.id | lowercase }})</span>
                   </button>
                 }
               </div>
@@ -314,9 +291,7 @@ export class WorkspacePreview {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  downloadEpub = output<void>();
   downloadDocx = output<void>();
-  downloadEpubForChunk = output<void>();
   downloadDocxForChunk = output<void>();
   downloadMarkdownForChunk = output<void>();
   downloadHtmlForChunk = output<void>();

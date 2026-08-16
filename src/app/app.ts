@@ -254,29 +254,6 @@ export class App {
   }
 
   // Export & Download Actions (Delegated to ExportService)
-  async downloadEpubFile() {
-    if (!this.isAllCompleted()) {
-      this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước khi tải file EPUB tổng.');
-      return;
-    }
-    this.isParsing.set(true);
-    this.parsingStatus.set('Đang biên dịch tệp tin sách điện tử chuẩn EPUB 3...');
-    try {
-      await this.exportService.exportFullEpub(
-        this.fileName(),
-        this.pdfChunks(),
-        this.pdfPages(),
-        this.selectedOutputMode()
-      );
-      this.showSuccess('Tải tệp sách định dạng EPUB (.epub) thành công!');
-    } catch (err: any) {
-      this.apiError.set(`Lỗi biên dịch tệp EPUB: ${err.message || err}.`);
-    } finally {
-      this.isParsing.set(false);
-      this.parsingStatus.set('');
-    }
-  }
-
   async downloadDocxFile() {
     if (!this.isAllCompleted()) {
       this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước khi tải file Word.');
@@ -293,25 +270,6 @@ export class App {
       this.showSuccess('Tải tệp tài liệu Word (.docx) thành công!');
     } catch (err: any) {
       this.apiError.set(`Lỗi biên dịch tệp Word: ${err.message || err}.`);
-    } finally {
-      this.isParsing.set(false);
-      this.parsingStatus.set('');
-    }
-  }
-
-  async downloadChunkEpubFile() {
-    const chunk = this.activeChunk();
-    if (!chunk || chunk.status !== 'completed' || !chunk.markdownContent) {
-      this.apiError.set('Phần này chưa được xử lý xong để tải xuống.');
-      return;
-    }
-    this.isParsing.set(true);
-    this.parsingStatus.set(`Đang biên dịch tệp tin sách điện tử chuẩn EPUB 3 cho ${chunk.id}...`);
-    try {
-      await this.exportService.exportChunkEpub(this.fileName(), chunk, this.selectedOutputMode());
-      this.showSuccess(`Tải tệp sách định dạng EPUB (.epub) cho ${chunk.id} thành công!`);
-    } catch (err: any) {
-      this.apiError.set(`Lỗi biên dịch tệp EPUB: ${err.message || err}.`);
     } finally {
       this.isParsing.set(false);
       this.parsingStatus.set('');

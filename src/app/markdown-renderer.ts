@@ -27,11 +27,11 @@ export class MarkdownRenderer {
             output: 'mathml',
             throwOnError: true
           });
-          // Discard wrapping <span class="katex"> to return pure <math> XML structure for native .docx & EPUB
+          // Discard wrapping <span class="katex"> to return pure <math> XML structure for native .docx
           const mathMatch = mathml.match(/<math[\s\S]*?<\/math>/i);
           const cleanMathML = mathMatch ? mathMatch[0] : mathml;
           
-          // Remove annotation tags to completely prevent double-rendering in simple/dumb EPUB readers
+          // Remove annotation tags to completely prevent double-rendering in word processors
           return cleanMathML.replace(/<annotation encoding="application\/x-tex">[\s\S]*?<\/annotation>/g, '');
         } catch (err) {
           console.warn('KaTeX display math parse failed, falling back to clean display container:', err);
@@ -56,11 +56,11 @@ export class MarkdownRenderer {
             output: 'mathml',
             throwOnError: true
           });
-          // Discard wrapping <span class="katex"> to return pure <math> XML structure for native .docx & EPUB
+          // Discard wrapping <span class="katex"> to return pure <math> XML structure for native .docx
           const mathMatch = mathml.match(/<math[\s\S]*?<\/math>/i);
           const cleanMathML = mathMatch ? mathMatch[0] : mathml;
           
-          // Remove annotation tags to completely prevent double-rendering in simple/dumb EPUB readers
+          // Remove annotation tags to completely prevent double-rendering in word processors
           return cleanMathML.replace(/<annotation encoding="application\/x-tex">[\s\S]*?<\/annotation>/g, '');
         } catch (err) {
           console.warn('KaTeX inline math parse failed, falling back to clean inline display:', err);
@@ -292,149 +292,5 @@ export class MarkdownRenderer {
     });
 
     return compiled;
-  }
-
-  /**
-   * Safe Standard XML/XHTML compiler from HTML for strict eBook reader compatibility of EPUB formats
-   */
-  static htmlToXhtml(htmlContent: string): string {
-    if (!htmlContent) return '';
-
-    // Compile LaTeX math to MathML first
-    let compiled = this.compileLatexToMathML(htmlContent);
-
-    // Replace page breaks with clean EPUB page markers
-    const pageBreakRegex = /<!--\s*PAGE(?:_BREAK)?:\s*(\d+)\s*-->/gi;
-    compiled = compiled.replace(pageBreakRegex, (match, pageNum) => {
-      return `\n<div class="page-marker" id="page-${pageNum}"><hr class="page-break" /><span class="page-number">[Trang ${pageNum}]</span></div>\n`;
-    });
-    compiled = compiled.replace(/<!--\s*PAGE_BREAK\s*-->/gi, () => {
-      return `\n<hr class="page-break" />\n`;
-    });
-
-    // Replace image references with relative EPUB paths
-    compiled = compiled.replace(/src=["'](?:!\[)?(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)(?:\])?["']/gi, (match, key) => {
-      const safeKey = key.replace(/[^a-zA-Z0-9-_]/g, '');
-      return `src="images/${safeKey}.png"`;
-    });
-
-    const mdImgRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\]/gi;
-    compiled = compiled.replace(mdImgRegex, (match, key) => {
-      const safeKey = key.replace(/[^a-zA-Z0-9-_]/g, '');
-      return `<img src="images/${safeKey}.png" alt="${key}" />`;
-    });
-
-    // Ensure standard EPUB XHTML compatibility for unclosed valid HTML tags:
-    const rendered = compiled.replace(/<img(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<img${p1} />`;
-    }).replace(/<br(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<br${p1} />`;
-    }).replace(/<hr(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<hr${p1} />`;
-    });
-
-    return rendered;
-  }
-
-  /**
-   * Safe Standard XML/XHTML compiler for strict eBook reader compatibility of EPUB formats
-   */
-  static markdownToXhtml(markdown: string): string {
-    if (!markdown) return '';
-
-    // Compile LaTeX math to MathML first
-    const compiledMarkdown = this.compileLatexToMathML(markdown);
-
-    // Replace page breaks with clean EPUB page markers
-    const pageBreakRegex = /<!--\s*PAGE(?:_BREAK)?:\s*(\d+)\s*-->/gi;
-    let preprocessedXhtml = compiledMarkdown.replace(pageBreakRegex, (match, pageNum) => {
-      return `\n<div class="page-marker" id="page-${pageNum}"><hr class="page-break" /><span class="page-number">[Trang ${pageNum}]</span></div>\n`;
-    });
-    preprocessedXhtml = preprocessedXhtml.replace(/<!--\s*PAGE_BREAK\s*-->/gi, () => {
-      return `\n<hr class="page-break" />\n`;
-    });
-
-    const imageRegex = /!\[(IMG[-_]CHUNK\d+[-_]\d+|IMG[-_]\d+)\]/gi;
-    const processedMarkdown = preprocessedXhtml.replace(imageRegex, (match, key) => {
-      const safeKey = key.replace(/[^a-zA-Z0-9-_]/g, '');
-      const imgFileName = `images/${safeKey}.png`;
-      return `![${key}](${imgFileName})`;
-    });
-
-    // Protect LaTeX math formulas and MathML tags from being modified by marked parser
-    const mathBlocks: string[] = [];
-    let mathPlaceholderIndex = 0;
-
-    const displayMathRegex1 = /\\\[([\s\S]+?)\\\]/g;
-    const displayMathRegex2 = /\$\$([\s\S]+?)\$\$/g;
-    const inlineMathRegex1 = /\\\(([\s\S]+?)\\\)/g;
-    const inlineMathRegex2 = /(?<!\\)\$((?!\s)[^$\n]+?(?<!\\))\$/g;
-    const mathmlRegex = /<math[\s\S]*?<\/math>/gi;
-
-    let preprocessed = processedMarkdown;
-
-    preprocessed = preprocessed.replace(displayMathRegex1, (match) => {
-      const placeholder = `MATHPLACEHOLDERID${mathPlaceholderIndex}END`;
-      mathBlocks.push(match);
-      mathPlaceholderIndex++;
-      return placeholder;
-    });
-    preprocessed = preprocessed.replace(displayMathRegex2, (match) => {
-      const placeholder = `MATHPLACEHOLDERID${mathPlaceholderIndex}END`;
-      mathBlocks.push(match);
-      mathPlaceholderIndex++;
-      return placeholder;
-    });
-
-    preprocessed = preprocessed.replace(inlineMathRegex1, (match) => {
-      const placeholder = `MATHPLACEHOLDERID${mathPlaceholderIndex}END`;
-      mathBlocks.push(match);
-      mathPlaceholderIndex++;
-      return placeholder;
-    });
-    preprocessed = preprocessed.replace(inlineMathRegex2, (match) => {
-      const placeholder = `MATHPLACEHOLDERID${mathPlaceholderIndex}END`;
-      mathBlocks.push(match);
-      mathPlaceholderIndex++;
-      return placeholder;
-    });
-
-    preprocessed = preprocessed.replace(mathmlRegex, (match) => {
-      const placeholder = `MATHPLACEHOLDERID${mathPlaceholderIndex}END`;
-      mathBlocks.push(match);
-      mathPlaceholderIndex++;
-      return placeholder;
-    });
-
-    let rendered = '';
-    try {
-      rendered = marked.parse(preprocessed, { breaks: true, async: false }) as string;
-    } catch(e) {
-      console.warn("marked error", e);
-      rendered = preprocessed;
-    }
-
-    // Restore protected math blocks
-    for (let i = 0; i < mathPlaceholderIndex; i++) {
-      const placeholder = `MATHPLACEHOLDERID${i}END`;
-      rendered = rendered.split(placeholder).join(mathBlocks[i]);
-    }
-    
-    // Ensure standard EPUB XHTML compatibility for unclosed valid HTML tags:
-    rendered = rendered.replace(/<img(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<img${p1} />`;
-    }).replace(/<br(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<br${p1} />`;
-    }).replace(/<hr(.*?)>/g, (match, p1) => {
-      if (p1.endsWith('/')) return match;
-      return `<hr${p1} />`;
-    });
-
-    return rendered;
   }
 }
