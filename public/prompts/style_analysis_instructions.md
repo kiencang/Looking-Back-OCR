@@ -35,6 +35,12 @@ QUY TẮC PHÂN TÍCH:
 - `lineHeight`: Chọn '1.65', '1.7' hoặc '1.75' (mặc định '1.7' tương ứng với cỡ chữ 18px giúp dòng chữ thông thoáng).
 - `textAlign`: Chọn 'justify' (cho văn xuôi/sách đọc) hoặc 'left' (cho sách kỹ thuật/danh mục).
 - `paragraphSpacing`: Chọn '14px', '16px' hoặc '18px' (mặc định '16px').
+- `h1FontSize`: Tỷ lệ cỡ chữ H1 (Chương / Tiêu đề lớn nhất) so với chữ thân bài (Ví dụ: '2.1em', '2.2em', '2.4em').
+- `h1FontWeight`: Độ đậm chữ H1 (Ví dụ: '700', '800').
+- `h2FontSize`: Tỷ lệ cỡ chữ H2 (Mục lớn / Bài viết) so với chữ thân bài (Ví dụ: '1.5em', '1.6em', '1.7em').
+- `h2FontWeight`: Độ đậm chữ H2 (Ví dụ: '700').
+- `h3FontSize`: Tỷ lệ cỡ chữ H3 (Mục nhỏ / Tiêu đề phụ) so với chữ thân bài (Ví dụ: '1.25em', '1.3em', '1.4em').
+- `h3FontWeight`: Độ đậm chữ H3 (Ví dụ: '600', '700').
 </rules>
 
 <output_format>
@@ -46,6 +52,12 @@ BẮT BUỘC TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (KHÔNG THÊM BẤT
   "bodyFontSize": "18px",
   "lineHeight": "1.7",
   "textAlign": "justify",
-  "paragraphSpacing": "16px"
+  "paragraphSpacing": "16px",
+  "h1FontSize": "2.1em",
+  "h1FontWeight": "700",
+  "h2FontSize": "1.6em",
+  "h2FontWeight": "700",
+  "h3FontSize": "1.3em",
+  "h3FontWeight": "600"
 }
 </output_format>

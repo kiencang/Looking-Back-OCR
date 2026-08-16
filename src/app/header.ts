@@ -13,6 +13,14 @@ export interface DocumentStyleProfile {
   textAlign: 'justify' | 'left';
   paragraphSpacing: string;
   styleArchetype: string;
+  h1FontSize?: string;
+  h1FontWeight?: string;
+  h2FontSize?: string;
+  h2FontWeight?: string;
+  h3FontSize?: string;
+  h3FontWeight?: string;
+  h4FontSize?: string;
+  h4FontWeight?: string;
   analyzedSampleChunks?: number[];
   analyzedAt?: number;
 }
@@ -24,7 +32,15 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
   lineHeight: '1.7',
   textAlign: 'justify',
   paragraphSpacing: '16px',
-  styleArchetype: 'Văn học / Sách tiêu chuẩn'
+  styleArchetype: 'Văn học / Sách tiêu chuẩn',
+  h1FontSize: '2.1em',
+  h1FontWeight: '700',
+  h2FontSize: '1.6em',
+  h2FontWeight: '700',
+  h3FontSize: '1.3em',
+  h3FontWeight: '600',
+  h4FontSize: '1.1em',
+  h4FontWeight: '600'
 };
 
 @Component({

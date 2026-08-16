@@ -220,6 +220,32 @@ import { OutputMode } from './header';
                   </div>
                 </div>
 
+                <!-- Heading Scale System Preview -->
+                <div class="pt-2 mt-1 border-t border-white/5">
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-1.5 flex items-center gap-1.5">
+                    <mat-icon class="!w-3 !h-3 !text-[12px] text-indigo-400">format_size</mat-icon>
+                    Tỷ lệ tiêu đề (Heading Scale)
+                  </span>
+                  <div class="grid grid-cols-4 gap-1.5 text-center font-mono">
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
+                      <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H1</span>
+                      <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h1FontSize || '2.1em' }}</span>
+                    </div>
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
+                      <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H2</span>
+                      <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h2FontSize || '1.6em' }}</span>
+                    </div>
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
+                      <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H3</span>
+                      <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h3FontSize || '1.3em' }}</span>
+                    </div>
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md py-1.5 px-1">
+                      <span class="text-[8px] font-bold text-indigo-300 block mb-0.5">H4</span>
+                      <span class="text-[10px] font-semibold text-indigo-200">{{ profile.h4FontSize || '1.1em' }}</span>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Reference Sample Chunks -->
                 @if (profile.analyzedSampleChunks && profile.analyzedSampleChunks.length) {
                   <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-white/5 text-[9px] font-mono text-slate-400">
