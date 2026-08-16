@@ -3,7 +3,7 @@
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
-Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini.
+Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini hoặc Meta AI.
 
 Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng ngưỡng miễn phí hàng ngày tương đổi rộng rãi của họ).
 
