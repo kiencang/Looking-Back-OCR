@@ -5,7 +5,10 @@
 
 Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini hoặc Meta AI.
 
-Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng ngưỡng miễn phí hàng ngày tương đổi rộng rãi của họ).
+- Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng ngưỡng miễn phí hàng ngày tương đổi rộng rãi của Gemini).
+- Bản web: https://looking-back-ocr.wpsila.com/ (chỉ key trả phí mới dùng được).
+
+2 bản trên là một, và có chất lượng như nhau.
 
 ## Tại sao tồn tại
 Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do **bản chất sách gốc bị mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
