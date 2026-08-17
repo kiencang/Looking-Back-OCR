@@ -21,13 +21,6 @@ Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (c�
 
 Điểm khác biệt cơ bản là Looking-Back-OCR tập trung vào sách xưa, và nó xuất ra nhiều định dạng hơn, cũng như mục đích là để con người đọc trực tiếp.
 
-## Hai kiểu PDF
-Có 2 kiểu định dạng sách PDF chính, là sách `scan` và loại thông thường (mà trong ứng dụng gọi là `tiêu chuẩn`).
-
-Đa số sách xưa đều sẽ là định dạng PDF scan, và mặc định ở ứng dụng này bật chế độ PDF scan. Nó sẽ OCR được văn bản trong sách và tái tạo lại.
-
-PDF tiêu chuẩn có cái lợi là sẽ bóc tách được ảnh ở trong file PDF, còn file PDF scan thì chính bản thân nó cũng như dạng ảnh rồi, và công cụ này sẽ không bóc tách được ảnh nằm trong PDF scan.
-
 ## Hai kiểu tái tạo
 Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
 - **HTML/CSS**: định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản HTML/CSS cũng chia 2 cột. Không chỉ có thế, nó cũng tìm font chữ có hình dáng `hao hao` nội dung gốc;
