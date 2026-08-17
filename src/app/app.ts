@@ -71,6 +71,7 @@ export class App {
   successMessage = this.docService.successMessage;
   clientApiKey = this.docService.clientApiKey;
   metaApiKey = this.docService.metaApiKey;
+  metaModelName = this.docService.metaModelName;
 
   fileName = this.docService.fileName;
   fileSize = this.docService.fileSize;
@@ -143,6 +144,9 @@ export class App {
 
       const savedMetaKey = localStorage.getItem('user_meta_api_key') || '';
       this.metaApiKey.set(savedMetaKey);
+
+      const savedMetaModel = localStorage.getItem('custom_meta_model_name')?.trim() || 'muse-spark-1.2-contributor';
+      this.metaModelName.set(savedMetaModel);
 
       // Global zoom helper for rendered HTML images
       (window as any).zoomPdfImage = (src: string) => {
@@ -218,7 +222,7 @@ export class App {
     this.showApiKeyModal.set(true);
   }
 
-  saveApiKeys(keys: {geminiKey: string, metaKey: string}) {
+  saveApiKeys(keys: {geminiKey: string, metaKey: string, metaModel?: string}) {
     const trimmedGemini = keys.geminiKey.trim();
     if (trimmedGemini && (/[\u0080-\uFFFF]/.test(trimmedGemini) || trimmedGemini.includes(' '))) {
       this.apiError.set('🔴 Lỗi định dạng API Key: API Key Gemini bạn nhập chứa ký tự không hợp lệ. Vui lòng kiểm tra lại.');
@@ -236,9 +240,13 @@ export class App {
     
     this.metaApiKey.set(trimmedMeta);
     localStorage.setItem('user_meta_api_key', trimmedMeta);
+
+    const modelName = keys.metaModel?.trim() || 'muse-spark-1.2-contributor';
+    this.metaModelName.set(modelName);
+    localStorage.setItem('custom_meta_model_name', modelName);
     
     this.showApiKeyModal.set(false);
-    this.showSuccess('Đã lưu cấu hình API Key thành công.');
+    this.showSuccess('Đã lưu cấu hình API Key và Model thành công.');
   }
 
   clearApiKeyModal() {
@@ -247,6 +255,9 @@ export class App {
     
     this.metaApiKey.set('');
     localStorage.removeItem('user_meta_api_key');
+
+    this.metaModelName.set('muse-spark-1.2-contributor');
+    localStorage.removeItem('custom_meta_model_name');
     
     this.showApiKeyModal.set(false);
     this.showSuccess('Đã xóa cấu hình API Key cá nhân.');

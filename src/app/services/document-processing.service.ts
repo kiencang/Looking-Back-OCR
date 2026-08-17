@@ -4,7 +4,7 @@ import { PdfProcessor, PdfPageData } from '../pdf-processor';
 import { AiPromptOptimizer } from '../ai-prompt-optimizer';
 import { ModelType, OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
 import { translateGeminiError } from '../utils/gemini-error.util';
-import { HistoryService } from './history.service';
+import { HistoryService, generateHistoryId } from './history.service';
 
 export interface PdfChunk {
   id: string;
@@ -42,6 +42,7 @@ export class DocumentProcessingService {
   selectedOutputMode = signal<OutputMode>('html');
   clientApiKey = signal('');
   metaApiKey = signal('');
+  metaModelName = signal('muse-spark-1.2-contributor');
 
   // Execution State
   isParsing = signal(false);
@@ -148,7 +149,8 @@ export class DocumentProcessingService {
       const chunks = this.pdfChunks();
       if (!file || chunks.length === 0) return;
 
-      await this.historyService.saveCurrentProgressToHistory({
+      const savedId = await this.historyService.saveCurrentProgressToHistory({
+        id: this.currentHistoryId() || undefined,
         fileName: this.fileName(),
         fileSize: this.fileSize(),
         pdfPages: this.pdfPages(),
@@ -158,6 +160,9 @@ export class DocumentProcessingService {
         documentStyleProfile: this.documentStyleProfile(),
         pdfFileBlob: file
       });
+      if (savedId && !this.currentHistoryId()) {
+        this.currentHistoryId.set(savedId);
+      }
     } catch (e) {
       console.warn('Lỗi khi lưu lịch sử tiến trình:', e);
     } finally {
@@ -242,7 +247,7 @@ export class DocumentProcessingService {
     this.selectedChunkIndex.set(0);
     this.documentStyleProfile.set(null);
 
-    const newHistoryId = `${Date.now()}_${file.name}`;
+    const newHistoryId = generateHistoryId();
     this.currentHistoryId.set(newHistoryId);
 
     if (isDuplicate) {
@@ -250,9 +255,6 @@ export class DocumentProcessingService {
     }
 
     try {
-      this.parsingStatus.set('Đang dọn dẹp bộ nhớ ảnh cũ trong IndexedDB...');
-      await this.pdfProcessor.clearStoredImagesForFile(file.name);
-
       const { pages, chunks } = await this.pdfProcessor.extractPdfChunks(
         file,
         (msg: string) => this.parsingStatus.set(msg)
@@ -343,8 +345,9 @@ export class DocumentProcessingService {
 
     const file = this.pdfFile();
     const chunks = this.pdfChunks();
-    const modelName = this.selectedModel();
-    const isMeta = modelName === 'muse-spark-1.2-contributor';
+    const modelType = this.selectedModel();
+    const isMeta = modelType === 'muse-spark-1.2-contributor';
+    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.2-contributor') : modelType;
     const apiKey = (isMeta ? this.metaApiKey() : this.clientApiKey()).trim();
 
     if (!file || chunks.length === 0 || !apiKey) {
@@ -357,7 +360,7 @@ export class DocumentProcessingService {
     this.parsingStatus.set('Đang phân tích phong cách thiết kế & nhận diện bộ font chuẩn toàn tài liệu...');
 
     try {
-      const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, modelName, file, chunks);
+      const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, effectiveModelName, file, chunks);
       this.documentStyleProfile.set(profile);
       await this.saveCurrentProgressToHistory();
       return profile;
@@ -381,8 +384,9 @@ export class DocumentProcessingService {
       throw new Error('Không tìm thấy file nguồn hoặc phần phân chia.');
     }
 
-    const modelName = this.selectedModel();
-    const isMeta = modelName === 'muse-spark-1.2-contributor';
+    const modelType = this.selectedModel();
+    const isMeta = modelType === 'muse-spark-1.2-contributor';
+    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.2-contributor') : modelType;
 
     let apiKey = '';
     if (isMeta) {
@@ -420,7 +424,7 @@ export class DocumentProcessingService {
     const { rawMarkdown, inputTokens, outputTokens } = isMeta
       ? await this.aiOptimizer.optimizeChunkWithMeta(
           apiKey,
-          modelName,
+          effectiveModelName,
           file,
           chunk,
           outputMode,
@@ -428,7 +432,7 @@ export class DocumentProcessingService {
         )
       : await this.aiOptimizer.optimizeChunk(
           apiKey,
-          modelName,
+          effectiveModelName,
           file,
           chunk,
           outputMode,

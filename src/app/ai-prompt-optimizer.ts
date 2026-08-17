@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { PDFDocument } from 'pdf-lib';
-import OpenAI from 'openai';
 import { PdfChunk } from './services/document-processing.service';
 import { DocumentStyleProfile, DEFAULT_STYLE_PROFILE, OutputMode } from './header';
+import { GeminiApiService } from './services/gemini-api.service';
+import { MetaAiService } from './services/meta-ai.service';
 
 export type { OutputMode };
 
@@ -11,6 +12,8 @@ export type { OutputMode };
   providedIn: 'root'
 })
 export class AiPromptOptimizer {
+  private geminiService = inject(GeminiApiService);
+  private metaService = inject(MetaAiService);
   private promptCache = new Map<string, string>();
 
   /**
@@ -61,86 +64,80 @@ export class AiPromptOptimizer {
   }
 
   /**
-   * Helper function to convert Uint8Array back to Base64 in standard client-side sandbox
+   * Helper to convert Uint8Array into clean base64 string
    */
-  async uint8ArrayToBase64(arr: Uint8Array): Promise<string> {
-    const blob = new Blob([arr as any], { type: 'application/pdf' });
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result as string;
-        resolve(dataUrl.split(',')[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  private uint8ArrayToBase64(bytes: Uint8Array): string {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
   }
 
   /**
-   * Extracts a specific range of pages (1-indexed) and builds a sliced PDF file (Base64)
+   * Slices a range of pages from the master PDF using pdf-lib and returns as a Base64-encoded PDF
    */
-  async splitPdf(file: File, startPage: number, endPage: number): Promise<string> {
+  async splitPdf(file: File, startPageNum: number, endPageNum: number): Promise<string> {
     const arrayBuffer = await file.arrayBuffer();
-    
-    // Load source document
     const srcDoc = await PDFDocument.load(arrayBuffer);
-    
-    // Create new sliced document
     const subDoc = await PDFDocument.create();
-    
-    const pageIndices: number[] = [];
+
     const pageCount = srcDoc.getPageCount();
-    
-    for (let i = startPage; i <= endPage; i++) {
-      if (i - 1 >= 0 && i - 1 < pageCount) {
-        pageIndices.push(i - 1);
+    const pageIndicesToCopy: number[] = [];
+
+    for (let pageNum = startPageNum; pageNum <= endPageNum; pageNum++) {
+      const idx = pageNum - 1;
+      if (idx >= 0 && idx < pageCount) {
+        pageIndicesToCopy.push(idx);
       }
     }
-    
-    if (pageIndices.length === 0) {
-      throw new Error(`Khoảng trang ${startPage} - ${endPage} không hợp lệ.`);
+
+    if (pageIndicesToCopy.length === 0) {
+      return this.fileToBase64(file);
     }
-    
-    // Copy and append pages
-    const copiedPages = await subDoc.copyPages(srcDoc, pageIndices);
+
+    const copiedPages = await subDoc.copyPages(srcDoc, pageIndicesToCopy);
     copiedPages.forEach((page) => subDoc.addPage(page));
-    
+
     const subPdfBytes = await subDoc.save();
     return this.uint8ArrayToBase64(subPdfBytes);
   }
 
   /**
-   * Formats unified design tokens block in XML format to strictly constrain chunk typography & layout
+   * Builds the strict design token instruction block to inject into system/user prompts
    */
   formatDesignTokensBlock(profile: DocumentStyleProfile): string {
-    const isSerif = ['Lora', 'Merriweather', 'EB Garamond', 'Playfair Display'].includes(profile.bodyFont);
-    const bodyFontStack = isSerif ? `"${profile.bodyFont}", Georgia, serif` : `"${profile.bodyFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-    const isHeadingSerif = ['Playfair Display', 'Lora', 'EB Garamond', 'Merriweather'].includes(profile.headingFont);
-    const headingFontStack = isHeadingSerif 
-      ? `"${profile.headingFont}", Georgia, serif` 
-      : `"${profile.headingFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    let h1Size = profile.h1FontSize;
+    let h2Size = profile.h2FontSize;
+    let h3Size = profile.h3FontSize;
 
-    const h1Size = profile.h1FontSize || '2.1em';
-    const h1Weight = profile.h1FontWeight || '700';
-    const h2Size = profile.h2FontSize || '1.6em';
-    const h2Weight = profile.h2FontWeight || '700';
-    const h3Size = profile.h3FontSize || '1.3em';
-    const h3Weight = profile.h3FontWeight || '600';
+    // Fallbacks if missing
+    if (!h1Size || h1Size === '2.1em') {
+      if (profile.styleArchetype.includes('Thơ ca') || profile.styleArchetype.includes('Thanh lịch')) {
+        h1Size = '2.2em'; h2Size = '1.65em'; h3Size = '1.25em';
+      } else if (profile.styleArchetype.includes('Khoa học') || profile.styleArchetype.includes('Kỹ thuật')) {
+        h1Size = '1.8em'; h2Size = '1.4em'; h3Size = '1.15em';
+      } else if (profile.styleArchetype.includes('Hiện đại') || profile.styleArchetype.includes('Báo chí')) {
+        h1Size = '2.4em'; h2Size = '1.75em'; h3Size = '1.3em';
+      } else {
+        h1Size = '2.0em'; h2Size = '1.5em'; h3Size = '1.2em';
+      }
+    }
 
     return `<document_design_tokens>
-BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁCH (BẮT BUỘC TUÂN THỦ 100%):
-- Loại hình tài liệu: ${profile.styleArchetype}
-- Phông chữ nội dung chính (Body Font): ${bodyFontStack} (BẮT BUỘC dùng cho toàn bộ thẻ <p>, <li>, <td>, <dd>, văn xuôi).
-- Phông chữ tiêu đề (Heading Font): ${headingFontStack} (BẮT BUỘC dùng cho các thẻ <h1>, <h2>, <h3>, <h4>, <h5>, <h6>).
-- Cỡ chữ nội dung chính (Body Size): ${profile.bodyFontSize} (Mọi đoạn văn xuôi bắt buộc dùng đúng cỡ này, không tự ý thay đổi).
-- Độ giãn dòng (Line Height): ${profile.lineHeight}
-- Căn lề văn bản (Text Align): ${profile.textAlign}
-- Khoảng cách đoạn văn (Paragraph Margin): margin-bottom: ${profile.paragraphSpacing};
-
-- QUY CHUẨN KÍCH THƯỚC TIÊU ĐỀ (HEADING SCALE SYSTEM - TỶ LỆ CỐ ĐỊNH):
-  * <h1> (Chương / Tiêu đề chính): font-size: ${h1Size}; font-weight: ${h1Weight}; font-family: ${headingFontStack};
-  * <h2> (Mục lớn / Bài viết): font-size: ${h2Size}; font-weight: ${h2Weight}; font-family: ${headingFontStack};
-  * <h3> (Mục nhỏ / Tiêu đề phụ): font-size: ${h3Size}; font-weight: ${h3Weight}; font-family: ${headingFontStack};
+ÁP DỤNG QUY CHUẨN THIẾT KẾ ĐỒNG NHẤT CHO TOÀN BỘ TÀI LIỆU:
+- Thể loại tài liệu: ${profile.styleArchetype}
+- Phông chữ thân bài (bodyFont): "${profile.bodyFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
+- Phông chữ tiêu đề (headingFont): "${profile.headingFont}", serif
+- Cỡ chữ thân bài: ${profile.bodyFontSize}
+- Chiều cao dòng (lineHeight): ${profile.lineHeight}
+- Căn lề đoạn văn: ${profile.textAlign === 'justify' ? 'justify (căn đều hai bên)' : 'left (căn trái)'}
+- Khoảng cách giữa các đoạn: ${profile.paragraphSpacing}
+- Hệ thống tiêu đề chuẩn hóa:
+  + Cấp 1 (H1): font-size: ${h1Size}; font-weight: ${profile.h1FontWeight || '700'}; font-family: "${profile.headingFont}", serif;
+  + Cấp 2 (H2): font-size: ${h2Size}; font-weight: ${profile.h2FontWeight || '700'}; font-family: "${profile.headingFont}", serif;
+  + Cấp 3 (H3): font-size: ${h3Size}; font-weight: ${profile.h3FontWeight || '600'}; font-family: "${profile.headingFont}", serif;
 
 * NGUYÊN TẮC BẤT BIẾN KHI XUẤT HTML/CSS:
 1. KHÔNG tự ý chèn font lạ nào khác ngoài "${profile.bodyFont}" và "${profile.headingFont}".
@@ -151,18 +148,19 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
   }
 
   /**
-   * Helper to merge multiple sample page ranges into a single sample PDF Base64 string
+   * Helper to build sample PDF containing pages from sample chunks
    */
-  async buildSamplePdf(file: File, sampleChunks: PdfChunk[]): Promise<string> {
+  private async buildSamplePdf(file: File, sampleChunks: PdfChunk[]): Promise<string> {
     const arrayBuffer = await file.arrayBuffer();
     const srcDoc = await PDFDocument.load(arrayBuffer);
     const subDoc = await PDFDocument.create();
-    const pageCount = srcDoc.getPageCount();
 
+    const pageCount = srcDoc.getPageCount();
     const pageIndicesToCopy: number[] = [];
+
     for (const chunk of sampleChunks) {
-      for (let p = chunk.startPageNum; p <= chunk.endPageNum; p++) {
-        const idx = p - 1;
+      for (let pageNum = chunk.startPageNum; pageNum <= chunk.endPageNum; pageNum++) {
+        const idx = pageNum - 1;
         if (idx >= 0 && idx < pageCount && !pageIndicesToCopy.includes(idx)) {
           pageIndicesToCopy.push(idx);
         }
@@ -243,79 +241,15 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
 
     // --- NHÁNH 1: META AI (MUSE) ---
     if (modelName === 'muse-spark-1.2-contributor' || modelName.startsWith('muse-')) {
-      try {
-        const samplePdfBase64 = await this.buildSamplePdf(file, sampleChunks);
-        const fileDataUri = samplePdfBase64.startsWith('data:')
-          ? samplePdfBase64
-          : `data:application/pdf;base64,${samplePdfBase64}`;
-
-        const metaModelTarget = modelName;
-        const client = new OpenAI({
-          baseURL: 'https://api.meta.ai/v1',
-          apiKey: apiKey,
-          dangerouslyAllowBrowser: true
-        });
-
-        const resData: any = await (client as any).responses.create({
-          model: metaModelTarget,
-          temperature: 0.1,
-          top_p: 1.0,
-          reasoning: {
-            effort: 'high'
-          },
-          input: [
-            {
-              type: 'message',
-              role: 'user',
-              content: [
-                {
-                  type: 'input_text',
-                  text: analysisPrompt
-                },
-                {
-                  type: 'input_file',
-                  filename: 'sample_style_analysis_chunks.pdf',
-                  file_data: fileDataUri
-                }
-              ]
-            }
-          ]
-        });
-
-        let textOutput = '';
-        if (typeof resData?.output_text === 'string' && resData.output_text.trim()) {
-          textOutput = resData.output_text;
-        } else if (Array.isArray(resData?.output) && resData.output.length > 0) {
-          const messageOutput = resData.output.find((out: any) => out?.type === 'message' && out?.role === 'assistant');
-          if (messageOutput && Array.isArray(messageOutput.content)) {
-            textOutput = messageOutput.content.map((c: any) => c?.text || c?.val || c?.content || '').join('');
-          }
-          if (!textOutput) {
-            const firstOut = resData.output[0] as any;
-            if (typeof firstOut === 'string') {
-              textOutput = firstOut;
-            } else if (firstOut && typeof firstOut === 'object' && 'content' in firstOut) {
-              const content = (firstOut as { content: any }).content;
-              if (typeof content === 'string') {
-                textOutput = content;
-              } else if (Array.isArray(content)) {
-                textOutput = content.map((c: any) => (c?.text || c?.val || c?.content || '') as string).join('');
-              }
-            }
-          }
-        } else if (Array.isArray(resData?.choices) && (resData.choices[0] as any)?.message?.content) {
-          textOutput = (resData.choices[0] as any).message.content;
-        } else if (typeof resData?.text === 'string') {
-          textOutput = resData.text;
-        }
-
-        if (textOutput) {
-          return parseProfileFromJson(textOutput);
-        }
-      } catch (metaErr) {
-        console.warn('Lỗi phân tích phong cách qua Meta AI, sử dụng cấu hình mặc định:', metaErr);
-        return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
-      }
+      const samplePdfBase64 = await this.buildSamplePdf(file, sampleChunks);
+      return this.metaService.analyzeDocumentStyle(
+        apiKey,
+        modelName,
+        samplePdfBase64,
+        analysisPrompt,
+        sampleIndices,
+        parseProfileFromJson
+      );
     }
 
     // --- NHÁNH 2: GOOGLE GEMINI ---
@@ -350,42 +284,14 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       }
     }
 
-    parts.push({ text: analysisPrompt });
-
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts }],
-          generationConfig: {
-            temperature: 0.1,
-            responseMimeType: 'application/json',
-            thinkingConfig: { thinkingLevel: 'HIGH' }
-          },
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        console.warn('Lỗi API phân tích phong cách Gemini, sử dụng cấu hình mặc định:', response.status);
-        return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
-      }
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      return parseProfileFromJson(rawText);
-    } catch (err) {
-      console.warn('Lỗi phân tích phong cách thiết kế tài liệu Gemini, sử dụng cấu hình mặc định:', err);
-      return { ...DEFAULT_STYLE_PROFILE, analyzedSampleChunks: sampleIndices, analyzedAt: Date.now() };
-    }
+    return this.geminiService.analyzeDocumentStyle(
+      apiKey,
+      modelName,
+      parts,
+      analysisPrompt,
+      sampleIndices,
+      parseProfileFromJson
+    );
   }
 
   /**
@@ -464,94 +370,7 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
     const basePrompt = await this.getPromptTemplate(outputMode);
     const { parts, systemInstructionText } = this.buildMultimodalPayload(pdfBase64, basePrompt, chunk, outputMode, styleProfile);
 
-    // Call individual content generation REST endpoint
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-    const requestBody: any = {
-      contents: [
-        {
-          parts: parts
-        }
-      ],
-      generationConfig: {
-        temperature: 0.1,
-        thinkingConfig: { thinkingLevel: 'HIGH' }
-      },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
-      ]
-    };
-
-    if (systemInstructionText) {
-      requestBody.systemInstruction = {
-        parts: [{ text: systemInstructionText }]
-      };
-    }
-
-    const apiResponse = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json().catch(() => ({}));
-      const originalError = errorData?.error?.message || `HTTP ${apiResponse.status} ${apiResponse.statusText}`;
-      const statusDetails = errorData?.error?.status || '';
-      throw new Error(`Google API (HTTP ${apiResponse.status}${statusDetails ? ' - ' + statusDetails : ''}): ${originalError}`);
-    }
-
-    const resData = await apiResponse.json();
-    let rawOutput = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    if (!rawOutput) {
-      const promptBlockReason = resData?.promptFeedback?.blockReason;
-      if (promptBlockReason) {
-        throw new Error(`Yêu cầu bị chặn từ Google Gemini (Prompt Blocked: ${promptBlockReason})`);
-      }
-
-      const candidateObj = resData?.candidates?.[0];
-      const finishReason = candidateObj?.finishReason;
-      if (finishReason) {
-        switch (finishReason) {
-          case 'SAFETY':
-            throw new Error('Lỗi từ AI: Tài liệu bị bộ lọc an toàn Google từ chối xử lý (SAFETY).');
-          case 'RECITATION':
-            throw new Error('Lỗi từ AI: Tài liệu bị từ chối do nghi ngờ bản quyền/sao chép (RECITATION).');
-          case 'MAX_TOKENS':
-            throw new Error('Lỗi từ AI: Độ dài vượt quá số token tối đa cho phép (MAX_TOKENS).');
-          case 'OTHER':
-            throw new Error('Lỗi từ AI: AI từ chối phản hồi vì lý do không xác định (OTHER).');
-          default:
-            throw new Error(`Lỗi từ AI: AI từ chối phản hồi (Lý do: ${finishReason}).`);
-        }
-      } else {
-        const jsonDetail = JSON.stringify(resData);
-        throw new Error(`Lỗi từ AI: Không nhận được dữ liệu văn bản phản hồi. Chi tiết từ Gemini API: ${jsonDetail}`);
-      }
-    }
-
-    // Secondary sanitization: remove Markdown/HTML code fences if returned despite strict instructions
-    if (rawOutput.includes('```')) {
-      const match = rawOutput.match(/```(?:markdown|html|xml)?([\s\S]*?)```/i);
-      if (match && match[1]) {
-        rawOutput = match[1].trim();
-      }
-    }
-
-    const inputTokens = resData?.usageMetadata?.promptTokenCount || 0;
-    const outputTokens = resData?.usageMetadata?.candidatesTokenCount || 0;
-
-    return {
-      rawMarkdown: rawOutput,
-      inputTokens,
-      outputTokens
-    };
+    return this.geminiService.optimizeChunk(apiKey, modelName, parts, systemInstructionText);
   }
 
   /**
@@ -594,135 +413,13 @@ BỘ QUY CHUẨN THIẾT KẾ ĐÃ ĐƯỢC XÁC LẬP CHO TOÀN BỘ CUỐN SÁ
       userPromptText = `${basePrompt}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
     }
 
-    const inputMessages: any[] = [];
-    if (systemInstructionText) {
-      inputMessages.push({
-        role: 'system',
-        content: [
-          {
-            type: 'input_text',
-            text: systemInstructionText
-          }
-        ]
-      });
-    }
-
-    inputMessages.push({
-      role: 'user',
-      content: [
-        {
-          type: 'input_file',
-          file_data: pdfBase64,
-          mime_type: 'application/pdf'
-        },
-        {
-          type: 'input_text',
-          text: userPromptText
-        }
-      ]
-    });
-
-    const metaModelTarget = modelName;
-
-    // Initialize OpenAI client configured for Meta AI endpoint
-    const client = new OpenAI({
-      baseURL: 'https://api.meta.ai/v1',
-      apiKey: apiKey,
-      dangerouslyAllowBrowser: true
-    });
-
-    const fileDataUri = pdfBase64.startsWith('data:') ? pdfBase64 : `data:application/pdf;base64,${pdfBase64}`;
-
-    let resData: any;
-    try {
-      resData = await (client as any).responses.create({
-        model: metaModelTarget,
-        temperature: 0.1,
-        top_p: 1.0,
-        reasoning: {
-          effort: 'high'
-        },
-        input: [
-          {
-            type: 'message',
-            role: 'user',
-            content: [
-              {
-                type: 'input_text',
-                text: `${systemInstructionText ? systemInstructionText + '\n\n' : ''}${userPromptText}`
-              },
-              {
-                type: 'input_file',
-                filename: `chunk_${chunk.index + 1}_pages_${chunk.startPageNum}-${chunk.endPageNum}.pdf`,
-                file_data: fileDataUri
-              }
-            ]
-          }
-        ]
-      });
-    } catch (apiError: any) {
-      const errMessage = apiError?.message || apiError?.error?.message || JSON.stringify(apiError);
-      throw new Error(`Meta AI API Error: ${errMessage}`);
-    }
-
-    let textOutput = '';
-    if (typeof resData?.output_text === 'string' && resData.output_text.trim()) {
-      textOutput = resData.output_text;
-    } else if (Array.isArray(resData?.output) && resData.output.length > 0) {
-      const messageOutput = resData.output.find((out: any) => out?.type === 'message' && out?.role === 'assistant');
-      if (messageOutput && Array.isArray(messageOutput.content)) {
-        textOutput = messageOutput.content.map((c: any) => c?.text || c?.val || c?.content || '').join('');
-      }
-
-      if (!textOutput) {
-        const firstOut = resData.output[0] as any;
-        if (typeof firstOut === 'string') {
-          textOutput = firstOut;
-        } else if (firstOut && typeof firstOut === 'object' && 'content' in firstOut) {
-          const content = (firstOut as { content: any }).content;
-          if (typeof content === 'string') {
-            textOutput = content;
-          } else if (Array.isArray(content)) {
-            textOutput = content.map((c: any) => (c?.text || c?.val || c?.content || '') as string).join('');
-          }
-        }
-      }
-    } else if (Array.isArray(resData?.choices) && (resData.choices[0] as any)?.message?.content) {
-      textOutput = (resData.choices[0] as any).message.content;
-    } else if (typeof resData?.text === 'string') {
-      textOutput = resData.text;
-    }
-
-    if (!textOutput) {
-      const rawJsonString = JSON.stringify(resData);
-      throw new Error(`Meta AI không tìm thấy nội dung văn bản phản hồi. Chi tiết phản hồi: ${rawJsonString?.substring(0, 300)}...`);
-    }
-
-    // Secondary sanitization: remove Markdown/HTML code fences if returned
-    if (textOutput.includes('```')) {
-      const match = textOutput.match(/```(?:markdown|html|xml)?([\s\S]*?)```/i);
-      if (match && match[1]) {
-        textOutput = match[1].trim();
-      }
-    }
-
-    const usage: any = resData?.usage || resData?.usageMetadata || {};
-    let inputTokens = usage?.prompt_tokens ?? usage?.input_tokens ?? usage?.input_token_count ?? (typeof resData?.input_tokens === 'number' ? resData.input_tokens : (typeof resData?.prompt_tokens === 'number' ? resData.prompt_tokens : 0));
-    let outputTokens = usage?.completion_tokens ?? usage?.output_tokens ?? usage?.output_token_count ?? (typeof resData?.output_tokens === 'number' ? resData.output_tokens : (typeof resData?.completion_tokens === 'number' ? resData.completion_tokens : 0));
-
-    // Fallback if API response did not include token counters
-    if (typeof inputTokens !== 'number' || inputTokens <= 0) {
-      const pageCount = (chunk.endPageNum - chunk.startPageNum + 1) || 1;
-      inputTokens = pageCount * 500 + Math.ceil(userPromptText.length / 4);
-    }
-    if (typeof outputTokens !== 'number' || outputTokens <= 0) {
-      outputTokens = Math.max(1, Math.ceil(textOutput.length / 4));
-    }
-
-    return {
-      rawMarkdown: textOutput,
-      inputTokens: typeof inputTokens === 'number' ? inputTokens : 0,
-      outputTokens: typeof outputTokens === 'number' ? outputTokens : 0
-    };
+    return this.metaService.optimizeChunk(
+      apiKey,
+      modelName,
+      pdfBase64,
+      chunk,
+      systemInstructionText,
+      userPromptText
+    );
   }
 }

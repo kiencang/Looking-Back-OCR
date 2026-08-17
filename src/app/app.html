@@ -130,6 +130,7 @@
     <app-api-key-modal
       [clientApiKey]="clientApiKey()"
       [metaApiKey]="metaApiKey()"
+      [metaModel]="metaModelName()"
       (closeModal)="showApiKeyModal.set(false)"
       (save)="saveApiKeys($event)"
       (clearKey)="clearApiKeyModal()">

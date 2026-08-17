@@ -20,6 +20,22 @@ export interface HistoryItem {
   pdfFileBlob?: Blob;
 }
 
+/**
+ * Sinh ID duy nhất, ngắn gọn, tương thích 100% mọi trình duyệt (Timestamp Base36 + Crypto/Random Hex)
+ */
+export function generateHistoryId(): string {
+  const timePart = Date.now().toString(36);
+  let randomPart = '';
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = new Uint8Array(4);
+    crypto.getRandomValues(bytes);
+    randomPart = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  } else {
+    randomPart = Math.random().toString(36).substring(2, 10);
+  }
+  return `hist_${timePart}_${randomPart}`;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,15 +71,15 @@ export class HistoryService {
       const allItems = await this.pdfDb.getAllHistoryItems();
       const sorted = (allItems || []).sort((a: any, b: any) => (b.timestamp || 0) - (a.timestamp || 0));
       
-      // Trim to maximum 10 items
-      if (sorted.length > 10) {
-        const toDelete = sorted.slice(10);
+      // Trim to maximum 15 items
+      if (sorted.length > 15) {
+        const toDelete = sorted.slice(15);
         for (const oldItem of toDelete) {
           if (oldItem.id) {
             await this.pdfDb.deleteHistoryItem(oldItem.id);
           }
         }
-        this.historyItems.set(sorted.slice(0, 10));
+        this.historyItems.set(sorted.slice(0, 15));
       } else {
         this.historyItems.set(sorted);
       }
@@ -83,6 +99,7 @@ export class HistoryService {
   }
 
   async saveCurrentProgressToHistory(docState: {
+    id?: string;
     fileName: string;
     fileSize: string;
     pdfPages: any[];
@@ -91,13 +108,15 @@ export class HistoryService {
     selectedOutputMode: string;
     documentStyleProfile?: any;
     pdfFileBlob?: Blob;
-  }): Promise<void> {
-    if (!docState.fileName || docState.pdfChunks.length === 0) return;
+  }): Promise<string> {
+    if (!docState.fileName || docState.pdfChunks.length === 0) return '';
 
     try {
       const completedCount = docState.pdfChunks.filter((c: any) => c.status === 'completed').length;
+      const historyId = docState.id || generateHistoryId();
+
       const historyItem: HistoryItem = {
-        id: `hist_${docState.fileName}_${docState.pdfPages.length}`,
+        id: historyId,
         timestamp: Date.now(),
         fileName: docState.fileName,
         fileSize: docState.fileSize,
@@ -113,8 +132,10 @@ export class HistoryService {
       };
 
       await this.saveHistoryItemAndTrim(historyItem);
+      return historyId;
     } catch (err) {
       console.error('Lỗi sao lưu tiến trình vào lịch sử:', err);
+      return '';
     }
   }
 }

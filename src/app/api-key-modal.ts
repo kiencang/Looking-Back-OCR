@@ -74,9 +74,9 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
 
           <!-- Meta Input section -->
-          <div class="space-y-2">
+          <div class="space-y-3 p-3.5 bg-slate-950/60 rounded-2xl border border-white/5">
             <div class="flex justify-between items-center">
-              <label for="modal-meta-key-input" class="block text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider">
+              <label for="modal-meta-key-input" class="block text-[10px] font-sans font-bold text-emerald-400 uppercase tracking-wider">
                 Meta API Key cá nhân (Muse)
               </label>
             </div>
@@ -87,7 +87,7 @@ import { MatIconModule } from '@angular/material/icon';
                 placeholder="Nhập Meta API Key..." 
                 [value]="tempMetaApiKey()"
                 (input)="onMetaInputChange($event)"
-                class="w-full bg-transparent pl-4 pr-12 py-3 text-xs text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
+                class="w-full bg-transparent pl-4 pr-12 py-2.5 text-xs text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
               <button 
                 type="button" 
                 (click)="toggleShowKeyMeta()"
@@ -96,6 +96,32 @@ import { MatIconModule } from '@angular/material/icon';
                   {{ showApiKeyMeta() ? 'visibility_off' : 'visibility' }}
                 </mat-icon>
               </button>
+            </div>
+
+            <!-- Meta Custom Model Input -->
+            <div class="space-y-1.5 pt-1 border-t border-white/5">
+              <div class="flex justify-between items-center">
+                <label for="modal-meta-model-input" class="block text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider">
+                  Mã Model Meta tùy chỉnh
+                </label>
+                <button
+                  type="button"
+                  (click)="resetDefaultMetaModel()"
+                  class="text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-0.5 focus:outline-none">
+                  <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center">restart_alt</mat-icon>
+                  <span>Mặc định</span>
+                </button>
+              </div>
+              <input 
+                id="modal-meta-model-input"
+                type="text"
+                placeholder="muse-spark-1.2-contributor" 
+                [value]="tempMetaModelName()"
+                (input)="onMetaModelInputChange($event)"
+                class="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-700 font-mono focus:border-emerald-500 focus:outline-none transition-colors" />
+              <p class="text-[10px] text-slate-500 leading-tight">
+                Bạn có thể đổi sang mã Model Meta Vision khác được tài khoản của bạn hỗ trợ. Model mặc định (khi không có điều chỉnh nào): <code class="text-emerald-400 font-mono">muse-spark-1.2-contributor</code>
+              </p>
             </div>
           </div>
 
@@ -122,7 +148,7 @@ import { MatIconModule } from '@angular/material/icon';
               </button>
               <button 
                 type="button" 
-                (click)="save.emit({ geminiKey: tempGeminiApiKey(), metaKey: tempMetaApiKey() })"
+                (click)="save.emit({ geminiKey: tempGeminiApiKey(), metaKey: tempMetaApiKey(), metaModel: tempMetaModelName() })"
                 class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 rounded-lg text-white transition-colors duration-200 shadow-md shadow-indigo-600/15 focus:outline-none">
                 Lưu cấu hình
               </button>
@@ -136,9 +162,10 @@ import { MatIconModule } from '@angular/material/icon';
 export class ApiKeyModal implements OnInit {
   clientApiKey = input.required<string>();
   metaApiKey = input<string>('');
+  metaModel = input<string>('muse-spark-1.2-contributor');
   
   closeModal = output<void>();
-  save = output<{geminiKey: string, metaKey: string}>();
+  save = output<{geminiKey: string, metaKey: string, metaModel: string}>();
   clearKey = output<void>();
 
   tempGeminiApiKey = signal('');
@@ -147,9 +174,12 @@ export class ApiKeyModal implements OnInit {
   tempMetaApiKey = signal('');
   showApiKeyMeta = signal(false);
 
+  tempMetaModelName = signal('muse-spark-1.2-contributor');
+
   ngOnInit() {
     this.tempGeminiApiKey.set(this.clientApiKey());
     this.tempMetaApiKey.set(this.metaApiKey());
+    this.tempMetaModelName.set(this.metaModel() || 'muse-spark-1.2-contributor');
   }
 
   onGeminiInputChange(event: Event) {
@@ -160,6 +190,15 @@ export class ApiKeyModal implements OnInit {
   onMetaInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.tempMetaApiKey.set(target.value);
+  }
+
+  onMetaModelInputChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.tempMetaModelName.set(target.value);
+  }
+
+  resetDefaultMetaModel() {
+    this.tempMetaModelName.set('muse-spark-1.2-contributor');
   }
 
   toggleShowKeyGemini() {
