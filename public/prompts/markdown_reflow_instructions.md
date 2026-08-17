@@ -47,7 +47,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Danh sách: Dùng `-` cho danh sách không thứ tự, `1.` cho danh sách có thứ tự. Thụt lề 4 khoảng trắng cho danh sách cấp con.
 - Bảng biểu (Tables): Chuyển đổi bảng dữ liệu thành bảng Markdown chuẩn (`| Cột 1 | Cột 2 |`).
 - Khối trích dẫn (Blockquotes): Dùng `>` cho đoạn văn trích dẫn, lời dẫn nhập, chỉ dụ, thư từ cổ.
-- Mã nguồn (nếu có): Dùng ```ngôn_ngữ_của_mã_nguồn cho khối code, hoặc `code inline` cho từ khóa.
+- Mã nguồn (nếu có): Dùng \`\`\`ngôn_ngữ_của_mã_nguồn cho khối code, hoặc `code inline` cho từ khóa.
 
 5. CÔNG THỨC TOÁN HỌC & KHOA HỌC (NẾU CÓ):
 - BẮT BUỘC dùng **cú pháp LaTeX** để hỗ trợ hiển thị đẹp trên EPUB/Word qua KaTeX:
@@ -63,5 +63,5 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 <output_format>
 - ZERO-FLUFF: Bắt đầu xuất nội dung Markdown ngay lập tức.
 - KHÔNG thêm lời chào, KHÔNG giải thích, KHÔNG xin lỗi.
-- KHÔNG bọc toàn bộ đầu ra trong khối ```markdown. Hãy trả về văn bản Markdown trực tiếp.
+- KHÔNG bọc toàn bộ đầu ra trong khối \`\`\`markdown hay \`\`\`. Hãy trả về văn bản Markdown trực tiếp.
 </output_format>

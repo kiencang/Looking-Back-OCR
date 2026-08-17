@@ -23,7 +23,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
           
           <div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-white/5 text-center">
             <div class="bg-slate-950/50 rounded-xl p-2.5">
-              <span class="block text-[10px] text-slate-400 uppercase font-sans">Trang</span>
+              <span class="block text-[10px] text-slate-400 uppercase font-sans">Số trang</span>
               <span class="text-sm font-bold text-slate-200 font-mono">{{ totalPageCount() }}</span>
             </div>
             <div class="bg-slate-950/50 rounded-xl p-2.5">

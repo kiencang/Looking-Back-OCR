@@ -19,26 +19,28 @@ import { MatIconModule } from '@angular/material/icon';
         tabindex="0"
         (click)="$event.stopPropagation()"
         (keydown)="$event.stopPropagation()"
-        class="bg-slate-900 border border-white/10 rounded-3xl max-w-xl w-full p-6 md:p-8 shadow-2xl relative text-left cursor-default animate-scale-up">
+        class="bg-slate-900 border border-white/10 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl relative text-left cursor-default animate-scale-up">
         
         <!-- Close Button -->
         <button 
           type="button"
           (click)="closeModal.emit()"
-          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors focus:outline-none">
+          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors focus:outline-none z-10">
           <mat-icon class="text-[20px] w-5 h-5 flex items-center justify-center">close</mat-icon>
         </button>
 
-        <div class="flex items-center gap-3 mb-6">
-          <div class="h-10 w-10 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-400 border border-indigo-500/10">
-            <mat-icon>vpn_key</mat-icon>
+        <!-- Scrollable Content -->
+        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="h-10 w-10 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-400 border border-indigo-500/10 shrink-0">
+              <mat-icon>vpn_key</mat-icon>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white font-sans">Cấu hình API Key</h3>
+            </div>
           </div>
-          <div>
-            <h3 class="text-lg font-bold text-white font-sans">Cấu hình API Key</h3>
-          </div>
-        </div>
 
-        <div class="space-y-6">
+          <div class="space-y-6">
           <!-- Description -->
           <p class="text-xs text-slate-300 leading-relaxed font-sans">
             Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó.
@@ -129,6 +131,17 @@ import { MatIconModule } from '@angular/material/icon';
           <p class="text-[11px] text-slate-400 font-sans leading-normal">
             Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
           </p>
+
+          <!-- Divider -->
+          <hr class="border-white/10" />
+
+          <!-- Remix App Banner -->
+          <div class="flex flex-col gap-3 items-center text-center">
+            <p class="text-xs text-slate-400 font-sans leading-relaxed">
+              Bạn có thể remix ứng dụng này để sao chép mã thành ứng dụng của riêng bạn và vibe coding (chỉnh sửa thêm) nếu cần.
+            </p>
+            <img src="/remix-app.png" alt="Remix this app on AI Studio" class="rounded-lg border border-white/10 shadow-lg w-full max-w-sm object-cover" referrerpolicy="no-referrer" />
+          </div>
 
           <!-- Actions footer buttons -->
           <div class="border-t border-white/5 pt-4 flex items-center justify-between">

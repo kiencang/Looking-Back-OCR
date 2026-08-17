@@ -192,12 +192,18 @@ export class AiPromptOptimizer {
     }
 
     const sampleIndices: number[] = [];
-    if (chunks.length <= 3) {
+    const n = chunks.length;
+    if (n <= 3) {
       chunks.forEach((_, i) => sampleIndices.push(i));
-    } else {
+    } else if (n === 4) {
       sampleIndices.push(0);
-      sampleIndices.push(Math.floor(chunks.length / 2));
-      sampleIndices.push(chunks.length - 1);
+      sampleIndices.push(1);
+      sampleIndices.push(2);
+    } else {
+      const mid = Math.floor(n / 2);
+      sampleIndices.push(0);
+      sampleIndices.push(mid);
+      sampleIndices.push(mid + 1);
     }
 
     const sampleChunks = sampleIndices.map((i) => chunks[i]);
