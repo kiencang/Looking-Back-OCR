@@ -314,12 +314,10 @@ export class AiPromptOptimizer {
       }
     });
 
-    let systemInstructionText: string | undefined = undefined;
+    let systemInstructionText: string | undefined = promptText;
 
     // 2. Format additional page-range constraints and style tokens
     if (outputMode === 'html') {
-      systemInstructionText = promptText;
-
       let designTokensBlock = '';
       if (styleProfile) {
         designTokensBlock = `\n\n${this.formatDesignTokensBlock(styleProfile)}\n`;
@@ -329,7 +327,7 @@ export class AiPromptOptimizer {
 
       parts.push({ text: localizedInstructions });
     } else {
-      const localizedInstructions = `${promptText}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      const localizedInstructions = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
 
       parts.push({ text: localizedInstructions });
     }
@@ -409,8 +407,8 @@ export class AiPromptOptimizer {
 
       userPromptText = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
     } else {
-      systemInstructionText = 'Bạn là một chuyên gia OCR văn bản tiếng Việt và tái cấu trúc tài liệu sang định dạng Markdown sạch đẹp, bảo toàn 100% nội dung gốc.';
-      userPromptText = `${basePrompt}\n\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      systemInstructionText = basePrompt;
+      userPromptText = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
     }
 
     return this.metaService.optimizeChunk(

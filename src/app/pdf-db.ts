@@ -11,18 +11,22 @@ export class PdfDb {
         reject(new Error('IndexedDB chỉ khả dụng trên môi trường trình duyệt.'));
         return;
       }
-      const request = indexedDB.open('pdf_epub_images_db', 2);
-      request.onupgradeneeded = () => {
-        const db = request.result;
-        if (!db.objectStoreNames.contains('images')) {
-          db.createObjectStore('images', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('history')) {
-          db.createObjectStore('history', { keyPath: 'id' });
-        }
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      try {
+        const request = indexedDB.open('pdf_epub_images_db', 2);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains('images')) {
+            db.createObjectStore('images', { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains('history')) {
+            db.createObjectStore('history', { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 

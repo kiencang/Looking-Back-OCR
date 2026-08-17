@@ -18,7 +18,7 @@ export class GeminiApiService {
     sampleIndices: number[],
     parseProfileFromJson: (rawText: string) => DocumentStyleProfile
   ): Promise<DocumentStyleProfile> {
-    const parts = [...sampleParts, { text: analysisPrompt }];
+    const parts = [...sampleParts, { text: "Hãy phân tích phong cách thiết kế của tài liệu này." }];
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
     try {
@@ -27,6 +27,7 @@ export class GeminiApiService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts }],
+          systemInstruction: { parts: [{ text: analysisPrompt }] },
           generationConfig: {
             temperature: 0.1,
             responseMimeType: 'application/json',

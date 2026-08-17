@@ -40,11 +40,21 @@ export class MetaAiService {
         input: [
           {
             type: 'message',
-            role: 'user',
+            role: 'system',
             content: [
               {
                 type: 'input_text',
                 text: analysisPrompt
+              }
+            ]
+          },
+          {
+            type: 'message',
+            role: 'user',
+            content: [
+              {
+                type: 'input_text',
+                text: 'Hãy phân tích phong cách thiết kế của tài liệu này.'
               },
               {
                 type: 'input_file',
@@ -122,13 +132,23 @@ export class MetaAiService {
           effort: 'high'
         },
         input: [
+          ...(systemInstructionText ? [{
+            type: 'message',
+            role: 'system',
+            content: [
+              {
+                type: 'input_text',
+                text: systemInstructionText
+              }
+            ]
+          }] : []),
           {
             type: 'message',
             role: 'user',
             content: [
               {
                 type: 'input_text',
-                text: `${systemInstructionText ? systemInstructionText + '\n\n' : ''}${userPromptText}`
+                text: userPromptText
               },
               {
                 type: 'input_file',

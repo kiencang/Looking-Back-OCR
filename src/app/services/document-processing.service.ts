@@ -331,16 +331,14 @@ export class DocumentProcessingService {
     }
   }
 
+  private styleAnalysisPromise: Promise<DocumentStyleProfile> | null = null;
+
   async ensureDocumentStyleProfile(): Promise<DocumentStyleProfile> {
     const currentProfile = this.documentStyleProfile();
     if (currentProfile) return currentProfile;
 
-    // Nếu đang có tiến trình phân tích phong cách chạy song song, chờ cho đến khi hoàn thành
-    if (this.isAnalyzingStyle()) {
-      while (this.isAnalyzingStyle()) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-      return this.documentStyleProfile() || { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+    if (this.styleAnalysisPromise) {
+      return this.styleAnalysisPromise;
     }
 
     const file = this.pdfFile();
@@ -359,20 +357,25 @@ export class DocumentProcessingService {
     this.isAnalyzingStyle.set(true);
     this.parsingStatus.set('Đang phân tích phong cách thiết kế & nhận diện bộ font chuẩn toàn tài liệu...');
 
-    try {
-      const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, effectiveModelName, file, chunks);
-      this.documentStyleProfile.set(profile);
-      await this.saveCurrentProgressToHistory();
-      return profile;
-    } catch (e) {
-      console.error('Lỗi khi phân tích phong cách tài liệu, sử dụng cấu hình mặc định:', e);
-      const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
-      this.documentStyleProfile.set(fallback);
-      return fallback;
-    } finally {
-      this.isAnalyzingStyle.set(false);
-      this.parsingStatus.set('');
-    }
+    this.styleAnalysisPromise = (async () => {
+      try {
+        const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, effectiveModelName, file, chunks);
+        this.documentStyleProfile.set(profile);
+        await this.saveCurrentProgressToHistory();
+        return profile;
+      } catch (e) {
+        console.error('Lỗi khi phân tích phong cách tài liệu, sử dụng cấu hình mặc định:', e);
+        const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
+        this.documentStyleProfile.set(fallback);
+        return fallback;
+      } finally {
+        this.isAnalyzingStyle.set(false);
+        this.parsingStatus.set('');
+        this.styleAnalysisPromise = null;
+      }
+    })();
+
+    return this.styleAnalysisPromise;
   }
 
   async executeChunkOptimization(chunkIndex: number): Promise<void> {

@@ -55,7 +55,7 @@ export class HistoryService {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
       const items = await this.pdfDb.getAllHistoryItems();
-      const sorted = (items || []).sort((a: any, b: any) => (b.timestamp || 0) - (a.timestamp || 0));
+      const sorted = (items || []).sort((a: HistoryItem, b: HistoryItem) => (b.timestamp || 0) - (a.timestamp || 0));
       this.historyItems.set(sorted);
       return sorted;
     } catch (err) {
@@ -69,17 +69,17 @@ export class HistoryService {
     try {
       await this.pdfDb.saveHistoryItem(item);
       const allItems = await this.pdfDb.getAllHistoryItems();
-      const sorted = (allItems || []).sort((a: any, b: any) => (b.timestamp || 0) - (a.timestamp || 0));
+      const sorted = (allItems || []).sort((a: HistoryItem, b: HistoryItem) => (b.timestamp || 0) - (a.timestamp || 0));
       
-      // Trim to maximum 15 items
-      if (sorted.length > 15) {
-        const toDelete = sorted.slice(15);
+      // Trim to maximum 10 items
+      if (sorted.length > 10) {
+        const toDelete = sorted.slice(10);
         for (const oldItem of toDelete) {
           if (oldItem.id) {
             await this.pdfDb.deleteHistoryItem(oldItem.id);
           }
         }
-        this.historyItems.set(sorted.slice(0, 15));
+        this.historyItems.set(sorted.slice(0, 10));
       } else {
         this.historyItems.set(sorted);
       }

@@ -18,6 +18,17 @@ import { HistoryService } from './services/history.service';
 import { ExportService } from './services/export.service';
 
 import { Header, OutputMode } from './header';
+
+function safeGetItem(key: string): string {
+  try { return localStorage.getItem(key) || ''; } catch { return ''; }
+}
+function safeSetItem(key: string, value: string): void {
+  try { localStorage.setItem(key, value); } catch {}
+}
+function safeRemoveItem(key: string): void {
+  try { localStorage.removeItem(key); } catch {}
+}
+
 import { Footer } from './footer';
 import { EmptyState } from './empty-state';
 import { InstructionModal } from './instruction-modal';
@@ -139,13 +150,13 @@ export class App {
       await this.historyService.loadHistory();
 
       // Load API Key from safe browser storage
-      const savedKey = localStorage.getItem('user_gemini_api_key') || '';
+      const savedKey = safeGetItem('user_gemini_api_key');
       this.clientApiKey.set(savedKey);
 
-      const savedMetaKey = localStorage.getItem('user_meta_api_key') || '';
+      const savedMetaKey = safeGetItem('user_meta_api_key');
       this.metaApiKey.set(savedMetaKey);
 
-      const savedMetaModel = localStorage.getItem('custom_meta_model_name')?.trim() || 'muse-spark-1.2-contributor';
+      const savedMetaModel = safeGetItem('custom_meta_model_name')?.trim() || 'muse-spark-1.2-contributor';
       this.metaModelName.set(savedMetaModel);
 
       // Global zoom helper for rendered HTML images
@@ -236,14 +247,14 @@ export class App {
     }
 
     this.clientApiKey.set(trimmedGemini);
-    localStorage.setItem('user_gemini_api_key', trimmedGemini);
+    safeSetItem('user_gemini_api_key', trimmedGemini);
     
     this.metaApiKey.set(trimmedMeta);
-    localStorage.setItem('user_meta_api_key', trimmedMeta);
+    safeSetItem('user_meta_api_key', trimmedMeta);
 
     const modelName = keys.metaModel?.trim() || 'muse-spark-1.2-contributor';
     this.metaModelName.set(modelName);
-    localStorage.setItem('custom_meta_model_name', modelName);
+    safeSetItem('custom_meta_model_name', modelName);
     
     this.showApiKeyModal.set(false);
     this.showSuccess('Đã lưu cấu hình API Key và Model thành công.');
@@ -251,13 +262,13 @@ export class App {
 
   clearApiKeyModal() {
     this.clientApiKey.set('');
-    localStorage.removeItem('user_gemini_api_key');
+    safeRemoveItem('user_gemini_api_key');
     
     this.metaApiKey.set('');
-    localStorage.removeItem('user_meta_api_key');
+    safeRemoveItem('user_meta_api_key');
 
     this.metaModelName.set('muse-spark-1.2-contributor');
-    localStorage.removeItem('custom_meta_model_name');
+    safeRemoveItem('custom_meta_model_name');
     
     this.showApiKeyModal.set(false);
     this.showSuccess('Đã xóa cấu hình API Key cá nhân.');
