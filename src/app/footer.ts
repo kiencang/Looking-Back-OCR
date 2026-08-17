@@ -43,7 +43,7 @@ import { OutputMode } from './header';
               <!-- Tooltip Simple -->
               <div class="absolute bottom-full left-0 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
                 <div class="font-bold text-cyan-400 mb-0.5">Markdown (Đơn giản)</div>
-                <span>Tối ưu token, kết cấu cơ bản. Phù hợp xuất DOCX.</span>
+                <span>Tái tạo đơn giản, phù hợp xuất DOCX. Tiết kiệm token tối đa.</span>
               </div>
             </button>
 
@@ -60,7 +60,7 @@ import { OutputMode } from './header';
               <!-- Tooltip HTML -->
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
                 <div class="font-bold text-emerald-400 mb-0.5">HTML/CSS (Bảo toàn)</div>
-                <span>Phục dựng chính xác bảng biểu, cột, lề, font chữ như bản gốc.</span>
+                <span>Tái tạo bảng biểu, cột, lề, font chữ tương tự bản gốc.</span>
               </div>
             </button>
             
@@ -74,7 +74,7 @@ import { OutputMode } from './header';
 
         <!-- Right: Links and Info Metadata -->
         <div class="flex items-center gap-2 sm:gap-2.5 text-slate-400 font-normal flex-wrap justify-center text-xs font-sans">
-          <span class="text-slate-400">v1.0.28</span>
+          <span class="text-slate-400">v1.0.29</span>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
           <a href="https://github.com/kiencang/Looking-Back-OCR" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200 cursor-pointer">GitHub</a>
           <span class="text-slate-800 font-light text-xs select-none">•</span>

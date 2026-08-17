@@ -151,7 +151,7 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <!-- Tooltip -->
             <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
               <span class="font-bold text-emerald-400 block mb-0.5">Muse Spark:</span>
-              Model Meta AI với khả năng nhận diện hình ảnh xuất sắc.
+              Có khả năng xử lý đa dạng các kiểu tài liệu.
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-emerald-300 font-medium">
                   @if (selectedModel() === 'muse-spark-1.2-contributor') {

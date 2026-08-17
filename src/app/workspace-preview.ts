@@ -199,9 +199,8 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
             @if (activeChunkPages().length > 0) {
               @for (page of activeChunkPages(); track page.pageNum) {
                 <div class="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 shadow-xl flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-2">
+                  <div class="flex items-center text-xs font-mono text-slate-400 border-b border-white/5 pb-2">
                     <span class="font-bold text-slate-200">Trang số {{ page.pageNum }}</span>
-                    <span class="text-[10px] text-slate-500 font-mono">Độ phân giải gốc 1:1 (PNG)</span>
                   </div>
                   
                   <div class="overflow-hidden rounded-xl bg-slate-950 flex justify-center p-2 border border-white/5 min-h-[200px] items-center">

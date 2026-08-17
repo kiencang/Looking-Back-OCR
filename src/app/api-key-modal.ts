@@ -41,7 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
         <div class="space-y-6">
           <!-- Description -->
           <p class="text-xs text-slate-300 leading-relaxed font-sans">
-            Để sử dụng các mô hình chuyển đổi, bạn có thể thiết lập API Key cá nhân tương ứng. Khóa được lưu trữ an toàn trong trình duyệt của bạn.
+            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó.
           </p>
 
           <!-- Gemini Input section -->
