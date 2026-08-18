@@ -3,7 +3,7 @@
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
-Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini hoặc Meta AI.
+Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: Nam Phong Tạp Chí) bằng Gemini hoặc Meta AI.
 
 - Mọi người có thể dùng phiên bản trên AI Studio thông qua link này: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng ngưỡng miễn phí hàng ngày tương đổi rộng rãi của Gemini).
 - Bản web: https://looking-back-ocr.wpsila.com/ (chỉ key trả phí mới dùng được).
@@ -11,9 +11,9 @@ Công cụ OCR tài liệu, sách xưa tiếng Việt (ví dụ: Nam Phong Tạp
 2 bản trên là một, và có chất lượng như nhau.
 
 ## Tại sao tồn tại
-Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng scan có thể không dễ đọc do **bản chất sách gốc bị mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
+Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng PDF scan có thể không dễ đọc do **bản chất sách gốc bị mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
 
-**Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng) là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
+**Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng lắm) là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
 
 ## Công nghệ
 Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản trên AI Studio để tiết kiệm chi phí tối đa.
@@ -23,6 +23,8 @@ Gemini AI có khả năng OCR tài liệu rất tốt, chi phí bằng 0 nếu n
 Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (cùng tác giả): https://github.com/kiencang/pdf-2-epub-docx
 
 Điểm khác biệt cơ bản là Looking-Back-OCR tập trung vào sách xưa, và nó xuất ra nhiều định dạng hơn, cũng như mục đích là để con người đọc trực tiếp.
+
+Ngoài Gemini, công cụ này còn tích hợp thêm Meta AI. Meta có khả năng OCR không tốt bằng Gemini, nhưng nó đỡ khó tính hơn Gemini trong vấn đề chặn chuyển đổi. Gemini đôi khi nhận nhầm một sách đã hết hạn bảo hộ là vẫn còn bản quyền và không cho phép chuyển (nếu vẫn muốn dùng Gemini, bạn có thể dùng Key trả phí, vì ở Key trả phí, Gemini không lấy dữ liệu người dùng do vậy có thể không gặp vấn đề về bản quyền).
 
 ## Hai kiểu tái tạo
 Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
@@ -34,7 +36,7 @@ Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nh�
 ## So sánh với đối thủ
 OCR giờ nở rộ, hiện có rất nhiều công cụ chất lượng cao làm được điều này.
 
-Đặt lên bàn cân giữa Looking-Back-OCR và một công nghệ OCR hàng đầu hiện nay là [PaddleOCR](https://aistudio.baidu.com/paddleocr) có thể thấy rõ ưu và nhược của từng cái.
+Đặt lên bàn cân giữa Looking-Back-OCR và một công nghệ OCR hàng đầu hiện nay như [PaddleOCR](https://aistudio.baidu.com/paddleocr) có thể thấy rõ ưu và nhược của từng cái.
 
 PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan. Tuy nhiên về độ chính xác, đặc biệt là chính tả, Looking-Back-OCR lại tỏ ra vượt trội.
 
@@ -52,7 +54,7 @@ Dưới đây là danh sách các thư viện quan trọng mà ứng dụng này
 
 ### 1. Nền tảng Ứng dụng & Giao diện (Framework & UI)
 *   **[Angular (v21)](https://angular.dev/)** – Phát triển bởi **Google**. Lõi chính của ứng dụng.
-*   **[Tailwind CSS (v4)](https://tailwindcss.com/)** – Cung cấp giao diện cho ứng dụng.
+*   **[Tailwind CSS (v4)](https://tailwindcss.com/)** – Cung cấp giao diện cho ứng dụng & bản HTML chuyển đổi.
 
 ### 2. Xử lý và Phân tích tài liệu PDF
 *   **[PDF-Lib](https://pdf-lib.js.org/)** – Xử lý tách trang, chia chunk.
