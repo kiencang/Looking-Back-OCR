@@ -42,7 +42,7 @@ PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan. Tuy nhi
 
 Một đối thủ mạnh khác là [MinerU](https://mineru.net/), so với nó, Looking-Back-OCR cũng có chất lượng chính tả tốt hơn nhiều.
 
--
+---
 
 Để tiện thể nhìn thấy so sánh, tôi chụp màn hình kết quả OCR của một trang trong cuốn sách xưa `Truyện-Kiều Chú-Giải` của tác giả `Văn-Hòe`.
 
