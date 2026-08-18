@@ -17,8 +17,10 @@
   <!-- Toast notifications -->
   <app-toast-notification
     [apiError]="apiError()"
+    [warningMessage]="warningMessage()"
     [successMessage]="successMessage()"
     (clearError)="apiError.set('')"
+    (clearWarning)="docService.clearWarning()"
     (clearSuccess)="showSuccess('')">
   </app-toast-notification>
 

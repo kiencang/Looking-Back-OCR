@@ -17,37 +17,42 @@ export class AiPromptOptimizer {
   private promptCache = new Map<string, string>();
 
   /**
-   * Retrieves the prompt template from the public directory with in-memory caching
+   * Helper to fetch prompt files directly from /prompts with aggressive cache-busting
    */
-  async getPromptTemplate(outputMode: OutputMode = 'html'): Promise<string> {
-    const fileName = outputMode === 'html' ? 'html_reflow_instructions.md' : 'markdown_reflow_instructions.md';
-    if (this.promptCache.has(fileName)) {
-      return this.promptCache.get(fileName)!;
-    }
-    const response = await fetch(`/prompts/${fileName}`);
+  private async fetchFreshPrompt(fileName: string): Promise<string> {
+    const cacheBuster = `cb=${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
+    const url = `/prompts/${fileName}?${cacheBuster}`;
+
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+
     if (!response.ok) {
-      throw new Error(`Không thể tải tệp chỉ dẫn ${fileName} từ thư mục /public/prompts.`);
+      throw new Error(`Không thể tải tệp chỉ dẫn ${fileName} từ thư mục /public/prompts (HTTP ${response.status}).`);
     }
-    const text = await response.text();
-    this.promptCache.set(fileName, text);
-    return text;
+
+    return await response.text();
   }
 
   /**
-   * Retrieves the style analysis prompt template from the public directory with in-memory caching
+   * Retrieves the prompt template from the public directory without stale browser caching
+   */
+  async getPromptTemplate(outputMode: OutputMode = 'html'): Promise<string> {
+    const fileName = outputMode === 'html' ? 'html_reflow_instructions.md' : 'markdown_reflow_instructions.md';
+    return await this.fetchFreshPrompt(fileName);
+  }
+
+  /**
+   * Retrieves the style analysis prompt template from the public directory without stale browser caching
    */
   async getStyleAnalysisPrompt(): Promise<string> {
     const fileName = 'style_analysis_instructions.md';
-    if (this.promptCache.has(fileName)) {
-      return this.promptCache.get(fileName)!;
-    }
-    const response = await fetch(`/prompts/${fileName}`);
-    if (!response.ok) {
-      throw new Error(`Không thể tải tệp chỉ dẫn ${fileName} từ thư mục /public/prompts.`);
-    }
-    const text = await response.text();
-    this.promptCache.set(fileName, text);
-    return text;
+    return await this.fetchFreshPrompt(fileName);
   }
 
   /**
@@ -210,7 +215,7 @@ export class AiPromptOptimizer {
     const analysisPrompt = await this.getStyleAnalysisPrompt();
 
     const validFonts = [
-      'Lora', 'Merriweather', 'EB Garamond', 'Playfair Display',
+      'Lora', 'Merriweather', 'EB Garamond', 'Alegreya',
       'Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat',
       'Roboto', 'JetBrains Mono'
     ];
@@ -224,7 +229,7 @@ export class AiPromptOptimizer {
 
       const parsed = JSON.parse(cleanText);
       const bodyFont = validFonts.includes(parsed.bodyFont) ? parsed.bodyFont : 'Lora';
-      const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Playfair Display';
+      const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Alegreya';
 
       return {
         bodyFont,

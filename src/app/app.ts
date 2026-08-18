@@ -79,6 +79,7 @@ export class App {
   selectedOutputMode = this.docService.selectedOutputMode;
   parsingStatus = this.docService.parsingStatus;
   apiError = this.docService.apiError;
+  warningMessage = this.docService.warningMessage;
   successMessage = this.docService.successMessage;
   clientApiKey = this.docService.clientApiKey;
   metaApiKey = this.docService.metaApiKey;
@@ -120,6 +121,7 @@ export class App {
   reflowSafeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.reflowHtml()));
 
   private successTimeout: any = null;
+  private warningTimeout: any = null;
   private errorTimeout: any = null;
 
   constructor() {
@@ -131,6 +133,17 @@ export class App {
         this.errorTimeout = setTimeout(() => {
           this.apiError.set('');
         }, 12000);
+      }
+    });
+
+    // Auto-dismiss warnings after 9s
+    effect(() => {
+      const warn = this.warningMessage();
+      if (warn) {
+        if (this.warningTimeout) clearTimeout(this.warningTimeout);
+        this.warningTimeout = setTimeout(() => {
+          this.docService.clearWarning();
+        }, 9000);
       }
     });
 

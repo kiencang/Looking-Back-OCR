@@ -51,6 +51,7 @@ export class DocumentProcessingService {
   shouldStopBatch = signal(false);
   parsingStatus = signal('');
   apiError = signal('');
+  warningMessage = signal('');
   successMessage = signal('');
   
   // Design Profile
@@ -105,6 +106,14 @@ export class DocumentProcessingService {
     this.successMessage.set('');
   }
 
+  showWarning(msg: string) {
+    this.warningMessage.set(msg);
+  }
+
+  clearWarning() {
+    this.warningMessage.set('');
+  }
+
   private startTimer() {
     this.stopTimer();
     this.optimizationTimer.set(0);
@@ -130,6 +139,7 @@ export class DocumentProcessingService {
     this.selectedChunkIndex.set(0);
     this.documentStyleProfile.set(null);
     this.apiError.set('');
+    this.warningMessage.set('');
     this.successMessage.set('');
   }
 
@@ -363,8 +373,10 @@ export class DocumentProcessingService {
         this.documentStyleProfile.set(profile);
         await this.saveCurrentProgressToHistory();
         return profile;
-      } catch (e) {
+      } catch (e: any) {
         console.error('Lỗi khi phân tích phong cách tài liệu, sử dụng cấu hình mặc định:', e);
+        const errMsg = e?.message || String(e);
+        this.showWarning(`Không thể phân tích phong cách tài liệu (${errMsg}). Hệ thống tự động áp dụng Hồ sơ thiết kế chuẩn mặc định.`);
         const fallback: DocumentStyleProfile = { ...DEFAULT_STYLE_PROFILE, analyzedAt: Date.now() };
         this.documentStyleProfile.set(fallback);
         return fallback;

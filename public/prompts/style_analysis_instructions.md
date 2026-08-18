@@ -11,19 +11,22 @@ Lựa chọn của bạn sẽ được dùng làm yêu cầu thiết kế, cho m
 
 <allowed_fonts>
 DANH MỤC 10 PHÔNG CHỮ TIẾNG VIỆT CHUẨN ĐƯỢC PHÉP DÙNG:
-1. Nhóm Văn học / Học thuật (Serif):
-   - "Lora": Rất thanh nhã, mềm mại, chuẩn mực cho tiểu thuyết, văn xuôi, tản văn.
-   - "Merriweather": Dày dặn, tương phản cao, tối ưu số một cho việc đọc văn bản dài.
-   - "EB Garamond": Cổ điển, quý phái, phù hợp tài liệu lịch sử, sách xưa, triết học, chữ Hán Nôm.
-   - "Playfair Display": Đẳng cấp, nghệ thuật, dùng làm Tiêu đề (Headings) sách sang trọng.
-2. Nhóm Hiện đại / Báo chí (Sans-serif):
-   - "Be Vietnam Pro": Font chuẩn tiếng Việt hiện đại, tối ưu dấu thanh, rất đẹp cho sách kỹ năng, tạp chí mới.
-   - "Plus Jakarta Sans": Năng động, thanh thoát, hợp tài liệu hiện đại.
-   - "Inter": Rõ ràng, trung tính, công thái học cao, phù hợp sách chuyên ngành, báo cáo, nghiên cứu.
-   - "Montserrat": Vững chãi, góc cạnh, rất hợp làm Tiêu đề tài liệu hiện đại.
+
+1. Nhóm Văn học / Học thuật (Serif - Có chân):
+   - "Lora": [Có chân (Serif) | Thân bài & Tiêu đề | x-height Vừa | Cỡ Body đọc màn hình đẹp: 18px - 19.5px] - Thanh nhã, uyển chuyển, chuẩn mực cho tiểu thuyết, văn xuôi, tản văn.
+   - "Alegreya": [Có chân (Serif) | Thân bài & Tiêu đề | x-height Vừa-Lớn | Cỡ Body đọc màn hình đẹp: 18px - 19.5px] - Đậm chất văn học kinh điển, phong cách thư pháp êm dịu, tối ưu tuyệt hảo cho tác phẩm văn học, thơ ca.
+   - "Merriweather": [Có chân (Serif) | Tối ưu Thân bài | x-height Rất Lớn, nét đậm | Cỡ Body đọc màn hình đẹp: 17.5px - 18.5px, cần lineHeight 1.7-1.8] - Dày dặn, tương phản cao, chống mỏi mắt cho bài đọc rất dài.
+   - "EB Garamond": [Có chân (Serif) | Thân bài & Tiêu đề | x-height Nhỏ, nét thanh | Cỡ Body đọc màn hình đẹp: 20px - 22px] - Cổ điển, quý phái, phù hợp tài liệu lịch sử, sách xưa, triết học, chữ Hán Nôm.
+
+2. Nhóm Hiện đại / Báo chí (Sans-serif - Không chân):
+   - "Be Vietnam Pro": [Không chân (Sans-serif) | Thân bài & Tiêu đề toàn năng | x-height Lớn | Cỡ Body đọc màn hình đẹp: 17.5px - 19px] - Font chuẩn tiếng Việt hiện đại, dấu thanh hoàn hảo, rất đẹp cho sách kỹ năng, tạp chí mới.
+   - "Plus Jakarta Sans": [Không chân (Sans-serif) | Thân bài & Tiêu đề | x-height Lớn, hình học | Cỡ Body đọc màn hình đẹp: 17.5px - 19px] - Năng động, thanh thoát, hợp tài liệu hiện đại, phong cách quốc tế.
+   - "Inter": [Không chân (Sans-serif) | Tối ưu Thân bài | x-height Lớn, trung tính | Cỡ Body đọc màn hình đẹp: 17.5px - 18.5px] - Rõ ràng, công thái học cao, phù hợp sách chuyên ngành, báo cáo, nghiên cứu.
+   - "Montserrat": [Không chân (Sans-serif) | Khuyên dùng làm Tiêu đề (Headings) | Bề ngang rộng, hình học] - Vững chãi, góc cạnh, tạo điểm nhấn ấn tượng cho tiêu đề tài liệu hiện đại.
+
 3. Nhóm Kỹ thuật / Tài liệu (Neutral & Monospace):
-   - "Roboto": Phổ thông, dễ đọc, phù hợp sách giáo khoa, tài liệu hành chính.
-   - "JetBrains Mono": Phù hợp sách công nghệ, lập trình, công thức và bảng kỹ thuật.
+   - "Roboto": [Không chân (Sans-serif) | Thân bài & Tiêu đề | x-height Lớn, nét trung bình | Cỡ Body đọc màn hình đẹp: 17.5px - 19px] - Phổ thông, dễ đọc, phù hợp sách giáo khoa, tài liệu hành chính.
+   - "JetBrains Mono": [Đơn cách (Monospace) | Nét đều, ký tự cố định | Cỡ Body đẹp: 16px - 17.5px] - Phù hợp mã nguồn, bảng số liệu kỹ thuật, công thức và tài liệu công nghệ.
 </allowed_fonts>
 
 <analysis_process>
@@ -39,12 +42,13 @@ QUY TẮC PHÂN TÍCH:
 - `styleArchetype`: Xác định ngắn gọn thể loại tài liệu (ví dụ: "Văn học / Tiểu thuyết cổ điển", "Báo chí / Tạp chí hiện đại", "Sách chuyên khảo khoa học", "Sách giáo khoa / Hành chính", "Kỷ yếu / Nghệ thuật", "Thơ ca / Văn nghệ").
 - `bodyFont`: Dành cho nội dung chính của tài liệu, bắt buộc chọn đúng 1 tên font trong 10 font trên.
 - `headingFont`: Dành cho các tiêu đề trong tài liệu, bắt buộc chọn đúng 1 tên font trong 10 font trên.
-- `bodyFontSize`: Kích cỡ font cho nội dung chính của tài liệu (cho `bodyFont`). Chọn trong dải tối ưu cho trải nghiệm đọc sách số thoải mái: '17px', '18px', '19px' hoặc '20px' (MẶC ĐỊNH CHUẨN ĐỌC SÁCH LÀ '18px').
+- `bodyFontSize`: Kích cỡ font cho nội dung chính của tài liệu (cho `bodyFont`). Chọn trong dải tối ưu cho trải nghiệm đọc màn hình máy tính chống mỏi mắt: '17px', '17.5px', '18px', '18.5px', '19px', '20px', '21px' hoặc '22px' (MẶC ĐỊNH CHUẨN ĐỌC MÀN HÌNH LÀ '18.5px' hoặc '19px').
   * NGUYÊN TẮC CÔNG THÁI HỌC THEO PHÔNG CHỮ:
-    - Font có thân chữ nhỏ (low x-height) như "EB Garamond", "Lora": BẮT BUỘC chọn '18px' hoặc '19px' để văn bản rõ ràng, không bị bé.
-    - Font hiện đại, nét đậm hoặc thân chữ to như "Merriweather", "Be Vietnam Pro", "Inter", "Plus Jakarta Sans", "Roboto": Chọn '17px' hoặc '18px'.
-    - Sách kỹ thuật, báo cáo nhiều bảng biểu, công thức số liệu: Chọn '17px'.
-- `lineHeight`: Chọn '1.65', '1.7' hoặc '1.75' (mặc định '1.7' tương ứng với cỡ chữ 18px giúp dòng chữ thông thoáng).
+    - Font có thân chữ nhỏ / nét thanh mảnh như "EB Garamond": BẮT BUỘC chọn '20px' đến '22px' để văn bản rõ ràng, không bị mờ nhạt.
+    - Font văn học thanh nhã như "Lora", "Alegreya": Chọn '18px' đến '19.5px'.
+    - Font hiện đại, nét đậm hoặc thân chữ to như "Merriweather", "Be Vietnam Pro", "Inter", "Plus Jakarta Sans", "Roboto": Chọn '17.5px' đến '18.5px'.
+    - Sách kỹ thuật, báo cáo nhiều bảng biểu, công thức số liệu: Chọn '17px' đến '17.5px'.
+- `lineHeight`: Chọn '1.65', '1.7', '1.75' hoặc '1.8' (mặc định '1.7' đến '1.75' tương ứng với cỡ chữ 18px-19px giúp dòng chữ thông thoáng khi đọc liên tục).
 - `textAlign`: Chọn 'justify' (cho văn xuôi/sách đọc) hoặc 'left' (cho sách kỹ thuật/danh mục).
 - `paragraphSpacing`: Chọn '14px', '16px' hoặc '18px' (mặc định '16px').
 
@@ -76,8 +80,8 @@ KHÔNG giải thích. KHÔNG chào hỏi. KHÔNG bọc trong markdown block ki�
   "styleArchetype": "<Thể loại tài liệu phân tích được>",
   "bodyFont": "<1 trong 10 font cho phép>",
   "headingFont": "<1 trong 10 font cho phép>",
-  "bodyFontSize": "<17px | 18px | 19px | 20px>",
-  "lineHeight": "<1.65 | 1.7 | 1.75>",
+  "bodyFontSize": "<17px | 17.5px | 18px | 18.5px | 19px | 20px | 21px | 22px>",
+  "lineHeight": "<1.65 | 1.7 | 1.75 | 1.8>",
   "textAlign": "<justify | left>",
   "paragraphSpacing": "<14px | 16px | 18px>",
   "h1FontSize": "<giá trị em tương ứng tỷ lệ tài liệu>",

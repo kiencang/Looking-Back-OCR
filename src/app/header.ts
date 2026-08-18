@@ -25,9 +25,9 @@ export interface DocumentStyleProfile {
 
 export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
   bodyFont: 'Lora',
-  headingFont: 'Playfair Display',
-  bodyFontSize: '18px',
-  lineHeight: '1.7',
+  headingFont: 'Alegreya',
+  bodyFontSize: '18.5px',
+  lineHeight: '1.72',
   textAlign: 'justify',
   paragraphSpacing: '16px',
   styleArchetype: 'Văn học / Sách tiêu chuẩn',

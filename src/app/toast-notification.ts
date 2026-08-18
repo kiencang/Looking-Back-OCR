@@ -20,6 +20,18 @@ import { MatIconModule } from '@angular/material/icon';
         </div>
       }
 
+      @if (warningMessage()) {
+        <div class="pointer-events-auto bg-slate-950/95 backdrop-blur border border-amber-500/40 text-amber-200 px-4 py-3 rounded-xl shadow-2xl flex items-start justify-between gap-4 animate-fade-in max-w-sm sm:max-w-md md:max-w-xl" id="toast-warning">
+          <div class="flex items-start gap-2.5 w-full">
+            <mat-icon class="text-amber-400 shrink-0 text-[20px] w-5 h-5 leading-[20px] flex items-center justify-center mt-0.5">warning_amber</mat-icon>
+            <span class="font-sans text-sm leading-snug break-words whitespace-pre-wrap">{{ warningMessage() }}</span>
+          </div>
+          <button (click)="clearWarning.emit()" class="text-amber-300 hover:text-white shrink-0 outline-none flex items-center justify-center cursor-pointer transition-colors mt-0.5" aria-label="Đóng cảnh báo">
+            <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex">close</mat-icon>
+          </button>
+        </div>
+      }
+
       @if (successMessage()) {
         <div class="pointer-events-auto bg-slate-950/95 backdrop-blur border border-emerald-500/30 text-emerald-300 px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between gap-4 animate-fade-in max-w-sm" id="toast-success">
           <div class="flex items-center gap-2.5">
@@ -36,8 +48,10 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ToastNotification {
   apiError = input<string>('');
+  warningMessage = input<string>('');
   successMessage = input<string>('');
 
   clearError = output<void>();
+  clearWarning = output<void>();
   clearSuccess = output<void>();
 }
