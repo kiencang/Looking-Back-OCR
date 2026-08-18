@@ -18,7 +18,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 1. ĐÁNH DẤU PHÂN TRANG ĐỐI CHIẾU (1:1 PAGE ALIGNMENT):
 - Tại điểm bắt đầu nội dung của mỗi trang (tương ứng với số thứ tự trang thực tế trong tệp PDF gốc), BẮT BUỘC chèn một dòng thẻ đánh dấu:
   `<!-- PAGE_BREAK: X -->` (với X là số trang, ví dụ: `<!-- PAGE_BREAK: 1 -->`, `<!-- PAGE_BREAK: 2 -->`...)
-- Nội dung của trang thuộc bản gốc như thế nào, thì nội dung của trang thuộc bản OCR sẽ tương ứng như thế. TUYỆT ĐỐI KHÔNG được di chuyển chữ từ trang nọ sang kia, chẳng hạn như việc di chuyển chữ từ cuối trang thứ `n` sang đầu trang thứ `n+1` hoặc ngược lại là không được phép, vì điều này vi phạm nguyên tắc `Trung thực với nguyên tác`.
+- Nội dung của trang thuộc bản gốc như thế nào, thì nội dung của trang thuộc bản OCR sẽ tương ứng như thế. **TUYỆT ĐỐI KHÔNG được di chuyển chữ từ trang nọ sang kia**, chẳng hạn như việc di chuyển chữ từ cuối trang thứ `n` sang đầu trang thứ `n+1` hoặc ngược lại là không được phép, vì điều này vi phạm nguyên tắc `Trung thực với nguyên tác`.
 
 2. CẤU TRÚC DÀN TRANG & CỘT BÁO CHÍ (MULTI-COLUMN & FLUID CONTINUOUS FLOW):
 - PHÂN BIỆT RÕ DẤU GẠCH NỐI (HYPHEN):
@@ -34,12 +34,11 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   * Trình duyệt sẽ tự động rót dòng chữ từ chân cột 1 lên đỉnh cột 2 và cân bằng chiều cao 2 cột bằng nhau chằn chặn, không bao giờ bị hụt chữ hay ngắt câu vô lý.
 - HAI LUỒNG SONG SONG ĐỘC LẬP (Bảng đối chiếu song ngữ, 2 bảng số liệu độc lập):
   * Lúc này mới dùng Flexbox/CSS Grid hai bên: `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`.
-- LIỀN MẠCH VĂN PHONG QUA CỘT & QUA TRANG (NGUYÊN BẢN & KHÔNG CẮT GHÉP):
+- LIỀN MẠCH VĂN PHONG QUA TRANG (NGUYÊN BẢN & KHÔNG CẮT GHÉP):
   * Nếu một câu hoặc từ ở cuối cột phải / cuối trang thứ `n` đang viết dở và vắt dòng sang trang sau (trang `n+1`):
     - KHÔNG tự ý thêm dấu chấm câu `.` hay kết thúc câu giả tạo ở cuối trang `n`.
-    - KHÔNG tự ý ngắt thẻ `<p>` bất hợp lý nếu đoạn văn vẫn đang chảy liên tục.
     - Ở đầu trang `n+1`, tiếp tục phần còn lại của câu một cách tự nhiên (giữ nguyên chữ thường/in hoa như bản gốc).
-    - Đảm bảo khi các trang nối tiếp nhau, người đọc và hệ thống xuất Word/HTML nhận được dòng chảy văn bản tự nhiên, không bị chắp vá sai vị trí.
+    - Đảm bảo khi các trang nối tiếp nhau, người đọc nhận được dòng chảy văn bản tự nhiên, không bị chắp vá sai vị trí.
 - Căn lề chuẩn xác: Văn bản văn xuôi cần căn đều (`text-align: justify;`), tiêu đề chính căn giữa (`text-align: center;`), lời đề tặng/chữ ký căn phải (`text-align: right;`).
 - Thụt lề đầu dòng: Đối với đoạn văn truyền thống, có thể áp dụng `text-indent: 1.5em;` và đặt `margin-bottom: 0;` (phong cách sách cổ điển). Hoặc sử dụng khoảng cách đoạn tuyệt đối chính xác bằng bội số dòng `margin-bottom: 1lh;`. Tuy nhiên không tùy tiện áp dụng thụt lề đầu dòng, **chỉ sử dụng nó nếu văn bản gốc cũng đang dùng**.
 - Chữ cái lớn đầu đoạn (Drop Caps): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`. Nhưng cần quan sát để thiết kế khéo léo, hết sức tránh trường hợp chữ cái lớn đầu đoạn bị xa cách không gian với các ký tự còn lại của cùng từ đó.
