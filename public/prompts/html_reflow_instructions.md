@@ -91,15 +91,20 @@ Nếu phát hiện trong tài liệu gốc có các biểu thức, công thức 
     `<div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em;">NAM PHONG (Trang X)</div>` 
 
 9. ĐƯỜNG KẺ & VẠCH PHÂN CÁCH (DIVIDERS & SEPARATORS):
-Khi tài liệu gốc sử dụng các đường kẻ ngang, kẻ đôi hoặc kẻ dọc phân đoạn, linh hoạt tái tạo bằng các mẫu HTML/CSS chuẩn sau để bảo toàn trải nghiệm thị giác:
+Khi tài liệu gốc sử dụng các đường kẻ ngang, kẻ đôi, bạn hãy linh hoạt tái tạo bằng các mẫu HTML/CSS sau để bảo toàn trải nghiệm thị giác:
 - Vạch kẻ ngang ngắn căn giữa (Thường dùng ở cuối chương hoặc ngắt đoạn bài báo):
   `<hr style="width: 80px; border: 0; border-top: 1.5px solid #334155; margin: 20px auto;" />`
 - Đường kẻ phân cách ngang toàn phần (Phân chia phần/tiêu đề):
   `<hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 20px 0;" />`
 - Đường kẻ đôi sang trọng (Dùng dưới tiêu đề bài báo hoặc chương sách cổ):
   `<hr style="border: 0; border-top: 3px double #334155; margin: 16px 0;" />`
+Lưu ý rằng các mẫu đường kẻ ở trên chỉ là gợi ý tốt, chúng không phải là các thiết kế cứng nhắc mà bạn phải tuân thủ 100%. Bạn có toàn quyền thiết kế lại, thiết kể thêm để tạo ra các đường kẻ vừa trung thành với nguyên tác, vừa thẩm mỹ.
 
-10. AN TOÀN & BẢO MẬT MÃ NGUỒN (SECURITY & SANITIZATION):
+10. DỌN DẸP TẠP ÂM SCAN (SCAN ARTIFACTS & NOISE):
+- Loại bỏ triệt để các đốm ố mốc, bóng tối gáy sách, chữ hằn từ mặt sau (bleed-through), dấu mộc thư viện, chữ viết tay ghi chú ngoài lề, vệt rỉ bấm kim/băng dính và bóng ngón tay giữ sách. 
+- Chỉ tập trung hoàn toàn vào nhận diện chính xác nội dung in của nguyên tác.  
+
+11. AN TOÀN & BẢO MẬT MÃ NGUỒN (SECURITY & SANITIZATION):
 - Chỉ dùng các thẻ HTML tĩnh an toàn: `div`, `p`, `span`, `h1`-`h6`, `table`, `thead`, `tbody`, `tr`, `td`, `th`, `figure`, `figcaption`, `img`, `ul`, `ol`, `li`, `blockquote`, `em`, `strong`, `u`, `sup`, `sub`, `hr`.
 - TUYỆT ĐỐI KHÔNG sử dụng: `<script>`, `<iframe>`, `<form>`, `<input>`, `<button>`, thẻ `<style>` độc lập, hoặc các thuộc tính sự kiện javascript như `onclick`, `onload`.
 </rules>

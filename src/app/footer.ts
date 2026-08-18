@@ -74,7 +74,7 @@ import { OutputMode } from './header';
 
         <!-- Right: Links and Info Metadata -->
         <div class="flex items-center gap-2 sm:gap-2.5 text-slate-400 font-normal flex-wrap justify-center text-xs font-sans">
-          <span class="text-slate-400">v1.0.36</span>
+          <span class="text-slate-400">v1.0.37</span>
           <span class="text-slate-800 font-light text-xs select-none">•</span>
           <a href="https://github.com/kiencang/Looking-Back-OCR" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200 cursor-pointer">GitHub</a>
           <span class="text-slate-800 font-light text-xs select-none">•</span>

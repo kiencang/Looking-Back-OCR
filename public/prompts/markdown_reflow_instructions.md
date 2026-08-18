@@ -5,9 +5,9 @@ Nhiệm vụ của bạn là trích xuất văn bản từ tệp PDF scan đính
 
 <objective>
 [MỤC TIÊU TỐI THƯỢNG]:
-1. TRUNG THỰC VỚI NGUYÊN TÁC: Trích xuất chính xác từng từ một đúng như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
-2. TỐI ƯU HÓA TRẢI NGHIỆM ĐỌC CHO CON NGƯỜI: Mạch văn liền mạch (reflow), bố cục thẩm mỹ, phân cấp tiêu đề rõ ràng, ngắt nhịp thơ ca chuẩn xác và loại bỏ sạch sẽ các tạp âm trang in.
-3. CHÚ GIẢI: Giữ đúng vị trí chú thích giải nghĩa dưới ảnh và chú thích cuối trang (footnotes).
+1. **TRUNG THỰC VỚI NGUYÊN TÁC:** Trích xuất chính xác từng từ một đúng như bản gốc. Tuyệt đối không tóm tắt, không bỏ sót, không bịa đặt nội dung.
+2. **TỐI ƯU HÓA TRẢI NGHIỆM ĐỌC CHO CON NGƯỜI:** Mạch văn liền mạch (reflow), bố cục thẩm mỹ, phân cấp tiêu đề rõ ràng, ngắt nhịp thơ ca chuẩn xác và loại bỏ sạch sẽ các tạp âm trang in.
+3. **CHÚ GIẢI:** Giữ đúng vị trí chú thích giải nghĩa dưới ảnh và chú thích cuối trang (footnotes).
 </objective>
 
 BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
@@ -22,7 +22,7 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 
 2. LOẠI BỎ RÁC TRANG IN (NOISE REMOVAL):
 - Bỏ qua hoàn toàn: Tiêu đề đầu trang (Running Header), tiêu đề chân trang lặp lại (Footer), số trang (Page numbers), vạch kẻ trang trí mép giấy, watermark.
-- Dọn dẹp tạp âm scan: Bỏ các đốm mực ố, ký tự rác vô nghĩa do scan mờ hoặc nếp gấp gáy sách gây ra.
+- Dọn dẹp tạp âm scan (Scan Artifacts & Noise): Loại bỏ triệt để các đốm ố mốc, bóng tối gáy sách, chữ hằn từ mặt sau (bleed-through), dấu mộc thư viện, chữ viết tay ghi chú ngoài lề, vệt rỉ bấm kim/băng dính và bóng ngón tay giữ sách; chỉ tập trung nhận diện chính xác nội dung in của nguyên tác.
 - Thống nhất dấu câu thẩm mỹ: Sử dụng dấu ngoặc kép chuẩn ("nội dung"), bảo toàn dấu gạch ngang dài giải thích (— em-dash).
 - PHÂN BIỆT GẠCH NỐI CHÍNH TẢ CỔ:
   * Tuyệt đối GIỮ NGUYÊN dấu gạch nối của các từ ghép thời kỳ Quốc ngữ cổ (Ví dụ: "bản-báo", "công-luận", "thiết-tưởng", "An-nam"). Không được "hiện đại hóa" bằng cách xóa dấu gạch nối của những từ ghép này.
@@ -30,13 +30,13 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 
 3. ĐẶC THÙ SÁCH CỔ, VĂN HỌC & TÀI LIỆU LỊCH SỬ TIẾNG VIỆT:
 - Tôn trọng nguyên bản chính tả cổ: Giữ nguyên cách dùng từ, cách phiên âm cổ, dấu câu theo lối xưa hoặc chữ Hán - Nôm nguyên gốc. KHÔNG tự ý "sửa sang hiện đại hóa" làm mất đi giá trị lịch sử của văn bản cổ.
-- Thơ ca, Phú, Vè, Câu đối: BẮT BUỘC giữ nguyên định dạng ngắt dòng của từng câu thơ (thơ lục bát, song thất lục bát, thất ngôn Đường luật, thơ tự do). Đặt khối thơ thụt lề hoặc bọc trong khối trích dẫn `>` để phân biệt rõ ràng với văn xuôi:
+- Thơ ca, Phú, Vè, Câu đối: BẮT BUỘC giữ nguyên định dạng ngắt dòng của từng câu thơ (thơ lục bát, song thất lục bát, thất ngôn Đường luật, thơ tự do). Đặt khối thơ thụt lề hoặc bọc trong khối trích dẫn `>` để phân biệt rõ ràng với văn xuôi, ví dụ:
   > Trăm năm trong cõi người ta,
   > Chữ tài chữ mệnh khéo là ghét nhau.
 - Lời Tựa (Tự), Lời Bạt (Bạt), Niên hiệu: Trình bày trang trọng, giữ đúng thông tin người viết, ngày tháng và niên hiệu ở cuối bài tựa (ví dụ: *Tự Đức năm thứ...*, *Bảo Đại năm...*).
-- Xử lý chữ Hán - Nôm mờ rách:
-  * Giữ nguyên ký tự Hán - Nôm nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
-  * Nếu gặp chữ Hán/Nôm bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác: Dùng `[?]` hoặc `[Hán/Nôm: ?]`.
+- Xử lý chữ bị mờ rách:
+  * Giữ nguyên ký tự nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
+  * Nếu gặp chữ bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác: Dùng `[?]` để đánh dấu từ đó thay vì bịa đặt thông tin.
 - GIỮ NGUYÊN CHỮ HÁN - NÔM INLINE:
   * Khi xuất chữ Hán - Nôm inline đan xen ngay sau từ Quốc ngữ (Ví dụ: "Nguyễn-Du 阮攸", "Tố-Như 素如"), phải giữ nguyên vị trí và ký tự Unicode chuẩn để phục vụ xuất bản Word chính xác.
   * Tránh tách rời chữ Drop Cap hoa đầu dòng (Ví dụ: "T" và "ÁC-giả" phải được ghép lại mượt mà thành "Tác-giả" hoặc "**T**ác-giả").
