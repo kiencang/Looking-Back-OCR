@@ -320,7 +320,7 @@ export class AiPromptOptimizer {
       }
     });
 
-    let systemInstructionText: string | undefined = promptText;
+    const systemInstructionText: string | undefined = promptText;
 
     // 2. Format additional page-range constraints and style tokens
     if (outputMode === 'html') {

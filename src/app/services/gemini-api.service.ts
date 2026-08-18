@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
-import { PdfChunk } from './document-processing.service';
-import { OutputMode, DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
+import { DocumentStyleProfile, DEFAULT_STYLE_PROFILE } from '../header';
 
 @Injectable({
   providedIn: 'root'

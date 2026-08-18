@@ -303,4 +303,25 @@ td .ocr-preview-img {
   border-radius: 8px !important;
 }
 
+/* Custom ultra-thin subtle scrollbar */
+.custom-thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+.custom-thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+.custom-thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+
 

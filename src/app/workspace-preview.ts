@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, output, effect, inject, input, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, output, effect, inject, input, computed, signal, ElementRef, viewChild, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentProcessingService } from './services/document-processing.service';
 import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -10,7 +10,8 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
   selector: 'app-workspace-preview',
   imports: [CommonModule, MatIconModule],
   host: {
-    'class': 'flex-1 flex flex-col min-h-0 bg-slate-950 w-full overflow-hidden'
+    '(window:scroll)': 'onGlobalScroll()',
+    'class': 'flex-1 flex flex-col min-h-0 bg-slate-950 w-full h-full overflow-hidden relative'
   },
   template: `
       
@@ -123,7 +124,10 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
       </div>
 
       <!-- Preview Content Canvas Window -->
-      <div class="flex-grow overflow-y-auto px-4 pt-4 pb-6 md:px-8 md:pt-5 md:pb-8 flex justify-center">
+      <div 
+        #scrollContainer
+        (scroll)="onContainerScroll($event)"
+        class="flex-grow overflow-y-auto px-4 pt-4 pb-6 md:px-8 md:pt-5 md:pb-8 flex justify-center relative">
         
         <!-- Reflow modern article Tab container -->
         @if (selectedTab() === 'reflow') {
@@ -255,11 +259,61 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
             </div>
           </div>
         }
-
       </div>
+
+      <!-- Minimalist Back To Top Floating Action Button -->
+      @if (showBackToTop()) {
+        <button 
+          (click)="scrollToTop()"
+          type="button"
+          aria-label="Lên đầu trang"
+          title="Lên đầu trang"
+          class="fixed bottom-16 right-8 z-50 w-11 h-11 rounded-full bg-slate-900/95 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/20 hover:border-indigo-400 shadow-2xl backdrop-blur-md grid place-items-center transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+          <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+          </svg>
+        </button>
+      }
   `
 })
 export class WorkspacePreview {
+  private platformId = inject(PLATFORM_ID);
+  scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
+  showBackToTop = signal(false);
+
+  private checkScrollPosition(scrollTop: number) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const windowH = window.innerHeight || 800;
+    // Ngưỡng hiện nút Lên đầu trang: > 2 lần chiều cao màn hình (2 * window.innerHeight)
+    const threshold = windowH * 2;
+    this.showBackToTop.set(scrollTop > threshold);
+  }
+
+  onContainerScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target) {
+      this.checkScrollPosition(target.scrollTop);
+    }
+  }
+
+  onGlobalScroll() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const containerTop = this.scrollContainer()?.nativeElement?.scrollTop || 0;
+    const windowTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const maxScroll = Math.max(containerTop, windowTop);
+    this.checkScrollPosition(maxScroll);
+  }
+
+  scrollToTop() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = this.scrollContainer()?.nativeElement;
+    if (el) {
+      el.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.scrollTo({ top: 0, behavior: 'smooth' });
+  }
   selectedTab = input.required<'reflow' | 'pdf' | 'source' | 'markdown'>();
   themeStyle = input.required<'clean' | 'warm' | 'mono'>();
   public docService = inject(DocumentProcessingService);

@@ -23,10 +23,10 @@ function safeGetItem(key: string): string {
   try { return localStorage.getItem(key) || ''; } catch { return ''; }
 }
 function safeSetItem(key: string, value: string): void {
-  try { localStorage.setItem(key, value); } catch {}
+  try { localStorage.setItem(key, value); } catch { /* ignore */ }
 }
 function safeRemoveItem(key: string): void {
-  try { localStorage.removeItem(key); } catch {}
+  try { localStorage.removeItem(key); } catch { /* ignore */ }
 }
 
 import { Footer } from './footer';
