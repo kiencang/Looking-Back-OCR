@@ -21,9 +21,10 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - VĂN BẢN ĐA CỘT LIỀN MẠCH (Báo chí, tạp chí, sách in 2-3 cột):
   * TUYỆT ĐỐI KHÔNG chia thủ công thành 2 thẻ <div> riêng biệt bằng flexbox (vì sẽ làm hụt chân cột 1, gãy đôi câu văn và tạo khoảng trống thừa ở cuối cột).
   * BẮT BUỘC gộp toàn bộ các đoạn văn liên tục vào MỘT khối container duy nhất sử dụng **CSS Multi-Columns**:
-    `<div style="columns: 2; column-gap: 28px; column-fill: balance; text-align: justify;" class="multi-column-flow">`
+    `<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">`
       `<p style="margin-bottom: 1lh; line-height: 1.6;">Nội dung đoạn văn liên tục chảy tự nhiên từ cột 1 sang cột 2...</p>`
     `</div>`
+    - Thuộc tính `column-rule: 1px solid #cbd5e1;` trong style của thẻ `<div>` ở trên dùng để tạo đường kẻ dọc phân chia cột báo chí (Vertical Column Divider). Nếu nội dung gốc có chia cột, nhưng không có đường phân chia giữa 2 cột, bạn được phép bỏ thuộc tính `column-rule: 1px solid #cbd5e1;` đi.  
   * Trình duyệt sẽ tự động rót dòng chữ từ chân cột 1 lên đỉnh cột 2 và cân bằng chiều cao 2 cột bằng nhau chằn chặn, không bao giờ bị hụt chữ hay ngắt câu vô lý.
 - HAI LUỒNG SONG SONG ĐỘC LẬP (Bảng đối chiếu song ngữ, 2 bảng số liệu độc lập):
   * Lúc này mới dùng Flexbox/CSS Grid hai bên: `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`.
@@ -92,9 +93,6 @@ Khi tài liệu gốc sử dụng các đường kẻ ngang, kẻ đôi hoặc k
   `<hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 20px 0;" />`
 - Đường kẻ đôi sang trọng (Dùng dưới tiêu đề bài báo hoặc chương sách cổ):
   `<hr style="border: 0; border-top: 3px double #334155; margin: 16px 0;" />`
-- Đường kẻ dọc phân chia cột báo chí (Vertical Column Divider):
-  Thêm `column-rule: 1px solid #cbd5e1;` vào khối đa cột:
-  `<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; text-align: justify;" class="multi-column-flow">`
 
 10. AN TOÀN & BẢO MẬT MÃ NGUỒN (SECURITY & SANITIZATION):
 - Chỉ dùng các thẻ HTML tĩnh an toàn: `div`, `p`, `span`, `h1`-`h6`, `table`, `thead`, `tbody`, `tr`, `td`, `th`, `figure`, `figcaption`, `img`, `ul`, `ol`, `li`, `blockquote`, `em`, `strong`, `u`, `sup`, `sub`, `hr`.
