@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/so-sanh-2.png" alt="Giao diện của công cụ ocr...">
+  <img src="images/lbo.png" alt="Giao diện của công cụ ocr...">
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
