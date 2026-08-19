@@ -130,19 +130,28 @@ export class AiPromptOptimizer {
       }
     }
 
+    const sansFonts = ['Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat', 'Roboto'];
+    const isMono = profile.headingFont === 'JetBrains Mono';
+    const isSans = sansFonts.includes(profile.headingFont);
+    const headingFontFamily = isMono
+      ? `"${profile.headingFont}", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`
+      : isSans
+      ? `"${profile.headingFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
+      : `"${profile.headingFont}", Georgia, "Times New Roman", Times, serif`;
+
     return `<document_design_tokens>
 ÁP DỤNG QUY CHUẨN THIẾT KẾ ĐỒNG NHẤT CHO TOÀN BỘ TÀI LIỆU:
 - Thể loại tài liệu: ${profile.styleArchetype}
 - Phông chữ thân bài (bodyFont): "${profile.bodyFont}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
-- Phông chữ tiêu đề (headingFont): "${profile.headingFont}", serif
+- Phông chữ tiêu đề (headingFont): ${headingFontFamily}
 - Cỡ chữ thân bài: ${profile.bodyFontSize}
 - Chiều cao dòng (lineHeight): ${profile.lineHeight}
 - Căn lề đoạn văn: ${profile.textAlign === 'justify' ? 'justify (căn đều hai bên)' : 'left (căn trái)'}
 - Khoảng cách giữa các đoạn: ${profile.paragraphSpacing}
 - Hệ thống tiêu đề chuẩn hóa:
-  + Cấp 1 (H1): font-size: ${h1Size}; font-weight: ${profile.h1FontWeight || '700'}; font-family: "${profile.headingFont}", serif;
-  + Cấp 2 (H2): font-size: ${h2Size}; font-weight: ${profile.h2FontWeight || '700'}; font-family: "${profile.headingFont}", serif;
-  + Cấp 3 (H3): font-size: ${h3Size}; font-weight: ${profile.h3FontWeight || '600'}; font-family: "${profile.headingFont}", serif;
+  + Cấp 1 (H1): font-size: ${h1Size}; font-weight: ${profile.h1FontWeight || '700'}; font-family: ${headingFontFamily};
+  + Cấp 2 (H2): font-size: ${h2Size}; font-weight: ${profile.h2FontWeight || '700'}; font-family: ${headingFontFamily};
+  + Cấp 3 (H3): font-size: ${h3Size}; font-weight: ${profile.h3FontWeight || '600'}; font-family: ${headingFontFamily};
 
 * NGUYÊN TẮC BẤT BIẾN KHI XUẤT HTML/CSS:
 1. KHÔNG tự ý chèn font lạ nào khác ngoài "${profile.bodyFont}" và "${profile.headingFont}".
@@ -228,7 +237,10 @@ export class AiPromptOptimizer {
       }
 
       const parsed = JSON.parse(cleanText);
-      const bodyFont = validFonts.includes(parsed.bodyFont) ? parsed.bodyFont : 'Lora';
+      const sansFonts = ['Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Roboto', 'JetBrains Mono'];
+      const bodyFont = (parsed.bodyFont && sansFonts.includes(parsed.bodyFont)) 
+        ? parsed.bodyFont 
+        : (validFonts.includes(parsed.bodyFont) && !sansFonts.includes(parsed.bodyFont) ? 'Be Vietnam Pro' : 'Be Vietnam Pro');
       const headingFont = validFonts.includes(parsed.headingFont) ? parsed.headingFont : 'Alegreya';
 
       return {

@@ -24,13 +24,13 @@ export interface DocumentStyleProfile {
 }
 
 export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
-  bodyFont: 'Lora',
+  bodyFont: 'Be Vietnam Pro',
   headingFont: 'Alegreya',
-  bodyFontSize: '18.5px',
+  bodyFontSize: '18px',
   lineHeight: '1.72',
   textAlign: 'justify',
   paragraphSpacing: '16px',
-  styleArchetype: 'Văn học / Sách tiêu chuẩn',
+  styleArchetype: 'Sách / Ấn phẩm tiêu chuẩn',
   h1FontSize: '2.1em',
   h1FontWeight: '700',
   h2FontSize: '1.6em',

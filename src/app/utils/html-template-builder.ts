@@ -12,6 +12,15 @@ export function generateHtmlDocument(options: HtmlTemplateOptions): string {
   const title = options.title || 'Tai Lieu';
   const subtitleInfo = options.subtitle ? ` (${options.subtitle})` : '';
 
+  const sansFonts = ['Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', 'Montserrat', 'Roboto'];
+  const isHeadingMono = profile.headingFont === 'JetBrains Mono';
+  const isHeadingSans = sansFonts.includes(profile.headingFont);
+  const headingFontFamily = isHeadingMono
+    ? `'${profile.headingFont}', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`
+    : isHeadingSans
+    ? `'${profile.headingFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
+    : `'${profile.headingFont}', Georgia, 'Times New Roman', Times, serif`;
+
   return `<!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -97,7 +106,7 @@ export function generateHtmlDocument(options: HtmlTemplateOptions): string {
       flex-direction: column;
     }
     h1, h2, h3, h4, h5, h6 {
-      font-family: '${profile.headingFont}', Georgia, serif;
+      font-family: ${headingFontFamily};
       color: #0f172a;
       font-weight: 700;
       line-height: 1.25;
