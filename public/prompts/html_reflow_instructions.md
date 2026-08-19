@@ -64,8 +64,9 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
   * Giữ nguyên ký tự nếu nhận diện rõ ràng hoặc suy đoán được với mức độ chính xác cao.
   * Nếu gặp chữ bị mất nét, rách giấy, mờ nhòe KHÔNG THỂ đọc chính xác, dùng `<mark style="background-color: #fef08a; padding: 0 2px;">[?]</mark>`.
 - KHÔNG GÂY LỖI TOFU BOX (Ô vuông hiển thị) với chữ Hán, Nhật, Hàn:
-  * Tất cả các chữ Hán, Nhật, Hàn hoặc chữ Nôm inline đan xen trong dòng chữ Quốc ngữ BẮT BUỘC phải được nhận diện chính xác và bọc trong thẻ span chỉ định font chữ CJK Serif tương thích cao:
-    `<span style="font-family: 'Noto Serif CJK TC', 'Noto Serif CJK SC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;">阮攸</span>`
+  * Tất cả các chữ Hán, Nhật, Hàn hoặc chữ Nôm inline đan xen trong dòng chữ Quốc ngữ BẮT BUỘC phải được nhận diện chính xác và bọc trong thẻ span chỉ định font chữ CJK Serif:
+    `<span style="font-family: 'Noto Serif TC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;">阮攸</span>`
+  * QUY TẮC BẮT BUỘC: Dùng chính xác tên font `'Noto Serif TC'` (tuyệt đối không chèn thêm chữ CJK thành 'Noto Serif CJK TC') để khớp chính xác với Google Fonts đã nạp sẵn.
 
 6. PHÂN CẤP TIÊU ĐỀ & ĐỊNH DẠNG CHỮ (TYPOGRAPHY & HEADING SCALE):
 - Tiêu đề: BẮT BUỘC tuân thủ tỷ lệ Heading Scale (h1, h2, h3) được quy định trong `<document_design_tokens>` của prompt. Tái tạo trung thực thứ bậc tiêu đề từ bản gốc (Chương > Mục lớn > Mục nhỏ).
