@@ -52,7 +52,7 @@ Một đối thủ mạnh khác là [MinerU](https://mineru.net/), so với nó,
 </p>
 
 <p align="center">
-  <img src="images/lbo-test.png" alt="Looking-Back-OCR test">
+  <img src="images/lbo-test-2.png" alt="Looking-Back-OCR test">
    <br><em>Kết quả của Looking-Back-OCR, mức độ chính xác chính tả rất cao.</em>
 </p>
 
