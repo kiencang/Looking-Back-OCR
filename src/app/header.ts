@@ -99,7 +99,7 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <!-- Tooltip -->
             <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
               <span class="font-bold text-amber-400 block mb-0.5">Flash (mặc định):</span>
-              Thích hợp xử lý tài liệu phức tạp, sách cổ và thơ phú.
+              Thích hợp xử lý tài liệu phức tạp.
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-amber-300 font-medium">
                   @if (selectedModel() === 'gemini-flash-latest') {
@@ -125,9 +125,9 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-indigo-400]="selectedModel() === 'gemini-flash-lite-latest'">spa</mat-icon>
             <span>Lite</span>
             <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[280px] text-left z-50 pointer-events-none">
               <span class="font-bold text-indigo-400 block mb-0.5">Lite:</span>
-              Tối ưu tốc độ cao cho các tài liệu có cấu trúc đơn giản.
+              Tốc độ cao, hợp với tài liệu cấu trúc đơn giản.
               @if (isModelLocked()) {
                 <span class="block mt-1 pt-1 border-t border-white/10 text-indigo-300 font-medium">
                   @if (selectedModel() === 'gemini-flash-lite-latest') {

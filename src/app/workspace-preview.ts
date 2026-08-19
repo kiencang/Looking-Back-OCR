@@ -73,13 +73,20 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
         <div class="flex items-center gap-2 text-xs font-sans">
           @if (reflowHtml()) {
             <!-- Fullscreen Comparison Button -->
-            <button 
-              (click)="openFullscreen.emit()"
-              class="py-2.5 px-3 bg-indigo-950/80 hover:bg-indigo-900/80 text-indigo-300 hover:text-indigo-100 border border-indigo-500/30 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer focus:outline-none shrink-0"
-              title="Mở chế độ toàn màn hình để đối chiếu song song với bản gốc">
-              <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">open_in_full</mat-icon>
-              <span class="hidden sm:inline">Đối chiếu bản gốc</span>
-            </button>
+            <div class="relative group">
+              <button 
+                (click)="openFullscreen.emit()"
+                class="py-2.5 px-3 bg-indigo-950/80 hover:bg-indigo-900/80 text-indigo-300 hover:text-indigo-100 border border-indigo-500/30 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer focus:outline-none shrink-0">
+                <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">open_in_full</mat-icon>
+                <span class="hidden sm:inline">Đối chiếu bản gốc</span>
+              </button>
+              <!-- Tailwind Tooltip Downwards (Right-aligned to avoid overflow) -->
+              <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-52 text-left leading-relaxed">
+                Mở chế độ toàn màn hình để đối chiếu song song với bản gốc.
+                <!-- Tooltip Arrow Pointing Up -->
+                <div class="absolute bottom-full right-4 border-[5px] border-transparent border-b-slate-900"></div>
+              </div>
+            </div>
           }
 
           @if (reflowHtml() && isAllCompleted()) {
@@ -93,11 +100,11 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                   <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">html</mat-icon>
                   <span>Tải HTML (đầy đủ)</span>
                 </button>
-                <!-- Tailwind Tooltip Downwards -->
-                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
-                  Tải toàn bộ tài liệu dưới dạng trang HTML/CSS độc lập
+                <!-- Tailwind Tooltip Downwards (Right-aligned to avoid overflow) -->
+                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-52 text-left leading-relaxed">
+                  Tải toàn bộ tài liệu dưới dạng trang HTML/CSS độc lập.
                   <!-- Tooltip Arrow Pointing Up -->
-                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+                  <div class="absolute bottom-full right-6 border-[5px] border-transparent border-b-slate-900"></div>
                 </div>
               </div>
             } @else {
@@ -110,11 +117,11 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                   <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">description</mat-icon>
                   <span>Tải Docx (đầy đủ)</span>
                 </button>
-                <!-- Tailwind Tooltip Downwards -->
-                <div class="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-1.5 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 whitespace-nowrap">
-                  Tải tài liệu Microsoft Word (.docx) đầy đủ
+                <!-- Tailwind Tooltip Downwards (Right-aligned to avoid overflow) -->
+                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-52 text-left leading-relaxed">
+                  Tải tài liệu Microsoft Word (.docx) đầy đủ.
                   <!-- Tooltip Arrow Pointing Up -->
-                  <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-slate-900"></div>
+                  <div class="absolute bottom-full right-6 border-[5px] border-transparent border-b-slate-900"></div>
                 </div>
               </div>
 

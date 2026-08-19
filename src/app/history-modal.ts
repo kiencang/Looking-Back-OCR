@@ -84,9 +84,9 @@ import { MatIconModule } from '@angular/material/icon';
                         {{ item.fileName }}
                       </span>
                       @if (currentHistoryId() === item.id) {
-                        <span class="inline-flex items-center gap-1 text-[9.5px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md font-mono shadow-sm">
-                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                          Đang mở
+                        <span class="inline-flex items-center justify-center gap-1.5 text-[9.5px] font-bold font-sans leading-none bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-1 rounded-md shadow-sm">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                          <span>Đang mở</span>
                         </span>
                       }
                     </div>
@@ -124,68 +124,75 @@ import { MatIconModule } from '@angular/material/icon';
                     <!-- Token Usage Row -->
                     @if (getTotalTokens(item.pdfChunks).input > 0 || getTotalTokens(item.pdfChunks).output > 0) {
                       <div class="flex items-center gap-2 pt-1 text-[10px] font-mono text-slate-400">
-                        <span class="inline-flex items-center gap-1 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
+                        <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
                           <span class="text-slate-500">Input:</span>
-                          <span class="text-emerald-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).input) }}</span>
+                          <span class="text-emerald-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).input) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
                           <span class="text-slate-600">|</span>
                           <span class="text-slate-500">Output:</span>
-                          <span class="text-sky-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).output) }}</span>
+                          <span class="text-sky-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).output) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
                         </span>
                       </div>
                     }
                   </div>
 
-                  <!-- Quick Actions / Confirm Delete -->
-                  @if (deletingItemId() === item.id) {
-                    <div class="flex items-center gap-1.5 shrink-0 bg-rose-500/10 border border-rose-500/20 rounded-lg p-1 animate-fade-in">
-                      <span class="text-[10px] text-rose-400 font-bold px-1.5 font-sans">Xác nhận xóa?</span>
-                      <button 
-                        type="button"
-                        (click)="$event.stopPropagation(); deleteItem.emit(item.id); deletingItemId.set(null)"
-                        class="px-2 py-1 flex items-center justify-center text-[10px] font-bold bg-rose-600 hover:bg-rose-500 text-white rounded transition-colors cursor-pointer focus:outline-none">
-                        Xóa
-                      </button>
-                      <button 
-                        type="button"
-                        (click)="$event.stopPropagation(); deletingItemId.set(null)"
-                        class="px-2 py-1 flex items-center justify-center text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition-colors cursor-pointer focus:outline-none">
-                        Hủy
-                      </button>
-                    </div>
-                  } @else {
-                    <div class="flex items-center gap-2 shrink-0">
-                      <button 
-                        type="button"
-                        [disabled]="isParsing() || isOptimizing()"
-                        (click)="$event.stopPropagation(); restoreItem.emit(item)"
-                        class="px-2.5 py-1.5 flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer focus:outline-none">
-                        <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center">folder_shared</mat-icon>
-                        <span>Khôi phục</span>
-                      </button>
-                      
-                      <button 
-                        type="button"
-                        (click)="$event.stopPropagation(); deletingItemId.set(item.id)"
-                        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer focus:outline-none"
-                        title="Xóa khỏi lịch sử">
-                        <mat-icon class="text-[18px] w-4.5 h-4.5 flex items-center justify-center leading-none">delete_outline</mat-icon>
-                      </button>
-                    </div>
-                  }
+                  <!-- Quick Action: Restore button (Top-Right) -->
+                  <div class="shrink-0 flex items-center pt-0.5">
+                    <button 
+                      type="button"
+                      [disabled]="isParsing() || isOptimizing()"
+                      (click)="$event.stopPropagation(); restoreItem.emit(item)"
+                      class="px-3 py-1.5 flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors shadow-sm cursor-pointer focus:outline-none">
+                      <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center">folder_shared</mat-icon>
+                      <span>Khôi phục</span>
+                    </button>
+                  </div>
                 </div>
 
-                <!-- Progress display -->
+                <!-- Progress display & Delete Action (Bottom Footer) -->
                 <div class="mt-3 pt-3 border-t border-white/5">
-                  <div class="flex items-center justify-between text-[11px] text-slate-400">
-                    <span class="flex items-center gap-1.5 font-sans font-medium text-slate-300">
-                      <mat-icon class="!text-[12px] !w-3.5 !h-3.5 text-indigo-400 flex items-center justify-center leading-none">done_all</mat-icon>
-                      Hoàn thành: {{ getCompletedChunksCount(item.pdfChunks) }}/{{ item.pdfChunks.length }} khối 
-                      ({{ getCompletedPercent(item.pdfChunks) }}%)
+                  <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+                    <span class="flex items-center gap-1.5 font-sans font-medium text-slate-300 min-w-0">
+                      <mat-icon class="!text-[12px] !w-3.5 !h-3.5 text-indigo-400 flex items-center justify-center leading-none shrink-0">done_all</mat-icon>
+                      <span class="truncate">
+                        Hoàn thành: {{ getCompletedChunksCount(item.pdfChunks) }}/{{ item.pdfChunks.length }} khối 
+                        ({{ getCompletedPercent(item.pdfChunks) }}%)
+                      </span>
                     </span>
-                    <span class="text-[10px] font-mono text-slate-500 opacity-60">{{ item.timestamp | date:'HH:mm dd/MM/yyyy' }}</span>
+                    
+                    <div class="flex items-center gap-2 shrink-0">
+                      <span class="text-[10px] font-mono text-slate-400">{{ item.timestamp | date:'HH:mm dd/MM/yyyy' }}</span>
+                      
+                      <!-- Delete Action / Confirm Delete at bottom right -->
+                      @if (deletingItemId() === item.id) {
+                        <div class="flex items-center gap-2 bg-rose-950/50 border border-rose-500/30 rounded-lg py-1 px-2.5 shadow-sm animate-fade-in">
+                          <span class="text-[11px] text-rose-300 font-bold font-sans">Xóa?</span>
+                          <button 
+                            type="button"
+                            (click)="$event.stopPropagation(); deleteItem.emit(item.id); deletingItemId.set(null)"
+                            class="px-2.5 py-1 flex items-center justify-center text-[10.5px] font-bold bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-md transition-colors shadow-sm cursor-pointer focus:outline-none">
+                            Xóa
+                          </button>
+                          <button 
+                            type="button"
+                            (click)="$event.stopPropagation(); deletingItemId.set(null)"
+                            class="px-2.5 py-1 flex items-center justify-center text-[10.5px] font-semibold bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-200 rounded-md transition-colors cursor-pointer focus:outline-none">
+                            Hủy
+                          </button>
+                        </div>
+                      } @else {
+                        <button 
+                          type="button"
+                          (click)="$event.stopPropagation(); deletingItemId.set(item.id)"
+                          class="w-7 h-7 rounded-md flex items-center justify-center text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer focus:outline-none"
+                          title="Xóa khỏi lịch sử">
+                          <mat-icon class="text-[16px] w-[16px] h-[16px] flex items-center justify-center leading-none">delete_outline</mat-icon>
+                        </button>
+                      }
+                    </div>
                   </div>
+                  
                   <!-- Progress bar -->
-                  <div class="mt-1.5 w-full bg-slate-950 border border-white/5 rounded-full h-1 overflow-hidden">
+                  <div class="mt-2 w-full bg-slate-950 border border-white/5 rounded-full h-1 overflow-hidden">
                     <div 
                       class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-300"
                       [style.width.%]="getCompletedPercent(item.pdfChunks)">
