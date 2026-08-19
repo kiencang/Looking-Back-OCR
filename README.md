@@ -24,7 +24,7 @@ Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (c�
 
 Điểm khác biệt cơ bản là Looking-Back-OCR tập trung vào sách xưa, và nó xuất ra nhiều định dạng hơn, cũng như mục đích là để con người đọc trực tiếp.
 
-Ngoài Gemini, công cụ này còn tích hợp thêm Meta AI. Meta có khả năng OCR không tốt bằng Gemini, nhưng nó đỡ khó tính hơn Gemini trong vấn đề chặn chuyển đổi. Gemini đôi khi nhận nhầm một sách đã hết hạn bảo hộ là vẫn còn bản quyền và không cho phép chuyển (nếu vẫn muốn dùng Gemini, bạn có thể dùng Key trả phí, vì ở Key trả phí, Gemini không lấy dữ liệu người dùng do vậy có thể không gặp vấn đề về bản quyền).
+Ngoài Gemini, công cụ này còn tích hợp thêm Meta AI. Meta có khả năng OCR không tốt bằng Gemini, nhưng nó đỡ khó tính hơn Gemini trong vấn đề chặn chuyển đổi. Gemini đôi khi nhận nhầm một sách đã hết hạn bảo hộ là vẫn còn bản quyền và không cho phép chuyển.
 
 ## Hai kiểu tái tạo
 Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
