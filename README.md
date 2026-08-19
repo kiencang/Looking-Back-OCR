@@ -10,6 +10,8 @@ Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việ
 
 2 bản trên là một, và có chất lượng như nhau.
 
+**Lưu ý**: Với trường hợp sử dụng Key miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (`muse-spark-1.2-contributor`) chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
+
 ## Tại sao tồn tại
 Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng PDF scan có thể không dễ đọc do **bản chất sách gốc bị mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
 
