@@ -128,9 +128,14 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
 
           <!-- Security note -->
-          <p class="text-[11px] text-slate-400 font-sans leading-normal">
-            Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
-          </p>
+          <div class="space-y-1.5 font-sans">
+            <p class="text-[11px] text-slate-400 leading-normal">
+              Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
+            </p>
+            <p class="text-[10.5px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 leading-relaxed">
+              <strong class="font-semibold text-amber-300">Lưu ý:</strong> Với trường hợp sử dụng Key miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (muse-spark-1.2-contributor) chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
+            </p>
+          </div>
 
           <!-- Divider -->
           <hr class="border-white/10" />
