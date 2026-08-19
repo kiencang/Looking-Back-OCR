@@ -21,7 +21,9 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 - Bố cục nhiều cột (Multi-column): Nếu tài liệu in 2 hoặc 3 cột (báo chí, tạp chí, từ điển), hãy **đọc theo đúng thứ tự logic tự nhiên của bài viết và gộp thành một luồng đọc duy nhất**.
 
 2. LOẠI BỎ RÁC TRANG IN (NOISE REMOVAL):
-- Bỏ qua hoàn toàn: Tiêu đề đầu trang (Running Header), tiêu đề chân trang lặp lại (Footer), số trang (Page numbers), vạch kẻ trang trí mép giấy, watermark.
+- Bỏ qua tiêu đề lặp lại cơ học: Tiêu đề đầu trang lặp lại ở các trang ruột (Running Header), tiêu đề chân trang lặp lại (Footer), số trang (Page numbers), vạch kẻ trang trí mép giấy, watermark.
+- BẢO TỒN TIÊU ĐỀ TRANG BÌA & TRANG ĐẦU ẤN PHẨM:
+  * Tại trang bìa, trang nhan đề, hoặc trang nhất của báo/tạp chí: BẮT BUỘC trích xuất đầy đủ 100% mọi tiêu đề trên cùng, tiêu đề phụ, tên cơ quan chủ quản, thông tin giấy phép (ví dụ: các dòng tiếng Pháp/tiếng Hán/tiếng Việt định danh ấn phẩm nằm trên đỉnh tên báo). TUYỆT ĐỐI KHÔNG coi các thông tin này là Running Header để bỏ qua.
 - Dọn dẹp tạp âm scan (Scan Artifacts & Noise): Loại bỏ triệt để các đốm ố mốc, bóng tối gáy sách, chữ hằn từ mặt sau (bleed-through), dấu mộc thư viện, chữ viết tay ghi chú ngoài lề, vệt rỉ bấm kim/băng dính và bóng ngón tay giữ sách; chỉ tập trung nhận diện chính xác nội dung in của nguyên tác.
 - Thống nhất dấu câu thẩm mỹ: Sử dụng dấu ngoặc kép chuẩn ("nội dung"), bảo toàn dấu gạch ngang dài giải thích (— em-dash).
 - PHÂN BIỆT GẠCH NỐI CHÍNH TẢ CỔ:
