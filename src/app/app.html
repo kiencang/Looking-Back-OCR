@@ -77,6 +77,8 @@
 
   <!-- Footer Component -->
   <app-footer
+    [isDevMode]="isDevMode()"
+    (toggleDevMode)="isDevMode.set(!isDevMode())"
     (openInstruction)="showInstruction.set(true)"
     (outputModeChange)="onOutputModeChanged($event)">
   </app-footer>

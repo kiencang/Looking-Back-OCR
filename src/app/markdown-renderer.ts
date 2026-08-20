@@ -132,6 +132,21 @@ export class MarkdownRenderer {
       return `![${key}](data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="40"><rect width="100" height="40" fill="%23f1f5f9"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%2394a3b8">${key}</text></svg>)`;
     });
 
+    // 1. Protect intentional code blocks (triple backticks)
+    const codeBlocks: string[] = [];
+    let codeBlockIndex = 0;
+    const fencedCodeRegex = /```[\s\S]*?```/g;
+    let preprocessed = processedMarkdown.replace(fencedCodeRegex, (match) => {
+      const placeholder = `CODEBLOCKPLACEHOLDERID${codeBlockIndex}END`;
+      codeBlocks.push(match);
+      codeBlockIndex++;
+      return placeholder;
+    });
+
+    // 2. Disable indented code blocks for Vietnamese OCR / text layout
+    // (Strip leading 4-space indent from lines that are regular text/lists/footnotes so marked does not turn them into <pre><code>)
+    preprocessed = preprocessed.replace(/^(?: {4}|\t)(?!\s*$)/gm, '');
+
     // Protect LaTeX math formulas and MathML tags from being modified by marked parser
     const mathBlocks: string[] = [];
     let mathPlaceholderIndex = 0;
@@ -142,8 +157,6 @@ export class MarkdownRenderer {
     const inlineMathRegex1 = /\\\(([\s\S]+?)\\\)/g;
     const inlineMathRegex2 = /(?<!\\)\$((?!\s)[^$\n]+?(?<!\\))\$/g;
     const mathmlRegex = /<math[\s\S]*?<\/math>/gi;
-
-    let preprocessed = processedMarkdown;
 
     // Replace display math first
     preprocessed = preprocessed.replace(displayMathRegex1, (match) => {
@@ -181,6 +194,12 @@ export class MarkdownRenderer {
       return placeholder;
     });
 
+    // Restore protected intentional code blocks before marked
+    for (let i = 0; i < codeBlockIndex; i++) {
+      const placeholder = `CODEBLOCKPLACEHOLDERID${i}END`;
+      preprocessed = preprocessed.replace(placeholder, codeBlocks[i]);
+    }
+
     let html = '';
     try {
       html = marked.parse(preprocessed, { breaks: true, gfm: true, async: false }) as string;
@@ -195,26 +214,26 @@ export class MarkdownRenderer {
       html = html.split(placeholder).join(mathBlocks[i]);
     }
 
-    // Enhance typography and prose styling with clean Tailwind classes
+    // Enhance typography and prose styling with clean Tailwind classes safely (using \b word boundaries to prevent <p> matching <pre>)
     let rendered = html;
-    rendered = rendered.replace(/<h1(.*?)>/g, '<h1 class="ocr-h1 text-3xl font-extrabold font-sans tracking-tight mt-8 mb-4 border-b pb-2 break-words"$1>')
-                       .replace(/<h2(.*?)>/g, '<h2 class="ocr-h2 text-2xl font-bold font-sans tracking-tight mt-6 mb-3 border-b pb-1.5 break-words"$1>')
-                       .replace(/<h3(.*?)>/g, '<h3 class="ocr-h3 text-xl font-semibold font-sans mt-4 mb-2 break-words"$1>')
-                       .replace(/<h4(.*?)>/g, '<h4 class="ocr-h4 text-lg font-semibold font-sans mt-4 mb-2 break-words"$1>')
-                       .replace(/<p(.*?)>/g, '<p class="ocr-p mb-4 text-justify leading-relaxed text-base break-words"$1>')
-                       .replace(/<blockquote(.*?)>/g, '<blockquote class="ocr-blockquote border-l-4 pl-4 py-1.5 my-4 italic rounded-r-lg break-words"$1>')
-                       .replace(/<ul(.*?)>/g, '<ul class="ocr-ul list-disc list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
-                       .replace(/<ol(.*?)>/g, '<ol class="ocr-ol list-decimal list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
-                       .replace(/<table(.*?)>/g, '<div class="overflow-x-auto my-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900"><table class="ocr-table w-full text-left text-sm table-auto border-collapse break-words"$1>')
+    rendered = rendered.replace(/<h1\b(.*?)>/g, '<h1 class="ocr-h1 text-3xl font-extrabold font-sans tracking-tight mt-8 mb-4 border-b pb-2 break-words"$1>')
+                       .replace(/<h2\b(.*?)>/g, '<h2 class="ocr-h2 text-2xl font-bold font-sans tracking-tight mt-6 mb-3 border-b pb-1.5 break-words"$1>')
+                       .replace(/<h3\b(.*?)>/g, '<h3 class="ocr-h3 text-xl font-semibold font-sans mt-4 mb-2 break-words"$1>')
+                       .replace(/<h4\b(.*?)>/g, '<h4 class="ocr-h4 text-lg font-semibold font-sans mt-4 mb-2 break-words"$1>')
+                       .replace(/<p\b(.*?)>/g, '<p class="ocr-p mb-4 text-justify leading-relaxed text-base break-words"$1>')
+                       .replace(/<blockquote\b(.*?)>/g, '<blockquote class="ocr-blockquote border-l-4 pl-4 py-1.5 my-4 italic rounded-r-lg break-words"$1>')
+                       .replace(/<ul\b(.*?)>/g, '<ul class="ocr-ul list-disc list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
+                       .replace(/<ol\b(.*?)>/g, '<ol class="ocr-ol list-decimal list-inside space-y-1.5 my-4 pl-2 break-words"$1>')
+                       .replace(/<table\b(.*?)>/g, '<div class="overflow-x-auto my-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs bg-white dark:bg-slate-900"><table class="ocr-table w-full text-left text-sm table-auto border-collapse break-words"$1>')
                        .replace(/<\/table>/g, '</table></div>')
-                       .replace(/<thead(.*?)>/g, '<thead class="ocr-thead border-b border-slate-200 dark:border-slate-800 font-semibold text-xs tracking-wider uppercase bg-slate-50/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300"$1>')
-                       .replace(/<th(.*?)>/g, '<th class="font-semibold px-4 py-3 align-middle"$1>')
-                       .replace(/<tbody(.*?)>/g, '<tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"$1>')
-                       .replace(/<td(.*?)>/g, '<td class="ocr-td px-4 py-3 align-middle transition-colors"$1>')
-                       .replace(/<pre(.*?)>/g, '<pre class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto mb-4 border border-white/5"$1>')
-                       .replace(/(?<!<pre[^>]*>)<code(.*?)>/g, '<code class="ocr-code-inline px-1.5 py-0.5 font-mono text-xs rounded border break-words"$1>')
-                       .replace(/<a(.*?)>/g, '<a class="text-indigo-500 hover:text-indigo-400 underline break-words font-medium transition-colors cursor-pointer" rel="noopener noreferrer" target="_blank"$1>')
-                       .replace(/<img(.*?)>/g, '<img class="ocr-preview-img object-contain rounded-xl border border-slate-200/60 dark:border-slate-800 cursor-zoom-in my-3 hover:scale-[1.01] transition-transform" onclick="window.zoomPdfImage && window.zoomPdfImage(this.src)" referrerpolicy="no-referrer"$1>');
+                       .replace(/<thead\b(.*?)>/g, '<thead class="ocr-thead border-b border-slate-200 dark:border-slate-800 font-semibold text-xs tracking-wider uppercase bg-slate-50/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300"$1>')
+                       .replace(/<th\b(.*?)>/g, '<th class="font-semibold px-4 py-3 align-middle"$1>')
+                       .replace(/<tbody\b(.*?)>/g, '<tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"$1>')
+                       .replace(/<td\b(.*?)>/g, '<td class="ocr-td px-4 py-3 align-middle transition-colors"$1>')
+                       .replace(/<pre\b(.*?)>/g, '<pre class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto mb-4 border border-white/5"$1>')
+                       .replace(/(?<!<pre[^>]*>)<code\b(.*?)>/g, '<code class="ocr-code-inline px-1.5 py-0.5 font-mono text-xs rounded border break-words"$1>')
+                       .replace(/<a\b(.*?)>/g, '<a class="text-indigo-500 hover:text-indigo-400 underline break-words font-medium transition-colors cursor-pointer" rel="noopener noreferrer" target="_blank"$1>')
+                       .replace(/<img\b(.*?)>/g, '<img class="ocr-preview-img object-contain rounded-xl border border-slate-200/60 dark:border-slate-800 cursor-zoom-in my-3 hover:scale-[1.01] transition-transform" onclick="window.zoomPdfImage && window.zoomPdfImage(this.src)" referrerpolicy="no-referrer"$1>');
 
     return this.handleSentenceContinuations(rendered);
   }
