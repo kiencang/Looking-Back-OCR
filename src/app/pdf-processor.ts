@@ -10,7 +10,7 @@ export interface PdfPageData {
   pageNum: number;
   items: any[];
   pageImageUrl: string; // PNG Data URL, scale 1.4 (lazy rendered)
-  extractedImages: any[];
+  extractedImages?: any[];
 }
 
 @Injectable({

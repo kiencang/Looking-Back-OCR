@@ -226,8 +226,8 @@ export class DocxExporter {
         continue;
       }
 
-      // Page Break Markers (<!-- PAGE_BREAK: X --> or <!-- PAGE_BREAK -->)
-      if (/^<!--\s*PAGE(?:_BREAK)?(?::\s*\d+)?\s*-->$/i.test(trimmedLine) || trimmedLine === '---' || trimmedLine === '***') {
+      // Page Break Markers from OCR (<!-- PAGE_BREAK: X --> or <!-- PAGE_BREAK -->)
+      if (/^<!--\s*PAGE(?:_BREAK)?(?::\s*\d+)?\s*-->$/i.test(trimmedLine)) {
         // Only insert page break if we already have content (avoid blank initial page)
         if (children.length > 0) {
           children.push(
@@ -236,6 +236,27 @@ export class DocxExporter {
             })
           );
         }
+        idx++;
+        continue;
+      }
+
+      // Thematic Breaks / Section Dividers / Asterisms (* * *, ***, ---, - - -, ___)
+      if (/^(?:\s*[*_-]){3,}\s*$/.test(trimmedLine)) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: '*   *   *',
+                color: '64748B',
+                size: 22,
+                bold: true,
+                font: 'Segoe UI',
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
         idx++;
         continue;
       }
