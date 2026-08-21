@@ -76,6 +76,6 @@ Dưới đây là danh sách các thư viện quan trọng mà ứng dụng này
 *   **[PDF-Lib](https://pdf-lib.js.org/)** – Xử lý tách trang, chia chunk.
 *   **[KaTeX](https://katex.org/)**: Thư viện xử lý và hiển thị công thức toán học do Khan Academy phát triển. Đóng vai trò là engine chuyển đổi các công thức toán học LaTeX (được AI bóc tách từ tài liệu) sang định dạng XML chuẩn `MathML`. Nhờ cấu trúc MathML nguyên bản này, các công thức phức tạp được giữ nguyên định dạng khi xuất sang dạng tài liệu **Microsoft Word (.docx)**.
 
-### 3. Đọc/Ghi & Tạo định dạng đầu ra (EPUB, DOCX, ZIP)
+### 3. Đọc/Ghi & Tạo định dạng đầu ra (DOCX)
 *   **[Docx.js](https://docx.js.org/)** – Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (.docx) chạy trực tiếp trên trình duyệt (Client-side).
 *   **[Marked.js](https://marked.js.org/)** – Trình biên dịch Markdown, giúp biên dịch dữ liệu văn bản từ AI phản hồi thành mã HTML sạch, để hiển thị xem trước.
