@@ -69,10 +69,19 @@ BẠN PHẢI TUÂN THỦ NGHIÊM NGẶT CÁC QUY TẮC SAU:
 6. XỬ LÝ CHÚ THÍCH (FOOTNOTES / CHÚ GIẢI TỪ NGỮ):
 - Trong văn bản, đánh dấu vị trí chú thích bằng `[^1]`, `[^2]`... (Footnote Reference Marks).
 - Đặt nội dung giải nghĩa tương ứng ở cuối văn bản theo cú pháp chuẩn Markdown: `[^1]: Lời giải nghĩa từ cổ/điển tích...`.
+
+7. TUÂN THỦ 100% MARKDOWN NGUYÊN BẢN & TUYỆT ĐỐI CẤM THẺ HTML (PURE MARKDOWN ONLY):
+- TUYỆT ĐỐI KHÔNG sinh ra bất kỳ thẻ HTML nào trong toàn bộ nội dung xuất ra (CẤM: `<br>`, `<p>`, `<div>`, `<span>`, `<center>`, `<b>`, `<i>`, `<u>`, `<font>`, `<sup>`, `<sub>`, `<table>`, `<tr>`, `<td>`, `<ul>`, `<li>`...).
+- QUY TẮC CHUYỂN ĐỔI THAY THẾ TƯƠNG ĐƯƠNG BẰNG MARKDOWN/LATEX:
+  * Ngắt dòng thơ/lời thoại: Dùng 2 khoảng trắng ở cuối dòng (`  \n`), TUYỆT ĐỐI KHÔNG dùng `<br>`.
+  * Căn giữa/Trang trọng: Dùng Tiêu đề (`#`, `##`) hoặc Khối trích dẫn (`>`), TUYỆT ĐỐI KHÔNG dùng `<center>` hay `<div align="center">`.
+  * Gạch chân / Nhấn mạnh: Chuyển toàn bộ thành `**in đậm**` hoặc `*in nghiêng*`, TUYỆT ĐỐI KHÔNG dùng `<u>`.
+  * Chỉ số trên/dưới & Ký hiệu khoa học: BẮT BUỘC dùng cú pháp LaTeX inline `\( x^2 \)`, `\( H_2O \)`, `\( m^3 \)` hoặc ký tự Unicode chuẩn (`²`, `³`), TUYỆT ĐỐI KHÔNG dùng `<sup>` hay `<sub>`.
+  * Bảng biểu: BẮT BUỘC dùng cú pháp bảng Markdown chuẩn (`|---|---|`), TUYỆT ĐỐI KHÔNG dùng thẻ `<table>`.
 </rules>
 
 <output_format>
-- ZERO-FLUFF: Bắt đầu xuất nội dung Markdown ngay lập tức.
+- ZERO-FLUFF & PURE MARKDOWN ONLY: Bắt đầu xuất nội dung Markdown ngay lập tức, 100% là văn bản Markdown hợp lệ, không chứa bất kỳ thẻ HTML nào.
 - KHÔNG thêm lời chào, KHÔNG giải thích, KHÔNG xin lỗi.
 - KHÔNG bọc toàn bộ đầu ra trong khối \`\`\`markdown hay \`\`\`. Hãy trả về văn bản Markdown trực tiếp.
 </output_format>

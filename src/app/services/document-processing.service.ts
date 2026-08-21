@@ -80,16 +80,6 @@ export class DocumentProcessingService {
   });
 
   totalPageCount = computed(() => this.pdfPages().length);
-  
-  extractedImagesCount = computed(() => {
-    return this.pdfPages().reduce((sum, page) => sum + (page.extractedImages?.length || 0), 0);
-  });
-
-  extractedText = computed(() => {
-    return this.pdfPages()
-      .map(p => p.items.map(i => i.text).join(' '))
-      .join('\n\n');
-  });
 
   optimizationTimeFormatted = computed(() => {
     const s = this.optimizationTimer();

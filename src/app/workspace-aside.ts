@@ -250,7 +250,6 @@ export class WorkspaceAside {
   fileName = this.docService.fileName;
   fileSize = this.docService.fileSize;
   totalPageCount = this.docService.totalPageCount;
-  extractedImagesCount = this.docService.extractedImagesCount;
   selectedOutputMode = this.docService.selectedOutputMode;
   isOutputModeLocked = this.docService.isOutputModeLocked;
   isBatchProcessing = this.docService.isBatchProcessing;

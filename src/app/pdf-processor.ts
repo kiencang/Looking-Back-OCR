@@ -3,7 +3,7 @@ import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PdfDb } from './pdf-db';
 import { MarkdownRenderer } from './markdown-renderer';
-import { DocxExporter } from './docx-exporter';
+import { DocxExporter } from './docx/docx-exporter';
 import { PDFDocument } from 'pdf-lib';
 
 export interface PdfPageData {
@@ -11,16 +11,6 @@ export interface PdfPageData {
   items: any[];
   pageImageUrl: string; // PNG Data URL, scale 1.4 (lazy rendered)
   extractedImages: any[];
-}
-
-export interface SavedImage {
-  id: string; // e.g., "filename_IMG-01"
-  key: string; // e.g., "IMG-01"
-  fileName: string;
-  pageNum: number;
-  dataUrl: string;
-  width: number;
-  height: number;
 }
 
 @Injectable({
@@ -221,18 +211,6 @@ export class PdfProcessor {
 
   deleteHistoryItem(id: string): Promise<void> {
     return this.db.deleteHistoryItem(id);
-  }
-
-  saveImageToDb(img: SavedImage): Promise<void> {
-    return this.db.saveImageToDb(img);
-  }
-
-  getStoredImagesForFile(fileName: string): Promise<SavedImage[]> {
-    return this.db.getStoredImagesForFile(fileName);
-  }
-
-  clearStoredImagesForFile(fileName: string): Promise<void> {
-    return this.db.clearStoredImagesForFile(fileName);
   }
 
   /**
