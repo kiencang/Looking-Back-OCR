@@ -233,7 +233,28 @@ export function generateHtmlDocument(options: HtmlTemplateOptions): string {
       -webkit-column-break-inside: avoid !important;
     }
 
-    /* 7. Chú thích chân trang (Footnotes) & Liên kết */
+    /* 7. Tiêu đề lặp đầu trang (Running Headers) & Chú thích chân trang (Footnotes) */
+    .running-header {
+      font-size: 0.8rem !important;
+      color: #94a3b8 !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      padding-bottom: 4px !important;
+      margin-top: 8px !important;
+      margin-bottom: 16px !important;
+      font-weight: 500 !important;
+      text-align: center !important;
+      font-style: italic !important;
+      letter-spacing: 0.05em !important;
+      user-select: none !important;
+    }
+    .theme-warm .running-header {
+      color: #a89f91 !important;
+      border-bottom-color: #ebdcc9 !important;
+    }
+    .theme-mono .running-header {
+      color: #71717a !important;
+      border-bottom-color: #27272a !important;
+    }
     .footnotes {
       margin-top: 36px;
       border-top: 1px solid #e2e8f0;

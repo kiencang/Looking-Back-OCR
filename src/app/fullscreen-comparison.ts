@@ -265,6 +265,10 @@ import { DocumentProcessingService } from './services/document-processing.servic
               <!-- Clean Proportional Reader typography -->
               <div 
                 class="prose max-w-none text-justify flex flex-col select-text" 
+                [style.font-family]="docService.documentStyleProfile()?.bodyFont ? (docService.documentStyleProfile()?.bodyFont + ', serif, sans-serif') : null"
+                [style.font-size]="docService.documentStyleProfile()?.bodyFontSize || null"
+                [style.line-height]="docService.documentStyleProfile()?.lineHeight || null"
+                [style.--preview-heading-font]="docService.documentStyleProfile()?.headingFont ? (docService.documentStyleProfile()?.headingFont + ', serif, sans-serif') : null"
                 [innerHTML]="reflowSafeHtml()">
               </div>
 

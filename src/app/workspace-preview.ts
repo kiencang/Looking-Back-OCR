@@ -170,7 +170,12 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
 
             @if (reflowHtml()) {
               <!-- Render optimized AI output -->
-              <div class="prose max-w-none text-justify flex flex-col" [innerHTML]="reflowSafeHtml()"></div>
+              <div class="prose max-w-none text-justify flex flex-col" 
+                [style.font-family]="docService.documentStyleProfile()?.bodyFont ? (docService.documentStyleProfile()?.bodyFont + ', serif, sans-serif') : null"
+                [style.font-size]="docService.documentStyleProfile()?.bodyFontSize || null"
+                [style.line-height]="docService.documentStyleProfile()?.lineHeight || null"
+                [style.--preview-heading-font]="docService.documentStyleProfile()?.headingFont ? (docService.documentStyleProfile()?.headingFont + ', serif, sans-serif') : null"
+                [innerHTML]="reflowSafeHtml()"></div>
             }
 
           </div>

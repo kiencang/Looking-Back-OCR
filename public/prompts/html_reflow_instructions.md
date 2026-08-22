@@ -46,12 +46,37 @@ Nhiệm vụ của bạn là: Trích xuất văn bản từ tệp PDF scan đín
 - Chữ cái lớn đầu đoạn (Drop Caps / Initial Capitals): Sử dụng `<span style="float: left; font-size: 3rem; line-height: 1; font-weight: bold; margin-right: 8px;">N</span>ăm ấy...`. Nhưng cần quan sát để thiết kế khéo léo, hết sức tránh trường hợp chữ cái lớn đầu đoạn bị xa cách không gian với các ký tự còn lại của cùng từ đó (Optical Spacing).
 - Chống xé lẻ phần tử trong cột (Block Fragmentation & Widow Prevention): Thêm `style="break-inside: avoid; margin: 16px 0;"` cho ảnh, bảng biểu hoặc công thức toán để không bị cắt đôi giữa 2 cột.
 
-3. BẢNG BIỂU PHỨC TẠP (COMPLEX TABLES):
-- Sử dụng thẻ HTML chuẩn: `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`.
-- Định dạng bảng rõ nét: `<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">`
-- Đường kẻ ô: Áp dụng `style="border: 1px solid #cbd5e1; padding: 8px 12px;"` cho các ô.
-- Gộp dòng và gộp cột: Nhận diện chính xác các ô gộp trong bản gốc và sử dụng `colspan="X"` hoặc `rowspan="Y"`.
-- Ô tiêu đề: Thẻ `<th>` có nền xám nhạt với thiết kế `style="background-color: #f1f5f9; font-weight: bold; border: 1px solid #cbd5e1; padding: 8px;"`.
+3. BẢNG BIỂU PHỨC TẠP & BẢO TOÀN CẤU TRÚC DỮ LIỆU (COMPLEX TABLES & TABULAR DATA):
+- CẤU TRÚC HTML NGỮ NGHĨA CHUẨN (Semantic Table Architecture):
+  * BẮT BUỘC dùng đầy đủ cấu trúc: `<table>`, `<caption>` (nếu có tên bảng), `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`.
+  * Luôn bọc bảng trong container chống tràn: `<div style="overflow-x: auto; margin: 20px 0; break-inside: avoid;">` để bảng hiển thị mượt mà trên mọi thiết bị và không bị xé đôi khi nằm trong cột báo chí.
+  * Thiết lập bảng cơ sở: `<table style="width: 100%; border-collapse: collapse; font-size: 0.92em; line-height: 1.5;">`.
+
+- ĐỊNH DẠNG ĐƯỜNG VIỀN & PHONG CÁCH BẢNG (Border Styles & Authenticity):
+  * Bảng lưới thông thường (Grid Table): Áp dụng `border: 1px solid #cbd5e1; padding: 8px 12px;` cho các ô.
+  * Bảng học thuật / Ba đường kẻ kinh điển (Academic 3-Line Table - không viền dọc): 
+    - Đỉnh bảng: `<table style="border-top: 2px solid #334155; border-bottom: 2px solid #334155; ...">`
+    - Dưới hàng tiêu đề: `<tr style="border-bottom: 1px solid #334155;">`
+    - Các ô bên trong: `style="border: none; padding: 6px 12px;"`.
+  * Hàng Tổng cộng / Kết luận (Total / Summary Row): Tạo điểm nhấn bằng chữ đậm `font-weight: bold;` và viền đôi `<tr style="border-top: 1.5px solid #334155; border-bottom: 3px double #334155; background-color: #f8fafc;">`.
+
+- CĂN LỀ Ô THEO BẢN CHẤT DỮ LIỆU (Semantic Cell Alignment):
+  * Cột chữ / Diễn giải: Căn trái `text-align: left;`.
+  * Cột số liệu / Tiền tệ / Định lượng / Công thức: BẮT BUỘC căn phải `text-align: right;` để các hàng đơn vị gióng thẳng hàng.
+  * Cột STT / Mã hiệu / Ngày tháng ngắn / Dấu kiểm: Căn giữa `text-align: center;`.
+  * Căn chỉnh phương dọc: Áp dụng `vertical-align: top;` cho các bảng có ô diễn giải dài nhiều dòng.
+
+- GỘP Ô & PHÂN CẤP TIÊU ĐỀ PHỨC TẠP (Rowspan, Colspan & Multi-level Headers):
+  * Nhận diện chuẩn xác ma trận ô gộp ngang (`colspan="X"`) và gộp dọc (`rowspan="Y"`).
+  * Tiêu đề `<th>`: Mặc định có nền xám trang nhã `background-color: #f1f5f9; font-weight: 600; color: #0f172a; text-align: center; padding: 10px 12px; border: 1px solid #cbd5e1;`.
+
+- TIÊU ĐỀ BẢNG & CHÚ THÍCH NGUỒN (Captions, Footnotes & Source):
+  * Tên bảng: Đặt trong `<caption style="caption-side: top; text-align: left; font-weight: 600; font-size: 0.95em; color: #334155; margin-bottom: 8px;">Bảng X: ...</caption>`.
+  * Ghi chú nguồn / Chú thích ký hiệu `(*)` chân bảng: Đặt trong `<tfoot>` hoặc thẻ `<p style="font-size: 0.82em; color: #64748b; font-style: italic; margin-top: 6px;">(*) Nguồn: ...</p>`.
+
+- BẢNG DÀI BỊ NGẮT QUA TRANG SCAN (Cross-Page Table Continuation):
+  * Nếu bảng bị cắt đôi qua 2 trang scan: Đóng thẻ `</table></div>` ở cuối trang cũ trước vạch `<!-- PAGE_BREAK: X -->`.
+  * Sang đầu trang mới, mở lại container và `<table>`, lặp lại hàng tiêu đề `<thead>` (hoặc ghi rõ *[Bảng ... - tiếp theo]* nếu bản gốc có) để bảo đảm người đọc không bị mất ngữ cảnh của các cột.
 
 4. HỘP GHI CHÚ, KHUNG ĐẶC BIỆT & ĐIỂM NHẤN (CALLOUTS & BOXES):
 - Nếu bản gốc có khung đóng viền, hộp ghi nhớ, lời cảnh báo hoặc trích dẫn nổi bật, áp dụng thiết kế dưới đây cho nó:
@@ -94,10 +119,11 @@ Nếu phát hiện trong tài liệu gốc có các biểu thức, phương trì
     `<div class="footnotes" style="margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.85rem; color: #475569;">`
       `<p style="margin: 4px 0;"><sup>[1]</sup> Lời giải nghĩa từ ngữ, xuất xứ trích dẫn...</p>`
     `</div>`
-- TIÊU ĐỀ LẶP ĐẦU TRANG & SỐ TRANG IN (Running Headers & Page Folios):
-  * Tuyệt đối KHÔNG trộn các tiêu đề lặp đầu trang (ví dụ: "NAM PHONG 84", "TẠP CHÍ TRI TÂN", số trang in gốc) vào giữa dòng chảy của các đoạn văn chính (Primary Text Flow).
-  * Hãy tách chúng ra và định dạng thành một thanh thông tin mỏng, tinh tế, căn giữa và có màu chữ mờ trang nhã nằm ngay sau vạch chia trang `<!-- PAGE_BREAK: X -->` để không làm gián đoạn trải nghiệm đọc liền mạch như thiết kế bên dưới:
-    `<div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em;">NAM PHONG (Trang X)</div>` 
+- TIÊU ĐỀ LẶP ĐẦU TRANG & SỐ TRANG IN (RUNNING HEADERS & FOLIOS):
+  * Tuyệt đối KHÔNG trộn các tiêu đề lặp đầu trang (ví dụ: "NAM PHONG 84", "TẠP CHÍ TRI TÂN", số trang in gốc) vào giữa dòng chảy của các đoạn văn chính.
+  * BẮT BUỘC dùng thẻ với class chuẩn sau đây (KHÔNG viết inline style, không thêm bớt thẻ):
+    `<div class="running-header">TÊN_ẤN_PHẨM (Trang X)</div>`
+    *(Trong đó thay TÊN_ẤN_PHẨM bằng tên ấn phẩm gốc và X là số trang in thực tế của trang đó)*.
 
 9. ĐƯỜNG KẺ & VẠCH PHÂN CÁCH (DIVIDERS & SEPARATORS):
 Khi tài liệu gốc sử dụng các đường kẻ ngang, kẻ đôi, bạn hãy linh hoạt tái tạo bằng các mẫu HTML/CSS để bảo toàn trải nghiệm thị giác, hãy học tập các mẫu bên dưới:

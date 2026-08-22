@@ -323,5 +323,37 @@ td .ocr-preview-img {
   background: rgba(148, 163, 184, 0.55);
 }
 
+/* Running Headers & Page Folios (Tiêu đề lặp đầu trang & Số trang in) */
+.running-header {
+  font-size: 0.8rem !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 4px !important;
+  margin-top: 8px !important;
+  margin-bottom: 16px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  font-style: italic !important;
+  letter-spacing: 0.05em !important;
+  user-select: none !important;
+}
+
+.theme-warm .running-header {
+  color: #a89f91 !important;
+  border-bottom-color: #ebdcc9 !important;
+}
+
+.theme-mono .running-header {
+  color: #71717a !important;
+  border-bottom-color: #27272a !important;
+}
+
+/* Dynamic Heading Font for Preview based on DocumentStyleProfile */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: var(--preview-heading-font, inherit);
+}
+
+
+
 
 
