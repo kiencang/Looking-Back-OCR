@@ -48,6 +48,19 @@ Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nh�
 
 Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở góc ngoài cùng bên trái thuộc footer. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn".
 
+### Hồ sơ thiết kế đồng nhất
+Một cuốn sách sẽ được chia thành nhiều chunk (phần), do vậy để thống nhất thiết kế, ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định ứng dụng chia ngưỡng chunk tối đa là 12 trang một chunk) sẽ được đưa vào bước phân tích thiết kế. Mục đích là để tạo ra sự thống nhất thiết kế cho toàn bộ mã HTML của từng chunk.
+
+3 chunk mẫu này sẽ gồm một chunk ở đầu cuốn và 2 chunk ở giữa cuốn. Ở những phiên bản cũ hơn, ứng dụng lấy 3 chunk là đầu, giữa và cuối, tuy nhiên nhận thấy phần cuối thường ít phản ánh thiết kế đặc trưng của sách, do vậy tôi chuyển thành như hiện tại, thay thế chunk cuối bằng một chunk nữa ở giữa sách.
+
+Các thông tin thiết kế thống nhất bao gồm:
+- Kiểu font cho nội dung chính và kích cỡ của nó, ở đây chỉ lấy font không chân;
+- Kiểu font cho tiêu đề (cho phép chọn font không chân và có chân trong 10 font được phép);
+- Giãn dòng, cách đoạn, căn lề;
+- Cỡ font cho `h1` tới `h3`;
+
+Đối với kiểu chuyển PDF -> Markdown thì không cần hồ sơ thiết kế thống nhất.
+
 ## So sánh với đối thủ
 OCR giờ nở rộ, hiện có rất nhiều công cụ chất lượng cao làm được điều này.
 
