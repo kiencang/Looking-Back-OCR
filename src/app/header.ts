@@ -46,11 +46,28 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
   template: `
     <header class="border-b border-white/5 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-3 sm:py-3.5 flex flex-col lg:grid lg:grid-cols-3 items-center justify-between gap-3">
       
-      <!-- Left: Logo + Title -->
-      <div class="flex items-center justify-center lg:justify-start gap-2.5 shrink-0 w-full lg:w-auto lg:justify-self-start">
-        <img src="favicon.svg" alt="Logo" class="h-8 w-8 sm:h-9 sm:w-9 object-contain hover:scale-105 transition-transform duration-200 cursor-pointer shrink-0 select-none" referrerpolicy="no-referrer" />
-        <h1 class="text-sm font-bold tracking-tight font-sans bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap select-text">Looking-Back-OCR</h1>
-      </div>
+      <!-- Left: Logo + Title (Clickable when not processing) -->
+      <button 
+        type="button"
+        id="header-brand-logo-btn"
+        (click)="onLogoClick()"
+        [disabled]="isOptimizing() || isParsing() || isBatchProcessing()"
+        [title]="(isOptimizing() || isParsing() || isBatchProcessing()) ? 'Đang xử lý tài liệu, vui lòng đợi hoàn tất trước khi chuyển trang' : (hasDocument() ? 'Quay về trang tải tệp PDF' : 'Looking-Back-OCR')"
+        class="flex items-center justify-center lg:justify-start gap-2.5 shrink-0 w-full lg:w-auto lg:justify-self-start group outline-none transition-all duration-200 text-left bg-transparent border-0 p-0"
+        [class.cursor-pointer]="!(isOptimizing() || isParsing() || isBatchProcessing())"
+        [class.cursor-not-allowed]="isOptimizing() || isParsing() || isBatchProcessing()"
+        [class.opacity-60]="isOptimizing() || isParsing() || isBatchProcessing()">
+        <img 
+          src="favicon.svg" 
+          alt="Logo" 
+          class="h-8 w-8 sm:h-9 sm:w-9 object-contain transition-transform duration-200 shrink-0 select-none"
+          [class.group-hover:scale-105]="!(isOptimizing() || isParsing() || isBatchProcessing())"
+          referrerpolicy="no-referrer" />
+        <span class="text-sm font-bold tracking-tight font-sans bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap select-none transition-opacity duration-200"
+              [class.group-hover:brightness-125]="!(isOptimizing() || isParsing() || isBatchProcessing())">
+          Looking-Back-OCR
+        </span>
+      </button>
 
       <!-- Center: Model Switcher Toggle -->
       <div class="flex items-center justify-center shrink-0 lg:justify-self-center">
@@ -243,11 +260,19 @@ export class Header {
   historyCount = input.required<number>();
   isOptimizing = input.required<boolean>();
   isParsing = input.required<boolean>();
+  isBatchProcessing = input<boolean>(false);
   isModelLocked = input<boolean>(false);
+  hasDocument = input<boolean>(false);
 
   modelChange = output<ModelType>();
   openHistory = output<void>();
   openApiKey = output<void>();
+  navigateHome = output<void>();
+
+  onLogoClick() {
+    if (this.isOptimizing() || this.isParsing() || this.isBatchProcessing()) return;
+    this.navigateHome.emit();
+  }
 
   onModelSelect(model: ModelType) {
     if (this.isOptimizing() || this.isParsing() || this.isModelLocked()) return;

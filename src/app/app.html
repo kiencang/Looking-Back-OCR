@@ -8,10 +8,13 @@
     [historyCount]="historyItems().length"
     [isOptimizing]="isOptimizing()"
     [isParsing]="isParsing()"
+    [isBatchProcessing]="isBatchProcessing()"
     [isModelLocked]="isOutputModeLocked()"
+    [hasDocument]="pdfPages().length > 0"
     (modelChange)="selectedModel.set($event)"
     (openHistory)="showHistoryModal.set(true)"
-    (openApiKey)="openApiKeyModal()">
+    (openApiKey)="openApiKeyModal()"
+    (navigateHome)="onHeaderHomeClick()">
   </app-header>
 
   <!-- Toast notifications -->

@@ -202,6 +202,15 @@ export class App {
     this.docService.resetCurrentDocument();
   }
 
+  onHeaderHomeClick() {
+    if (this.isParsing() || this.isOptimizing() || this.isBatchProcessing()) {
+      return;
+    }
+    if (this.pdfPages().length > 0) {
+      this.resetPdf();
+    }
+  }
+
   onOutputModeChanged(mode: OutputMode) {
     if (this.isOutputModeLocked()) {
       this.apiError.set('🔒 Chế độ xuất đã được cố định cho tài liệu này vì đã có phần được xử lý.');
