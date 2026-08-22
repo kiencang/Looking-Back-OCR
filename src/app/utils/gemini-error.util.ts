@@ -22,7 +22,7 @@ export function translateGeminiError(errorInput: any): string {
 
   // 1. Quota Exceeded (429)
   if (lower.includes('quota') || lower.includes('429') || lower.includes('resource_exhausted') || lower.includes('rate limit')) {
-    return '🔴 Hết hạn mức API (Quota Exceeded / Rate Limit): Tài khoản của bạn đã đạt giới hạn yêu cầu (RPM/TPD) của Google. Vui lòng chờ 1-2 phút rồi thử lại hoặc đổi API Key khác.';
+    return '🔴 Hết hạn mức API (Quota Exceeded / Rate Limit). Việc đổi sang dùng tài khoản khác sẽ có khả năng khắc phục được hiện tượng này.';
   }
 
   // 2. Invalid API Key / Auth (400, 401, 403)

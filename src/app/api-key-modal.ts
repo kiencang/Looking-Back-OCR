@@ -43,7 +43,7 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="space-y-6">
           <!-- Description -->
           <p class="text-xs text-slate-300 leading-relaxed font-sans">
-            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó.
+            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR cao và ngưỡng miễn phí ngày khá rộng rãi.
           </p>
 
           <!-- Gemini Input section -->
@@ -141,11 +141,11 @@ import { MatIconModule } from '@angular/material/icon';
           <hr class="border-white/10" />
 
           <!-- Remix App Banner -->
-          <div class="flex flex-col gap-3 items-center text-center">
+          <div class="flex flex-col gap-3 items-start text-left">
             <p class="text-xs text-slate-400 font-sans leading-relaxed">
               Bạn có thể remix ứng dụng này để sao chép mã thành ứng dụng của riêng bạn và vibe coding (chỉnh sửa thêm) nếu cần.
             </p>
-            <img src="/remix-app.png" alt="Remix this app on AI Studio" class="rounded-lg border border-white/10 shadow-lg w-full max-w-sm object-cover" referrerpolicy="no-referrer" />
+            <img src="/remix-app.png" alt="Remix this app on AI Studio" class="rounded-lg border border-white/10 shadow-lg w-full object-cover" referrerpolicy="no-referrer" />
           </div>
 
           <!-- Actions footer buttons -->

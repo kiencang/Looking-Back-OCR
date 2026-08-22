@@ -59,7 +59,7 @@ import { MatIconModule } from '@angular/material/icon';
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">3</div>
             <div>
               <p class="text-sm font-bold text-slate-100 mb-1.5">OCR tài liệu</p>
-              <p>Công cụ sẽ tách file PDF lớn thành nhiều phần khác nhau và xử lý dần dần. Ở cột trái, tùy chọn mặc định chuyển PDF -> "Bảo toàn" là chọn lựa phù hợp trong phần lớn trường hợp, giúp đầu ra có cấu trúc, bố cục tương tự bản gốc.</p>
+              <p>Công cụ sẽ tách file PDF lớn thành nhiều phần khác nhau & xử lý dần dần. Ở footer/chân trang, tùy chọn mặc định OCR PDF là "Bảo toàn", đây là chọn lựa phù hợp trong phần lớn trường hợp, giúp đầu ra có cấu trúc, bố cục tương tự bản gốc. Nếu bạn muốn tải về bản .DOCX để biên tập lại, thì bạn cần tải lại tài liệu, ở footer, chọn "Đơn giản" thay vì mặc định "Bảo toàn", rồi sau đó nhấn nút "Xử lý tất cả".</p>
             </div>
           </div>
 
