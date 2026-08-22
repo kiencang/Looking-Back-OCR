@@ -256,12 +256,126 @@ export function generateHtmlDocument(options: HtmlTemplateOptions): string {
       border-bottom-color: #27272a !important;
     }
     .footnotes {
-      margin-top: 36px;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 18px;
-      font-size: 0.875rem;
-      color: #64748b;
+      margin-top: 24px !important;
+      border-top: 1px solid #e2e8f0 !important;
+      padding-top: 12px !important;
+      font-size: 0.85rem !important;
+      color: #475569 !important;
     }
+    .footnotes p {
+      margin-top: 4px !important;
+      margin-bottom: 4px !important;
+    }
+    .theme-warm .footnotes {
+      border-top-color: #ebdcc9 !important;
+      color: #78716c !important;
+    }
+    .theme-mono .footnotes {
+      border-top-color: #27272a !important;
+      color: #a1a1aa !important;
+    }
+    
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto !important;
+      margin: 20px 0 !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 0.92em !important;
+      line-height: 1.5 !important;
+      margin: 0 !important;
+    }
+    caption {
+      caption-side: top !important;
+      text-align: left !important;
+      font-weight: 600 !important;
+      font-size: 0.95em !important;
+      color: #334155 !important;
+      margin-bottom: 8px !important;
+    }
+    th {
+      background-color: #f1f5f9 !important;
+      font-weight: 600 !important;
+      color: #0f172a !important;
+      text-align: center !important;
+      padding: 10px 12px !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    td {
+      border: 1px solid #cbd5e1 !important;
+      padding: 8px 12px !important;
+    }
+    table.academic-table {
+      border-top: 2px solid #334155 !important;
+      border-bottom: 2px solid #334155 !important;
+    }
+    table.academic-table > thead > tr {
+      border-bottom: 1px solid #334155 !important;
+    }
+    table.academic-table th,
+    table.academic-table td {
+      border: none !important;
+    }
+    table.academic-table th {
+      background-color: transparent !important;
+    }
+    tr.summary-row {
+      border-top: 1.5px solid #334155 !important;
+      border-bottom: 3px double #334155 !important;
+      background-color: #f8fafc !important;
+      font-weight: bold !important;
+    }
+    .table-source {
+      font-size: 0.82em !important;
+      color: #64748b !important;
+      font-style: italic !important;
+      margin-top: 6px !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* --- THEME WARM CHO BẢNG --- */
+    .theme-warm caption { color: #57534e !important; }
+    .theme-warm th {
+      background-color: #f5f0e6 !important;
+      color: #292524 !important;
+      border-color: #d6d3d1 !important;
+    }
+    .theme-warm td { border-color: #d6d3d1 !important; }
+    .theme-warm table.academic-table { border-color: #57534e !important; }
+    .theme-warm table.academic-table > thead > tr { border-color: #57534e !important; }
+    .theme-warm tr.summary-row {
+      border-color: #57534e !important;
+      background-color: #f5f0e6 !important;
+    }
+    .theme-warm .table-source { color: #78716c !important; }
+
+    /* --- THEME MONO CHO BẢNG --- */
+    .theme-mono caption { color: #a1a1aa !important; }
+    .theme-mono th {
+      background-color: #18181b !important;
+      color: #f4f4f5 !important;
+      border-color: #3f3f46 !important;
+    }
+    .theme-mono td { border-color: #3f3f46 !important; }
+    .theme-mono table.academic-table { border-color: #a1a1aa !important; }
+    .theme-mono table.academic-table > thead > tr { border-color: #a1a1aa !important; }
+    .theme-mono tr.summary-row {
+      border-color: #a1a1aa !important;
+      background-color: #18181b !important;
+    }
+    .theme-mono .table-source { color: #a1a1aa !important; }
+
+    /* CJK Characters (Hán, Nôm, Nhật, Hàn) */
+    .cjk {
+      font-family: 'Noto Serif TC', 'SimSun', serif !important;
+      font-size: 0.95em !important;
+      font-weight: normal !important;
+      margin: 0 2px !important;
+    }
+
     a {
       color: #2563eb;
       text-decoration: underline;
