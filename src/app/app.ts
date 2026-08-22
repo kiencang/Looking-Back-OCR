@@ -198,6 +198,13 @@ export class App {
     }
   }
 
+  async processPdfFiles(files: File[]) {
+    const success = await this.docService.processPdfFiles(files);
+    if (success) {
+      this.selectedTab.set('pdf');
+    }
+  }
+
   resetPdf() {
     this.docService.resetCurrentDocument();
   }
@@ -323,14 +330,23 @@ export class App {
       return;
     }
     this.isParsing.set(true);
-    this.parsingStatus.set('Đang tạo tệp tài liệu Word (.docx) chuyên nghiệp...');
+    const isMulti = this.docService.isMultiFileMode();
+    this.parsingStatus.set(isMulti ? 'Đang đóng gói các tệp Word (.docx) vào tệp ZIP...' : 'Đang tạo tệp tài liệu Word (.docx) chuyên nghiệp...');
     try {
-      await this.exportService.exportFullDocx(
-        this.fileName(),
-        this.pdfChunks(),
-        this.pdfPages()
-      );
-      this.showSuccess('Tải tệp tài liệu Word (.docx) thành công!');
+      if (isMulti) {
+        await this.exportService.exportMultiFileDocxZip(
+          this.fileName(),
+          this.pdfChunks()
+        );
+        this.showSuccess('Đóng gói và tải tệp ZIP Word (.docx) thành công!');
+      } else {
+        await this.exportService.exportFullDocx(
+          this.fileName(),
+          this.pdfChunks(),
+          this.pdfPages()
+        );
+        this.showSuccess('Tải tệp tài liệu Word (.docx) thành công!');
+      }
     } catch (err: any) {
       this.apiError.set(`Lỗi biên dịch tệp Word: ${err.message || err}.`);
     } finally {
@@ -346,10 +362,10 @@ export class App {
       return;
     }
     this.isParsing.set(true);
-    this.parsingStatus.set(`Đang tạo tệp tài liệu Word (.docx) chuyên nghiệp cho ${chunk.id}...`);
+    this.parsingStatus.set(`Đang tạo tệp tài liệu Word (.docx) chuyên nghiệp cho ${chunk.originalFileName || chunk.id}...`);
     try {
       await this.exportService.exportChunkDocx(this.fileName(), chunk);
-      this.showSuccess(`Tải tệp tài liệu Word (.docx) cho ${chunk.id} thành công!`);
+      this.showSuccess(`Tải tệp tài liệu Word (.docx) cho ${chunk.originalFileName || chunk.id} thành công!`);
     } catch (err: any) {
       this.apiError.set(`Lỗi biên dịch tệp Word: ${err.message || err}.`);
     } finally {
@@ -374,16 +390,35 @@ export class App {
       return;
     }
     this.exportService.exportChunkMarkdown(this.fileName(), chunk);
-    this.showSuccess(`Đã tải tệp Markdown (.md) cho ${chunk.id} thành công.`);
+    this.showSuccess(`Đã tải tệp Markdown (.md) cho ${chunk.originalFileName || chunk.id} thành công.`);
   }
 
-  downloadHtmlFile() {
+  async downloadHtmlFile() {
     if (!this.isAllCompleted()) {
       this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước khi tải file HTML trọn bộ.');
       return;
     }
-    this.exportService.exportFullHtml(this.fileName(), this.pdfChunks(), this.documentStyleProfile());
-    this.showSuccess('Đã tải tệp HTML trọn bộ (.html) thành công.');
+    const isMulti = this.docService.isMultiFileMode();
+    if (isMulti) {
+      this.isParsing.set(true);
+      this.parsingStatus.set('Đang đóng gói các tệp HTML vào tệp ZIP...');
+      try {
+        await this.exportService.exportMultiFileHtmlZip(
+          this.fileName(),
+          this.pdfChunks(),
+          this.documentStyleProfile()
+        );
+        this.showSuccess('Đóng gói và tải tệp ZIP HTML thành công!');
+      } catch (err: any) {
+        this.apiError.set(`Lỗi đóng gói ZIP HTML: ${err.message || err}.`);
+      } finally {
+        this.isParsing.set(false);
+        this.parsingStatus.set('');
+      }
+    } else {
+      this.exportService.exportFullHtml(this.fileName(), this.pdfChunks(), this.documentStyleProfile());
+      this.showSuccess('Đã tải tệp HTML trọn bộ (.html) thành công.');
+    }
   }
 
   downloadChunkHtmlFile() {
@@ -393,6 +428,6 @@ export class App {
       return;
     }
     this.exportService.exportChunkHtml(this.fileName(), chunk, this.documentStyleProfile());
-    this.showSuccess(`Đã tải tệp HTML (.html) cho ${chunk.id} thành công.`);
+    this.showSuccess(`Đã tải tệp HTML (.html) cho ${chunk.originalFileName || chunk.id} thành công.`);
   }
 }

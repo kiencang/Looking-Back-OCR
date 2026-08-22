@@ -31,6 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
           #fileInput 
           type="file" 
           accept="application/pdf" 
+          multiple
           (change)="onFileSelected($event)" 
           class="hidden" />
 
@@ -55,18 +56,18 @@ import { MatIconModule } from '@angular/material/icon';
               </h2>
             } @else {
               <span class="text-[11px] font-sans font-medium text-slate-500 text-center uppercase tracking-wider select-none">
-                [Tối đa: 100MB / 500 trang]
+                [Tối đa: 1 file ≤ 500 trang hoặc 20 file ≤ 12 trang/file]
               </span>
             }
           </div>
 
           <!-- Stable Description slot (height fixed) -->
-          <div class="min-h-[44px] flex items-center justify-center mb-8 max-w-sm mx-auto">
+          <div class="min-h-[44px] flex items-center justify-center mb-8 max-w-md mx-auto">
             <p class="text-[11px] text-slate-400 font-sans text-center leading-normal">
               @if (isParsing()) {
                 <span class="text-indigo-300 font-medium">{{ parsingStatus() || 'Hệ thống đang cấu trúc thông tin' }}</span>
               } @else {
-                Hỗ trợ file PDF scan dung lượng lên đến 100MB và tối đa 500 trang. Kéo thả file vào đây hoặc nhấp để chọn.
+                Hỗ trợ tải lên 1 tệp PDF (tối đa 100 MB và 500 trang) hoặc chọn cùng lúc tối đa 20 tệp PDF (mỗi tệp không quá 10 MB và 12 trang). Kéo thả file vào đây hoặc nhấp để chọn.
               }
             </p>
           </div>
@@ -94,9 +95,9 @@ export class EmptyState {
   isParsing = input.required<boolean>();
   parsingStatus = input.required<string>();
   isScriptLoaded = input.required<boolean>();
-  
 
   fileSelected = output<File>();
+  filesSelected = output<File[]>();
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -108,9 +109,14 @@ export class EmptyState {
     event.stopPropagation();
     if (this.isParsing()) return;
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
-      const file = event.dataTransfer.files[0];
-      if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        this.fileSelected.emit(file);
+      const pdfFiles = Array.from(event.dataTransfer.files).filter(
+        f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+      );
+      if (pdfFiles.length === 1) {
+        this.fileSelected.emit(pdfFiles[0]);
+        this.filesSelected.emit(pdfFiles);
+      } else if (pdfFiles.length > 1) {
+        this.filesSelected.emit(pdfFiles);
       }
     }
   }
@@ -118,7 +124,15 @@ export class EmptyState {
   onFileSelected(event: Event) {
     const inputEl = event.target as HTMLInputElement;
     if (inputEl.files && inputEl.files.length > 0) {
-      this.fileSelected.emit(inputEl.files[0]);
+      const files = Array.from(inputEl.files);
+      if (files.length === 1) {
+        this.fileSelected.emit(files[0]);
+        this.filesSelected.emit(files);
+      } else if (files.length > 1) {
+        this.filesSelected.emit(files);
+      }
+      // Reset input value so re-uploading the same files triggers (change)
+      inputEl.value = '';
     }
   }
 }

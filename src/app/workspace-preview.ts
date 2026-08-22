@@ -91,18 +91,18 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
 
           @if (reflowHtml() && isAllCompleted()) {
             @if (outputMode() === 'html') {
-              <!-- Single HTML Export Button for Full Document -->
+              <!-- Single/Multi HTML Export Button for Full Document -->
               <div class="relative group">
                 <button 
                   (click)="downloadHtml.emit()"
                   [disabled]="isParsing() || isOptimizing()"
                   class="py-2.5 px-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-emerald-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
-                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">html</mat-icon>
-                  <span>Tải HTML (đầy đủ)</span>
+                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">{{ isMultiFileMode() ? 'folder_zip' : 'html' }}</mat-icon>
+                  <span>{{ isMultiFileMode() ? 'Tải ZIP HTML' : 'Tải HTML (đầy đủ)' }}</span>
                 </button>
                 <!-- Tailwind Tooltip Downwards (Right-aligned to avoid overflow) -->
-                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-52 text-left leading-relaxed">
-                  Tải toàn bộ tài liệu dưới dạng trang HTML/CSS độc lập.
+                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-56 text-left leading-relaxed">
+                  {{ isMultiFileMode() ? 'Đóng gói các tệp HTML/CSS riêng biệt vào một file .zip tải về.' : 'Tải toàn bộ tài liệu dưới dạng trang HTML/CSS độc lập.' }}
                   <!-- Tooltip Arrow Pointing Up -->
                   <div class="absolute bottom-full right-6 border-[5px] border-transparent border-b-slate-900"></div>
                 </div>
@@ -114,12 +114,12 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                   (click)="downloadDocx.emit()"
                   [disabled]="isParsing() || isOptimizing()"
                   class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition shadow shadow-indigo-500/10 cursor-pointer focus:outline-none disabled:cursor-not-allowed shrink-0">
-                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">description</mat-icon>
-                  <span>Tải Docx (đầy đủ)</span>
+                  <mat-icon class="text-[18px] w-[18px] h-[18px] leading-[18px] flex items-center justify-center">{{ isMultiFileMode() ? 'folder_zip' : 'description' }}</mat-icon>
+                  <span>{{ isMultiFileMode() ? 'Tải ZIP Docx' : 'Tải Docx (đầy đủ)' }}</span>
                 </button>
                 <!-- Tailwind Tooltip Downwards (Right-aligned to avoid overflow) -->
-                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-52 text-left leading-relaxed">
-                  Tải tài liệu Microsoft Word (.docx) đầy đủ.
+                <div class="absolute top-full mt-2.5 right-0 pointer-events-none z-50 bg-slate-900 border border-white/10 text-slate-200 text-[11px] font-sans py-2 px-3 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 scale-95 group-hover:scale-100 w-56 text-left leading-relaxed">
+                  {{ isMultiFileMode() ? 'Đóng gói các tệp Microsoft Word (.docx) riêng biệt vào một file .zip tải về.' : 'Tải tài liệu Microsoft Word (.docx) đầy đủ.' }}
                   <!-- Tooltip Arrow Pointing Up -->
                   <div class="absolute bottom-full right-6 border-[5px] border-transparent border-b-slate-900"></div>
                 </div>
@@ -154,7 +154,7 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                     [disabled]="isParsing() || isOptimizing()"
                     class="py-1.5 px-3 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 active:bg-emerald-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
                     <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">html</mat-icon>
-                    <span>Tải HTML ({{ activeChunk()?.id | lowercase }})</span>
+                    <span class="max-w-[200px] truncate">Tải HTML ({{ activeChunk()?.originalFileName || (activeChunk()?.id | lowercase) }})</span>
                   </button>
                 } @else {
                   <button 
@@ -162,7 +162,7 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                     [disabled]="isParsing() || isOptimizing()"
                     class="py-1.5 px-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 disabled:opacity-50 text-[11px] font-bold rounded-md flex items-center justify-center gap-1 transition cursor-pointer disabled:cursor-not-allowed">
                     <mat-icon class="text-[14px] w-[14px] h-[14px] leading-[14px] flex items-center justify-center">description</mat-icon>
-                    <span>Tải Docx ({{ activeChunk()?.id | lowercase }})</span>
+                    <span class="max-w-[200px] truncate">Tải Docx ({{ activeChunk()?.originalFileName || (activeChunk()?.id | lowercase) }})</span>
                   </button>
                 }
               </div>
@@ -188,7 +188,7 @@ import { SafeHtml, DomSanitizer, SafeResourceUrl } from '@angular/platform-brows
                     (click)="downloadMarkdownForChunk.emit()" 
                     class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer">
                     <mat-icon class="text-[18px] !h-[18px] !w-[18px] leading-none flex items-center justify-center -mt-[1px]">download</mat-icon>
-                    Tải về .md ({{ activeChunk()?.id | lowercase }})
+                    <span class="max-w-[220px] truncate">Tải về .md ({{ activeChunk()?.originalFileName || (activeChunk()?.id | lowercase) }})</span>
                   </button>
                 }
                 @if (isAllCompleted()) {
@@ -333,6 +333,7 @@ export class WorkspacePreview {
   isOptimizing = this.docService.isOptimizing;
   activeChunk = this.docService.activeChunk;
   isAllCompleted = this.docService.isAllCompleted;
+  isMultiFileMode = this.docService.isMultiFileMode;
 
   activeChunkPages = computed(() => {
     const chunk = this.activeChunk();

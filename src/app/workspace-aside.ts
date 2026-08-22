@@ -211,9 +211,21 @@ import { DocumentProcessingService } from './services/document-processing.servic
                 <div class="absolute left-0 top-2 bottom-2 w-1 bg-indigo-500 rounded-r-full shadow-sm shadow-indigo-400"></div>
               }
 
-              <div class="flex items-center justify-between pl-1">
-                 <span class="text-xs font-bold" [class.text-indigo-200]="selectedChunkIndex() === $index" [class.text-slate-200]="selectedChunkIndex() !== $index">{{ chunk.id }}</span>
-                 <span class="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">Trang {{ chunk.startPageNum }}-{{ chunk.endPageNum }}</span>
+              <div class="flex items-center justify-between pl-1 gap-1.5">
+                @if (chunk.originalFileName) {
+                  <div class="flex flex-col min-w-0 pr-1">
+                    <span class="text-xs font-bold truncate max-w-[170px]" [class.text-indigo-200]="selectedChunkIndex() === $index" [class.text-slate-200]="selectedChunkIndex() !== $index" title="{{ chunk.originalFileName }}">
+                      {{ chunk.originalFileName }}
+                    </span>
+                    <span class="text-[9.5px] text-slate-500 font-sans">
+                      {{ chunk.id }} (Trang {{ chunk.startPageNum }}-{{ chunk.endPageNum }})
+                    </span>
+                  </div>
+                  <span class="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 shrink-0">{{ chunk.pages.length }} trang</span>
+                } @else {
+                  <span class="text-xs font-bold" [class.text-indigo-200]="selectedChunkIndex() === $index" [class.text-slate-200]="selectedChunkIndex() !== $index">{{ chunk.id }}</span>
+                  <span class="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">Trang {{ chunk.startPageNum }}-{{ chunk.endPageNum }}</span>
+                }
               </div>
               
               <div class="flex items-center justify-between mt-1 pl-1">

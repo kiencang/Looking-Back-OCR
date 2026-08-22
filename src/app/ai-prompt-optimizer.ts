@@ -164,7 +164,36 @@ export class AiPromptOptimizer {
   /**
    * Helper to build sample PDF containing pages from sample chunks
    */
-  private async buildSamplePdf(file: File, sampleChunks: PdfChunk[]): Promise<string> {
+  private async buildSamplePdf(fileOrFiles: File | File[], sampleChunks: PdfChunk[]): Promise<string> {
+    if (Array.isArray(fileOrFiles)) {
+      if (fileOrFiles.length === 1) {
+        return this.buildSamplePdf(fileOrFiles[0], sampleChunks);
+      }
+      // Multi-file mode: combine the first few pages of each sampled file into one sample document
+      const subDoc = await PDFDocument.create();
+      for (let i = 0; i < sampleChunks.length; i++) {
+        const chunk = sampleChunks[i];
+        const targetFile = fileOrFiles.find(f => f.name === chunk.originalFileName) || fileOrFiles[i] || fileOrFiles[0];
+        try {
+          const arrayBuffer = await targetFile.arrayBuffer();
+          const srcDoc = await PDFDocument.load(arrayBuffer);
+          const pageCount = srcDoc.getPageCount();
+          const pagesToTake = Math.min(pageCount, 2);
+          const indices = Array.from({ length: pagesToTake }, (_, idx) => idx);
+          const copied = await subDoc.copyPages(srcDoc, indices);
+          copied.forEach(p => subDoc.addPage(p));
+        } catch (e) {
+          console.warn('Lỗi ghép trang PDF mẫu:', e);
+        }
+      }
+      if (subDoc.getPageCount() > 0) {
+        const subPdfBytes = await subDoc.save();
+        return this.uint8ArrayToBase64(subPdfBytes);
+      }
+      return this.fileToBase64(fileOrFiles[0]);
+    }
+
+    const file = fileOrFiles;
     const arrayBuffer = await file.arrayBuffer();
     const srcDoc = await PDFDocument.load(arrayBuffer);
     const subDoc = await PDFDocument.create();
@@ -198,7 +227,7 @@ export class AiPromptOptimizer {
   async analyzeDocumentStyle(
     apiKey: string,
     modelName: string,
-    file: File,
+    fileOrFiles: File | File[],
     chunks: PdfChunk[]
   ): Promise<DocumentStyleProfile> {
     if (!chunks || chunks.length === 0) {
@@ -264,7 +293,7 @@ export class AiPromptOptimizer {
 
     // --- NHÁNH 1: META AI (MUSE) ---
     if (modelName === 'muse-spark-1.2-contributor' || modelName.startsWith('muse-')) {
-      const samplePdfBase64 = await this.buildSamplePdf(file, sampleChunks);
+      const samplePdfBase64 = await this.buildSamplePdf(fileOrFiles, sampleChunks);
       return this.metaService.analyzeDocumentStyle(
         apiKey,
         modelName,
@@ -280,7 +309,16 @@ export class AiPromptOptimizer {
     for (const idx of sampleIndices) {
       const sampleChunk = chunks[idx];
       try {
-        const pdfBase64 = await this.splitPdf(file, sampleChunk.startPageNum, sampleChunk.endPageNum);
+        let pdfBase64 = '';
+        if (sampleChunk.originalFileName && Array.isArray(fileOrFiles)) {
+          const targetFile = fileOrFiles.find(f => f.name === sampleChunk.originalFileName) || fileOrFiles[idx] || fileOrFiles[0];
+          pdfBase64 = await this.fileToBase64(targetFile);
+        } else if (Array.isArray(fileOrFiles)) {
+          pdfBase64 = await this.fileToBase64(fileOrFiles[idx] || fileOrFiles[0]);
+        } else {
+          pdfBase64 = await this.splitPdf(fileOrFiles, sampleChunk.startPageNum, sampleChunk.endPageNum);
+        }
+
         parts.push({
           inlineData: {
             mimeType: 'application/pdf',
@@ -294,7 +332,8 @@ export class AiPromptOptimizer {
 
     if (parts.length === 0) {
       try {
-        const fullBase64 = await this.fileToBase64(file);
+        const primaryFile = Array.isArray(fileOrFiles) ? fileOrFiles[0] : fileOrFiles;
+        const fullBase64 = await this.fileToBase64(primaryFile);
         parts.push({
           inlineData: {
             mimeType: 'application/pdf',
@@ -325,7 +364,8 @@ export class AiPromptOptimizer {
     promptText: string,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    styleProfile?: DocumentStyleProfile | null
+    styleProfile?: DocumentStyleProfile | null,
+    isMultiFileMode = false
   ): { parts: any[]; systemInstructionText?: string } {
     const parts: any[] = [];
 
@@ -339,6 +379,10 @@ export class AiPromptOptimizer {
 
     const systemInstructionText: string | undefined = promptText;
 
+    const fileNote = isMultiFileMode
+      ? `Tài liệu PDF đính kèm ở trên là toàn bộ nội dung của tệp "${chunk.originalFileName || 'tài liệu hiện tại'}".`
+      : `Tài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chỉ chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc.`;
+
     // 2. Format additional page-range constraints and style tokens
     if (outputMode === 'html') {
       let designTokensBlock = '';
@@ -346,11 +390,11 @@ export class AiPromptOptimizer {
         designTokensBlock = `\n\n${this.formatDesignTokensBlock(styleProfile)}\n`;
       }
 
-      const localizedInstructions = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+      const localizedInstructions = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \n${fileNote} Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
 
       parts.push({ text: localizedInstructions });
     } else {
-      const localizedInstructions = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      const localizedInstructions = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \n${fileNote} Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
 
       parts.push({ text: localizedInstructions });
     }
@@ -363,9 +407,10 @@ export class AiPromptOptimizer {
     promptText: string,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    styleProfile?: DocumentStyleProfile | null
+    styleProfile?: DocumentStyleProfile | null,
+    isMultiFileMode = false
   ): any[] {
-    return this.buildMultimodalPayload(pdfBase64, promptText, chunk, outputMode, styleProfile).parts;
+    return this.buildMultimodalPayload(pdfBase64, promptText, chunk, outputMode, styleProfile, isMultiFileMode).parts;
   }
 
   /**
@@ -377,19 +422,20 @@ export class AiPromptOptimizer {
     file: File,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    styleProfile?: DocumentStyleProfile | null
+    styleProfile?: DocumentStyleProfile | null,
+    isMultiFileMode = false
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
-    // Acquire sliced PDF or fallback to original
     let pdfBase64 = '';
-    try {
-      pdfBase64 = await this.splitPdf(file, chunk.startPageNum, chunk.endPageNum);
-    } catch (splitErr) {
-      console.warn('Lỗi phân tách PDF bằng pdf-lib, quay lại gửi cả tệp:', splitErr);
+    if (isMultiFileMode) {
+      // Ở chế độ Multi-file, mỗi chunk tương ứng trọn vẹn với 1 tệp riêng lẻ (đã kiểm tra <= 12 trang)
       pdfBase64 = await this.fileToBase64(file);
+    } else {
+      // Ở chế độ 1 tệp PDF lớn, BẮT BUỘC cắt đúng phạm vi trang của chunk (từ startPageNum đến endPageNum)
+      pdfBase64 = await this.splitPdf(file, chunk.startPageNum, chunk.endPageNum);
     }
 
     const basePrompt = await this.getPromptTemplate(outputMode);
-    const { parts, systemInstructionText } = this.buildMultimodalPayload(pdfBase64, basePrompt, chunk, outputMode, styleProfile);
+    const { parts, systemInstructionText } = this.buildMultimodalPayload(pdfBase64, basePrompt, chunk, outputMode, styleProfile, isMultiFileMode);
 
     return this.geminiService.optimizeChunk(apiKey, modelName, parts, systemInstructionText);
   }
@@ -404,15 +450,16 @@ export class AiPromptOptimizer {
     file: File,
     chunk: PdfChunk,
     outputMode: OutputMode = 'markdown',
-    styleProfile?: DocumentStyleProfile | null
+    styleProfile?: DocumentStyleProfile | null,
+    isMultiFileMode = false
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
-    // Acquire sliced PDF or fallback to original
     let pdfBase64 = '';
-    try {
-      pdfBase64 = await this.splitPdf(file, chunk.startPageNum, chunk.endPageNum);
-    } catch (splitErr) {
-      console.warn('Lỗi phân tách PDF bằng pdf-lib, quay lại gửi cả tệp:', splitErr);
+    if (isMultiFileMode) {
+      // Ở chế độ Multi-file, mỗi chunk tương ứng trọn vẹn với 1 tệp riêng lẻ
       pdfBase64 = await this.fileToBase64(file);
+    } else {
+      // Ở chế độ 1 tệp PDF lớn, BẮT BUỘC cắt đúng phạm vi trang của chunk
+      pdfBase64 = await this.splitPdf(file, chunk.startPageNum, chunk.endPageNum);
     }
 
     const basePrompt = await this.getPromptTemplate(outputMode);
@@ -428,10 +475,18 @@ export class AiPromptOptimizer {
         designTokensBlock = `\n\n${this.formatDesignTokensBlock(styleProfile)}\n`;
       }
 
-      userPromptText = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
+      const fileNote = isMultiFileMode
+        ? `Tài liệu PDF đính kèm ở trên là toàn bộ nội dung của tệp "${chunk.originalFileName || file.name}".`
+        : `Tài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động chỉ chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc.`;
+
+      userPromptText = `${designTokensBlock}\nCHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT HTML BẢO TOÀN BỐ CỤC): \n${fileNote} Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, tái tạo bố cục thị giác, căn lề và chuyển đổi thành mã HTML/CSS sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC: Tại điểm bắt đầu của mỗi trang (từ trang ${chunk.startPageNum} đến ${chunk.endPageNum}), hãy chèn một dòng thẻ đánh dấu ngắt trang: <!-- PAGE_BREAK: X --> (ví dụ: <!-- PAGE_BREAK: ${chunk.startPageNum} -->) để tạo ranh giới trang đối chiếu 1:1.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ HTML NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã HTML ngay dưới đây:`;
     } else {
       systemInstructionText = basePrompt;
-      userPromptText = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \nTài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động phía Client, chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc. Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
+      const fileNote = isMultiFileMode
+        ? `Tài liệu PDF đính kèm ở trên là toàn bộ nội dung của tệp "${chunk.originalFileName || file.name}".`
+        : `Tài liệu PDF đính kèm ở trên đã được cắt nhỏ tự động chỉ chứa chính xác các trang từ trang **${chunk.startPageNum}** đến trang **${chunk.endPageNum}** của tài liệu gốc.`;
+
+      userPromptText = `CHÚ Ý ĐẶC BIỆT (CHẾ ĐỘ SÁCH SCAN / TÀI LIỆU CỔ - XUẤT MARKDOWN TIẾT KIỆM TOKEN): \n${fileNote} Bạn hãy đọc trực tiếp và kỹ lưỡng từng trang trong tệp PDF scan này để nhận diện chính xác toàn bộ chữ, bảo tồn nguyên tác, nối dòng mượt mà và chuyển đổi thành mã Markdown sạch đẹp nhất. KHÔNG đính kèm nhãn ảnh tách rời nào.\nBẮT BUỘC ĐỐI VỚI CHẾ ĐỘ MARKDOWN: Đầu ra phải là một dòng chảy văn bản liền mạch (continuous text flow). Tuyệt đối KHÔNG sử dụng thẻ <!-- PAGE_BREAK: X --> hoặc bất kỳ ký hiệu ngắt trang nào. Đặc biệt chú ý: Nếu một đoạn văn hoặc một câu bị ngắt dở dang ở cuối trang PDF này và nối tiếp ở đầu trang PDF tiếp theo, hãy thông minh tự động nối chúng lại thành một câu/đoạn văn hoàn chỉnh mà không bị ngắt quãng bởi dấu xuống dòng.\nĐẦU RA CHỈ ĐƯỢC PHÉP CHỨA ĐOẠN MÃ MARKDOWN NÀY, không viết lời giới thiệu hay phản hồi thừa. Bắt đầu mã Markdown ngay dưới đây:`;
     }
 
     return this.metaService.optimizeChunk(

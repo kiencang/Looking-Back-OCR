@@ -22,6 +22,8 @@ export class PdfProcessor {
   private pdfjsLib: any = null;
   private currentPdfDoc: any = null;
   private currentFileName = '';
+  private loadedPdfDocs = new Map<string, any>();
+  private pageToDocMap = new Map<number, { doc: any; localPageNum: number }>();
   
   isScriptLoaded = signal(false);
 
@@ -86,11 +88,10 @@ export class PdfProcessor {
     return this.currentPdfDoc;
   }
 
-  async renderPageToPng(pageNum: number): Promise<string> {
-    if (!this.currentPdfDoc) return '';
+  private async renderPageFromDoc(doc: any, localPageNum: number): Promise<string> {
     try {
-       const page = await this.currentPdfDoc.getPage(pageNum);
-       const viewport = page.getViewport({ scale: 1.4 }); // Scale = 1.4 per requirement
+      const page = await doc.getPage(localPageNum);
+      const viewport = page.getViewport({ scale: 1.4 }); // Scale = 1.4 per requirement
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       if (!ctx) return '';
@@ -104,12 +105,26 @@ export class PdfProcessor {
       await page.render(renderContext).promise;
       return canvas.toDataURL('image/png'); // Standard PNG format
     } catch (err) {
-      console.error(`Error rendering page ${pageNum} to PNG:`, err);
+      console.error(`Error rendering local page ${localPageNum} to PNG:`, err);
       return '';
     }
   }
 
+  async renderPageToPng(pageNum: number): Promise<string> {
+    const mapping = this.pageToDocMap.get(pageNum);
+    if (mapping && mapping.doc) {
+      return this.renderPageFromDoc(mapping.doc, mapping.localPageNum);
+    }
+    if (this.currentPdfDoc) {
+      return this.renderPageFromDoc(this.currentPdfDoc, pageNum);
+    }
+    return '';
+  }
+
   async extractPdfChunks(file: File, onProgress: (msg: string) => void): Promise<{ pages: PdfPageData[], chunks: any[] }> {
+    this.pageToDocMap.clear();
+    this.loadedPdfDocs.clear();
+
     const arrayBuffer = await file.arrayBuffer();
     onProgress('Đọc tài liệu PDF...');
     const srcDoc = await PDFDocument.load(arrayBuffer);
@@ -122,6 +137,9 @@ export class PdfProcessor {
     // Initialize pdfjs document for on-demand PNG rendering
     try {
       await this.loadPdfDocument(file);
+      if (this.currentPdfDoc) {
+        this.loadedPdfDocs.set(file.name, this.currentPdfDoc);
+      }
     } catch (e) {
       console.warn('Could not load pdfjsDoc for on-demand rendering:', e);
     }
@@ -134,6 +152,9 @@ export class PdfProcessor {
         pageImageUrl: '',
         extractedImages: []
       });
+      if (this.currentPdfDoc) {
+        this.pageToDocMap.set(pageNum, { doc: this.currentPdfDoc, localPageNum: pageNum });
+      }
     }
 
     const createChunks = (pages: PdfPageData[]): any[] => {
@@ -143,6 +164,7 @@ export class PdfProcessor {
           if (p.length > 0) {
             chunks.push({
               id: '',
+              originalFileName: file.name,
               index: chunks.length,
               startPageNum: p[0].pageNum,
               endPageNum: p[p.length - 1].pageNum,
@@ -183,6 +205,97 @@ export class PdfProcessor {
     }
 
     return { pages: itemsExtracted, chunks: generatedChunks };
+  }
+
+  async extractMultiplePdfChunks(files: File[], onProgress: (msg: string) => void): Promise<{ pages: PdfPageData[], chunks: any[] }> {
+    if (!this.pdfjsLib) {
+      await this.loadPdfEngine(() => undefined, () => undefined);
+    }
+    const lib = this.getPdfjsLib();
+    if (!lib) {
+      throw new Error('Thư viện PDF.js chưa sẵn sàng.');
+    }
+
+    this.pageToDocMap.clear();
+    this.loadedPdfDocs.clear();
+
+    const allPages: PdfPageData[] = [];
+    const allChunks: any[] = [];
+    let globalPageCounter = 1;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      onProgress(`Đang nạp tệp ${i + 1}/${files.length}: ${file.name}...`);
+
+      const arrayBuffer = await file.arrayBuffer();
+      const srcDoc = await PDFDocument.load(arrayBuffer);
+      const fileNumPages = srcDoc.getPageCount();
+
+      if (fileNumPages > 12) {
+        throw new Error(`Tệp "${file.name}" có ${fileNumPages} trang, vượt quá giới hạn tối đa 12 trang/tệp cho chế độ tải nhiều file.`);
+      }
+
+      // Load pdfjsDoc for this file
+      let filePdfDoc: any = null;
+      try {
+        const loadingTask = lib.getDocument({ data: arrayBuffer.slice(0) });
+        filePdfDoc = await loadingTask.promise;
+        this.loadedPdfDocs.set(file.name, filePdfDoc);
+        if (i === 0) {
+          this.currentPdfDoc = filePdfDoc;
+          this.currentFileName = file.name;
+        }
+      } catch (e) {
+        console.warn(`Could not load pdfjsDoc for ${file.name}:`, e);
+      }
+
+      const filePages: PdfPageData[] = [];
+      const startPageNum = globalPageCounter;
+
+      for (let localPageNum = 1; localPageNum <= fileNumPages; localPageNum++) {
+        const globalPageNum = globalPageCounter++;
+        const pageData: PdfPageData = {
+          pageNum: globalPageNum,
+          items: [],
+          pageImageUrl: '',
+          extractedImages: []
+        };
+        filePages.push(pageData);
+        allPages.push(pageData);
+
+        if (filePdfDoc) {
+          this.pageToDocMap.set(globalPageNum, { doc: filePdfDoc, localPageNum });
+        }
+      }
+
+      const endPageNum = globalPageCounter - 1;
+
+      allChunks.push({
+        id: `Phần ${i + 1}`,
+        originalFileName: file.name,
+        index: i,
+        startPageNum,
+        endPageNum,
+        pages: filePages,
+        status: 'pending',
+        errorMessage: '',
+        markdownContent: '',
+        reflowHtml: ''
+      });
+    }
+
+    // Render first chunk pages immediately
+    if (allChunks.length > 0) {
+      onProgress('Đang render trước ảnh Bản gốc Phần 1...');
+      const firstChunk = allChunks[0];
+      for (const page of firstChunk.pages) {
+        if (!page.pageImageUrl) {
+          page.pageImageUrl = await this.renderPageToPng(page.pageNum);
+        }
+      }
+    }
+
+    return { pages: allPages, chunks: allChunks };
   }
 
   formatBytes(bytes: number, decimals = 1): string {

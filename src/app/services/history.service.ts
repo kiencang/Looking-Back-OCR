@@ -13,6 +13,7 @@ export interface HistoryItem {
   selectedModel: string;
   model?: string;
   selectedOutputMode: string;
+  isMultiFileMode?: boolean;
   pdfPages?: any[];
   pdfChunks?: any[];
   pdfFileData?: any;
@@ -106,6 +107,7 @@ export class HistoryService {
     pdfChunks: any[];
     selectedModel: string;
     selectedOutputMode: string;
+    isMultiFileMode?: boolean;
     documentStyleProfile?: any;
     pdfFileBlob?: Blob;
   }): Promise<string> {
@@ -125,6 +127,7 @@ export class HistoryService {
         selectedModel: docState.selectedModel,
         model: docState.selectedModel,
         selectedOutputMode: docState.selectedOutputMode,
+        isMultiFileMode: docState.isMultiFileMode,
         pdfPages: docState.pdfPages,
         pdfChunks: docState.pdfChunks,
         documentStyleProfile: docState.documentStyleProfile,

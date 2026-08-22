@@ -8,6 +8,7 @@ import { HistoryService, generateHistoryId } from './history.service';
 
 export interface PdfChunk {
   id: string;
+  originalFileName?: string;
   index: number;
   startPageNum: number;
   endPageNum: number;
@@ -32,6 +33,8 @@ export class DocumentProcessingService {
   fileName = signal('');
   fileSize = signal('');
   pdfFile = signal<File | null>(null);
+  pdfFiles = signal<File[]>([]);
+  isMultiFileMode = signal<boolean>(false);
   pdfObjectUrl = signal<string>('');
   pdfPages = signal<PdfPageData[]>([]);
   pdfChunks = signal<PdfChunk[]>([]);
@@ -122,6 +125,8 @@ export class DocumentProcessingService {
   resetCurrentDocument() {
     this.currentHistoryId.set(null);
     this.pdfFile.set(null);
+    this.pdfFiles.set([]);
+    this.isMultiFileMode.set(false);
     this.fileName.set('');
     this.fileSize.set('');
     this.pdfPages.set([]);
@@ -147,7 +152,7 @@ export class DocumentProcessingService {
     try {
       const file = this.pdfFile();
       const chunks = this.pdfChunks();
-      if (!file || chunks.length === 0) return;
+      if ((!file && !this.isMultiFileMode()) || chunks.length === 0) return;
 
       const savedId = await this.historyService.saveCurrentProgressToHistory({
         id: this.currentHistoryId() || undefined,
@@ -157,8 +162,9 @@ export class DocumentProcessingService {
         pdfChunks: chunks,
         selectedModel: this.selectedModel(),
         selectedOutputMode: this.selectedOutputMode(),
+        isMultiFileMode: this.isMultiFileMode(),
         documentStyleProfile: this.documentStyleProfile(),
-        pdfFileBlob: file
+        pdfFileBlob: file || undefined
       });
       if (savedId && !this.currentHistoryId()) {
         this.currentHistoryId.set(savedId);
@@ -180,6 +186,7 @@ export class DocumentProcessingService {
     this.parsingStatus.set('Đang nạp lại lịch sử chuyển đổi...');
 
     try {
+      this.isMultiFileMode.set(!!item.isMultiFileMode);
       if (item.pdfFileBlob) {
         const restoredFile = new File([item.pdfFileBlob], item.fileName, { type: 'application/pdf' });
         this.pdfFile.set(restoredFile);
@@ -229,6 +236,9 @@ export class DocumentProcessingService {
       return false;
     }
 
+    this.isMultiFileMode.set(false);
+    this.pdfFiles.set([file]);
+
     // Check duplication in history
     const isDuplicate = this.historyService.historyItems().some(h => h.fileName === file.name);
 
@@ -275,6 +285,82 @@ export class DocumentProcessingService {
       return true;
     } catch (err: any) {
       this.apiError.set('Lỗi phân tích cú pháp tệp PDF: ' + (err.message || err) + '.');
+      return false;
+    } finally {
+      this.isParsing.set(false);
+      this.parsingStatus.set('');
+    }
+  }
+
+  async processPdfFiles(files: File[]): Promise<boolean> {
+    if (!files || files.length === 0) return false;
+
+    // If single file, delegate to standard single file flow
+    if (files.length === 1) {
+      return this.processPdfFile(files[0]);
+    }
+
+    // Constraint 1: Maximum 20 files
+    if (files.length > 20) {
+      this.apiError.set(`Chỉ cho phép tải lên tối đa 20 tệp PDF cùng lúc (bạn đã chọn ${files.length} tệp).`);
+      return false;
+    }
+
+    // Sort files in natural alphabetical order (A-Z)
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const sortedFiles = [...files].sort((a, b) => collator.compare(a.name, b.name));
+
+    this.isParsing.set(true);
+    this.apiError.set('');
+    this.clearSuccess();
+    this.parsingStatus.set('Đang kiểm tra các tệp PDF nạp vào...');
+
+    // Calculate total size and quick pre-check
+    let totalBytes = 0;
+    for (const f of sortedFiles) {
+      totalBytes += f.size;
+      if (f.size > 10 * 1024 * 1024) {
+        this.isParsing.set(false);
+        this.apiError.set(`Tệp "${f.name}" (${this.pdfProcessor.formatBytes(f.size)}) vượt quá giới hạn tối đa 10 MB cho chế độ tải nhiều file.`);
+        return false;
+      }
+    }
+
+    this.isMultiFileMode.set(true);
+    this.pdfFiles.set(sortedFiles);
+    this.pdfFile.set(sortedFiles[0]); // First file as anchor
+    this.fileName.set(`${sortedFiles.length} tệp PDF (${sortedFiles[0].name}...)`);
+    this.fileSize.set(this.pdfProcessor.formatBytes(totalBytes));
+    this.pdfPages.set([]);
+    this.pdfChunks.set([]);
+    this.selectedChunkIndex.set(0);
+    this.documentStyleProfile.set(null);
+
+    const newHistoryId = generateHistoryId();
+    this.currentHistoryId.set(newHistoryId);
+
+    try {
+      const { pages, chunks } = await this.pdfProcessor.extractMultiplePdfChunks(
+        sortedFiles,
+        (msg: string) => this.parsingStatus.set(msg)
+      );
+
+      this.pdfPages.set(pages);
+      this.pdfChunks.set(chunks);
+
+      this.parsingStatus.set('Đang thiết lập bản gốc...');
+
+      // Save initial state to History
+      await this.saveCurrentProgressToHistory();
+
+      // Trigger background rendering for remaining chunks asynchronously
+      this.startBackgroundPagesRendering();
+
+      this.showSuccess(`Nạp thành công ${sortedFiles.length} tệp PDF (mỗi tệp thành 1 khối xử lý độc lập).`);
+      return true;
+    } catch (err: any) {
+      this.isMultiFileMode.set(false);
+      this.apiError.set(err.message || String(err));
       return false;
     } finally {
       this.isParsing.set(false);
@@ -359,7 +445,9 @@ export class DocumentProcessingService {
 
     this.styleAnalysisPromise = (async () => {
       try {
-        const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, effectiveModelName, file, chunks);
+        const isMulti = this.isMultiFileMode();
+        const filesList = isMulti && this.pdfFiles().length > 0 ? this.pdfFiles() : (file ? [file] : []);
+        const profile = await this.aiOptimizer.analyzeDocumentStyle(apiKey, effectiveModelName, filesList.length === 1 ? filesList[0] : filesList, chunks);
         this.documentStyleProfile.set(profile);
         await this.saveCurrentProgressToHistory();
         return profile;
@@ -381,12 +469,18 @@ export class DocumentProcessingService {
   }
 
   async executeChunkOptimization(chunkIndex: number): Promise<void> {
-    const file = this.pdfFile();
     const chunks = this.pdfChunks();
     const chunk = chunks[chunkIndex];
 
-    if (!file || !chunk) {
-      throw new Error('Không tìm thấy file nguồn hoặc phần phân chia.');
+    if (!chunk) {
+      throw new Error('Không tìm thấy phần phân chia.');
+    }
+
+    const isMulti = this.isMultiFileMode();
+    const file = (isMulti && (this.pdfFiles().find(f => f.name === chunk.originalFileName) || this.pdfFiles()[chunkIndex])) || this.pdfFile();
+
+    if (!file) {
+      throw new Error('Không tìm thấy file nguồn cho phần này.');
     }
 
     const modelType = this.selectedModel();
@@ -433,7 +527,8 @@ export class DocumentProcessingService {
           file,
           chunk,
           outputMode,
-          styleProfile
+          styleProfile,
+          isMulti
         )
       : await this.aiOptimizer.optimizeChunk(
           apiKey,
@@ -441,7 +536,8 @@ export class DocumentProcessingService {
           file,
           chunk,
           outputMode,
-          styleProfile
+          styleProfile,
+          isMulti
         );
 
     // Parse output to HTML preview based on selected mode

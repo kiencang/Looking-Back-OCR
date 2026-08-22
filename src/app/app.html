@@ -36,8 +36,8 @@
         [isParsing]="isParsing()"
         [parsingStatus]="parsingStatus()"
         [isScriptLoaded]="isScriptLoaded()"
-        
-        (fileSelected)="processPdfFile($event)">
+        (fileSelected)="processPdfFile($event)"
+        (filesSelected)="processPdfFiles($event)">
       </app-empty-state>
     }
 
