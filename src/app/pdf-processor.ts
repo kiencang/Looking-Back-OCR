@@ -164,7 +164,7 @@ export class PdfProcessor {
           if (p.length > 0) {
             chunks.push({
               id: '',
-              originalFileName: file.name,
+              originalFileName: '',
               index: chunks.length,
               startPageNum: p[0].pageNum,
               endPageNum: p[p.length - 1].pageNum,
