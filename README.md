@@ -28,6 +28,17 @@ Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (c�
 
 Ngoài Gemini, công cụ này còn tích hợp thêm Meta AI. Meta có khả năng OCR không tốt bằng Gemini, nhưng nó đỡ khó tính hơn Gemini trong vấn đề chặn chuyển đổi. Gemini đôi khi nhận nhầm một sách đã hết hạn bảo hộ là vẫn còn bản quyền và không cho phép chuyển.
 
+### Các model
+Có 4 model có thể chọn lựa qua giao diện của ứng dụng:
+- 3 model mới nhất của Gemini là Flash, Lite, Pro;
+- 1 model của Meta AI;
+
+Trong đó mặc định ứng dụng sẽ sử dụng model Flash, nó có chất lượng đủ tốt và ngưỡng miễn phí đủ rộng. Nó có khả năng xử lý các tài liệu có cấu trúc phức tạp, chữ mờ khó nhìn.
+
+Model Lite ở thời điểm hiện tại chỉ nên dùng như một dạng kiểm tra, test thử, hoặc nếu muốn dùng chính thức thì chỉ cho các tài liệu có cấu trúc đơn giản và chữ vẫn còn nhìn khá rõ.
+
+Model Pro, model mạnh nhất trong dòng Gemini, tốc độ chậm hơn, có thể phù hợp cho tài liệu có cấu trúc rất phức tạp. Trên tài khoản miễn phí, model Pro bị giới hạn lượt request sớm hơn khá nhiều so với model Flash.
+
 ## Hai kiểu tái tạo
 Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
 - **HTML/CSS**: định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản HTML/CSS cũng chia 2 cột. Tuy nhiên điều này không có nghĩa là sao chép định dạng gốc 100%, nó thiên về tái tạo hơn, và có thể có những điểm không giống, ví dụ như loại font chữ hoặc cỡ font;
