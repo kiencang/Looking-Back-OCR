@@ -22,6 +22,33 @@ Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng PDF scan
 
 **Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa, sách cũ với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng lắm), đấy là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
 
+## So sánh với đối thủ
+OCR giờ nở rộ (một phần vì các AI cần phải nạp thông tin có rất nhiều từ các file PDF), hiện có nhiều công cụ chất lượng có khả năng OCR file PDF scan tiếng Việt.
+
+Đặt lên bàn cân giữa Looking-Back-OCR và một công nghệ OCR hàng đầu hiện nay như [PaddleOCR](https://aistudio.baidu.com/paddleocr) có thể thấy rõ ưu và nhược của từng cái.
+
+PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan. Tuy nhiên về độ chính xác, đặc biệt là chính tả, Looking-Back-OCR lại tỏ ra vượt trội (không phải do tôi thông minh hơn, mà vì Gemini thông minh hơn!).
+
+Một đối thủ mạnh khác là [MinerU](https://mineru.net/), so với nó, Looking-Back-OCR cũng có chất lượng chính tả tốt hơn nhiều.
+
+---
+
+Để tiện thể nhìn thấy so sánh, tôi chụp màn hình kết quả OCR của một trang trong cuốn sách xưa `Truyện-Kiều Chú-Giải` của tác giả `Văn-Hòe`.
+
+<p align="center">
+  <img src="images/paddle-test.png" alt="PaddleOCR test">
+   <br><em>Kết quả của PaddleOCR, vẫn còn khá nhiều lỗi chính tả.</em>
+</p>
+
+<p align="center">
+  <img src="images/lbo-test-2.png" alt="Looking-Back-OCR test">
+   <br><em>Kết quả của Looking-Back-OCR, mức độ chính xác chính tả rất cao.</em>
+</p>
+
+Một sản phẩm của chính Google là Google Docs cũng có khả năng OCR chữ mờ rất tốt, tuy nhiên nó lại giữ định dạng kém, hầu hết các file PDF scan được bật qua Google Docs đều sẽ rất khó đọc do bố cục bị rối loạn.
+
+[Thời điểm các so sánh trên được thực hiện: 18/08/2026], các công cụ có thể có cải tiến sau thời điểm này.
+
 ## Công nghệ
 Mặc định công cụ này sử dụng Gemini AI, và bạn nên dùng bản trên AI Studio để tiết kiệm chi phí tối đa.
 
@@ -66,32 +93,12 @@ Các thông tin thiết kế thống nhất bao gồm:
 
 Đối với kiểu chuyển PDF -> Markdown thì không cần hồ sơ thiết kế thống nhất.
 
-## So sánh với đối thủ
-OCR giờ nở rộ (một phần vì các AI cần phải nạp thông tin có rất nhiều từ các file PDF), hiện có nhiều công cụ chất lượng có khả năng OCR file PDF scan tiếng Việt.
+## Xuất/Nhập dự án
+Với kiểu chuyển đổi dựa trên Gemini, ngưỡng miễn phí có thể hết giữa chừng khi bạn đang chuyển đổi một cuốn sách lớn (ví dụ 400 trang, và mới chuyển được khoảng 200 trang thì hết ngưỡng miễn phí hàng ngày). Lúc này bạn có hai lựa chọn:
+- Đợi đến ngày hôm sau, khi ngưỡng miễn phí được cấp lại rồi tiến hành chuyển đổi tiếp;
+- hoặc Xuất dự án, rồi Nhập lại dự án trên tài khoản khác (còn ngưỡng miễn phí) để chuyển đổi tiếp ngay lập tức;
 
-Đặt lên bàn cân giữa Looking-Back-OCR và một công nghệ OCR hàng đầu hiện nay như [PaddleOCR](https://aistudio.baidu.com/paddleocr) có thể thấy rõ ưu và nhược của từng cái.
-
-PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan. Tuy nhiên về độ chính xác, đặc biệt là chính tả, Looking-Back-OCR lại tỏ ra vượt trội (không phải do tôi thông minh hơn, mà vì Gemini thông minh hơn!).
-
-Một đối thủ mạnh khác là [MinerU](https://mineru.net/), so với nó, Looking-Back-OCR cũng có chất lượng chính tả tốt hơn nhiều.
-
----
-
-Để tiện thể nhìn thấy so sánh, tôi chụp màn hình kết quả OCR của một trang trong cuốn sách xưa `Truyện-Kiều Chú-Giải` của tác giả `Văn-Hòe`.
-
-<p align="center">
-  <img src="images/paddle-test.png" alt="PaddleOCR test">
-   <br><em>Kết quả của PaddleOCR, vẫn còn khá nhiều lỗi chính tả.</em>
-</p>
-
-<p align="center">
-  <img src="images/lbo-test-2.png" alt="Looking-Back-OCR test">
-   <br><em>Kết quả của Looking-Back-OCR, mức độ chính xác chính tả rất cao.</em>
-</p>
-
-Một sản phẩm của chính Google là Google Docs cũng có khả năng OCR chữ mờ rất tốt, tuy nhiên nó lại giữ định dạng kém, hầu hết các file PDF scan được bật qua Google Docs đều sẽ rất khó đọc do bố cục bị rối loạn.
-
-[Thời điểm các so sánh trên được thực hiện: 18/08/2026], các công cụ có thể có cải tiến sau thời điểm này.
+Button "Xuất dự án" và "Nhập dự án" nằm ở khu vực "Lịch sử".
 
 ## Tuyên bố từ chối trách nhiệm
 Công cụ này có thể được sử dụng cho mục đích nghiên cứu và học tập cá nhân.
