@@ -155,7 +155,7 @@ export class AiPromptOptimizer {
 
 * NGUYÊN TẮC BẤT BIẾN KHI XUẤT HTML/CSS:
 1. KHÔNG tự ý chèn font lạ nào khác ngoài "${profile.bodyFont}" và "${profile.headingFont}".
-2. NGOẠI LỆ DUY NHẤT VỀ PHÔNG CHỮ: Với các chữ Hán hoặc chữ Nôm inline đan xen, BẮT BUỘC ưu tiên bọc trong thẻ <span style="font-family: 'Noto Serif CJK TC', 'Noto Serif CJK SC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;"> như quy định trong chỉ dẫn hệ thống (không áp đặt bodyFont Latin lên chữ Hán/Nôm).
+2. NGOẠI LỆ DUY NHẤT VỀ PHÔNG CHỮ: Với các chữ Hán, Nhật, Hàn hoặc chữ Nôm inline đan xen, BẮT BUỘC ưu tiên bọc trong thẻ \`<span class="cjk">阮攸</span>\` như quy định trong chỉ dẫn hệ thống (lưu ý: class \`cjk\` đã được áp dụng font chuyên biệt, bạn không áp đặt bodyFont Latin lên chữ Hán/Nôm, cũng như không bổ sung inline style hoặc các thẻ phụ bên trong).
 3. KHÔNG tự đặt max-width hoặc chiều rộng cố định cho toàn trang (khung trang chuẩn sẽ do hệ thống quản lý).
 4. BẮT BUỘC áp dụng đúng tỷ lệ Heading Scale (${h1Size} > ${h2Size} > ${h3Size}) cho các thẻ tiêu đề để đảm bảo tính đồng nhất giữa tất cả các trang/chunk.
 </document_design_tokens>`;
