@@ -72,13 +72,15 @@ Model Lite ở thời điểm hiện tại chỉ nên dùng như một dạng ki
 Model Pro là model mạnh nhất trong dòng Gemini, tốc độ chậm hơn, có thể phù hợp cho tài liệu có cấu trúc rất phức tạp. Trên tài khoản miễn phí, model Pro bị giới hạn lượt request sớm hơn khá nhiều so với model Flash.
 
 ## Hai kiểu tái tạo
-Ứng dụng này sau khi OCR nội dung gốc sẽ xuất ra một trong hai định dạng mà người dùng chọn:
+Trước khi OCR, người dùng có quyền chọn một trong hai định dạng dưới đây:
 - **HTML/CSS**: Định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản HTML/CSS cũng chia 2 cột. Tuy nhiên điều này không có nghĩa là sao chép định dạng gốc 100%, nó thiên về tái tạo hơn, và có thể có những điểm không giống, ví dụ như loại font chữ hoặc cỡ font;
 - **Markdown**: Định dạng tối giản, nhưng lại có khả năng xuất ra Docx, giúp người dùng có thể biên tập thêm khi cần;
 
 Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc, không chỉ nội dung mà còn là cả hình thức, hãy dùng cách chuyển đổi HTML/CSS (còn gọi là "Bảo toàn"). Còn nếu bạn quan tâm đơn thuần đến việc đọc, muốn tiết kiệm token đầu ra (ví dụ khi bạn dùng API Key trả phí) hãy dùng kiểu chuyển sang Markdown (còn gọi là "Đơn giản"). Ngoài ra nếu có nhu cầu biên tập lại thì chỉ có kiểu Markdown mới giúp bạn có được định dạng Docx.
 
-Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở góc ngoài cùng bên trái thuộc footer/chân trang. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn".
+Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở góc ngoài cùng bên trái thuộc footer/chân trang. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn", tức là bản OCR sẽ có định dạng tương đồng với bản gốc. 
+
+Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "Đơn giản"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại.
 
 ### Hồ sơ thiết kế đồng nhất
 Một cuốn sách sẽ được chia thành nhiều chunk (phần), do vậy để thống nhất thiết kế, ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định ứng dụng chia ngưỡng chunk tối đa là 12 trang một chunk) sẽ được đưa vào bước phân tích thiết kế. Mục đích là để tạo ra sự thống nhất thiết kế cho toàn bộ kết quả của từng chunk.
