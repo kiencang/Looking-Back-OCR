@@ -66,6 +66,14 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="flex gap-3">
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">4</div>
             <div>
+              <p class="text-sm font-bold text-slate-100 mb-1.5">Xuất/Nhập dự án</p>
+              <p>Trường hợp đang chuyển đổi dở và bạn hết ngưỡng miễn phí, bạn có thể "Xuất dự án" trong mục "Lịch sử" rồi "Nhập dự án" vào tài khoản khác để thực hiện chuyển đổi tiếp.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">5</div>
+            <div>
               <p class="text-sm font-bold text-slate-100 mb-1.5">Tuyên bố từ chối trách nhiệm</p>
               <p>Công cụ này chỉ nên sử dụng cho mục đích nghiên cứu và học tập cá nhân.<br/><br/>Looking-Back-OCR cũng như người phát triển nó không đưa ra bất kỳ bảo đảm rõ ràng hay ngụ ý nào, cũng như không tuyên bố rằng công cụ sẽ vận hành hoàn hảo, chính xác hoặc cập nhật. Người phát triển sẽ không chịu trách nhiệm cho bất kỳ tổn thất hay thiệt hại nào phát sinh trực tiếp hoặc gián tiếp liên quan đến hoặc phát sinh từ việc sử dụng công cụ này.</p>
             </div>

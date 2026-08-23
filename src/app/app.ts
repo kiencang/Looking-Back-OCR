@@ -324,6 +324,41 @@ export class App {
   }
 
   // Export & Download Actions (Delegated to ExportService)
+  async exportProjectItem(item: any) {
+    this.isParsing.set(true);
+    this.parsingStatus.set('Đang chuẩn bị đóng gói dự án (.zip)...');
+    try {
+      await this.exportService.exportProjectBackup(item);
+      this.showSuccess('Đã xuất file dự án thành công.');
+    } catch (err: any) {
+      this.apiError.set(`Lỗi xuất file dự án: ${err.message || err}.`);
+    } finally {
+      this.isParsing.set(false);
+      this.parsingStatus.set('');
+    }
+  }
+
+  async importProjectFile(file: File) {
+    if (!file || !file.name.endsWith('.zip')) {
+      this.apiError.set('Vui lòng chọn file .zip định dạng dự án xuất từ AI Studio.');
+      return;
+    }
+    this.isParsing.set(true);
+    this.parsingStatus.set('Đang đọc và khôi phục dữ liệu từ dự án...');
+    try {
+      const historyItem = await this.exportService.importProjectBackup(file);
+      await this.historyService.saveHistoryItemAndTrim(historyItem);
+      // Automatically restore the imported project to the canvas
+      await this.restoreHistoryItem(historyItem);
+      this.showSuccess('Đã nhập và khôi phục dự án thành công.');
+    } catch (err: any) {
+      this.apiError.set(`Lỗi khi nhập dự án: ${err.message || err}.`);
+    } finally {
+      this.isParsing.set(false);
+      this.parsingStatus.set('');
+    }
+  }
+
   async downloadDocxFile() {
     if (!this.isAllCompleted()) {
       this.apiError.set('Vui lòng hoàn thành xử lý AI trên tất cả các khối trước khi tải file Word.');

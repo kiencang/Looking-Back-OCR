@@ -73,6 +73,63 @@ export class PdfProcessor {
     return this.pdfjsLib || (typeof window !== 'undefined' ? (window as any).pdfjsLib : null);
   }
 
+  async loadRestoredPdfDocuments(files: File[], isMultiFileMode: boolean, chunks: any[]): Promise<void> {
+    if (!this.pdfjsLib) {
+      await this.loadPdfEngine(() => undefined, () => undefined);
+    }
+    const lib = this.getPdfjsLib();
+    if (!lib) return;
+
+    this.pageToDocMap.clear();
+    this.loadedPdfDocs.clear();
+
+    if (!isMultiFileMode && files.length === 1) {
+      const file = files[0];
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = lib.getDocument({ data: arrayBuffer });
+        this.currentPdfDoc = await loadingTask.promise;
+        this.currentFileName = file.name;
+        this.loadedPdfDocs.set(file.name, this.currentPdfDoc);
+        
+        let maxPage = 0;
+        if (chunks && chunks.length > 0) {
+          maxPage = chunks[chunks.length - 1].endPageNum;
+        }
+        for (let i = 1; i <= maxPage; i++) {
+          this.pageToDocMap.set(i, { doc: this.currentPdfDoc, localPageNum: i });
+        }
+      } catch (e) {
+        console.warn('Could not restore pdfjsDoc for single file:', e);
+      }
+    } else if (isMultiFileMode && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const loadingTask = lib.getDocument({ data: arrayBuffer });
+          const filePdfDoc = await loadingTask.promise;
+          this.loadedPdfDocs.set(file.name, filePdfDoc);
+          
+          if (i === 0) {
+            this.currentPdfDoc = filePdfDoc;
+            this.currentFileName = file.name;
+          }
+          
+          const chunk = chunks[i];
+          if (chunk) {
+            let localPageNum = 1;
+            for (let globalPageNum = chunk.startPageNum; globalPageNum <= chunk.endPageNum; globalPageNum++) {
+              this.pageToDocMap.set(globalPageNum, { doc: filePdfDoc, localPageNum: localPageNum++ });
+            }
+          }
+        } catch (e) {
+          console.warn(`Could not restore pdfjsDoc for ${file.name}:`, e);
+        }
+      }
+    }
+  }
+
   async loadPdfDocument(file: File): Promise<any> {
     if (!this.pdfjsLib) {
       await this.loadPdfEngine(() => undefined, () => undefined);

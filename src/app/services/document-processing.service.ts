@@ -35,6 +35,7 @@ export class DocumentProcessingService {
   pdfFile = signal<File | null>(null);
   pdfFiles = signal<File[]>([]);
   isMultiFileMode = signal<boolean>(false);
+  isImported = signal<boolean>(false);
   pdfObjectUrl = signal<string>('');
   pdfPages = signal<PdfPageData[]>([]);
   pdfChunks = signal<PdfChunk[]>([]);
@@ -127,6 +128,7 @@ export class DocumentProcessingService {
     this.pdfFile.set(null);
     this.pdfFiles.set([]);
     this.isMultiFileMode.set(false);
+    this.isImported.set(false);
     this.fileName.set('');
     this.fileSize.set('');
     this.pdfPages.set([]);
@@ -163,8 +165,10 @@ export class DocumentProcessingService {
         selectedModel: this.selectedModel(),
         selectedOutputMode: this.selectedOutputMode(),
         isMultiFileMode: this.isMultiFileMode(),
+        isImported: this.isImported(),
         documentStyleProfile: this.documentStyleProfile(),
-        pdfFileBlob: file || undefined
+        pdfFileBlob: file || undefined,
+        pdfFileBlobs: this.isMultiFileMode() && this.pdfFiles().length > 0 ? this.pdfFiles() : undefined
       });
       if (savedId && !this.currentHistoryId()) {
         this.currentHistoryId.set(savedId);
@@ -187,19 +191,44 @@ export class DocumentProcessingService {
 
     try {
       this.isMultiFileMode.set(!!item.isMultiFileMode);
-      if (item.pdfFileBlob) {
+      this.isImported.set(!!item.isImported);
+      
+      if (item.isMultiFileMode && item.pdfFileBlobs && item.pdfFileBlobs.length > 0) {
+        // Multi-file mode restore
+        const restoredFiles = item.pdfFileBlobs.map((blob: Blob, index: number) => {
+          // Attempt to extract original name from chunks if possible, otherwise use fallback
+          const chunk = item.pdfChunks?.[index];
+          const originalName = chunk?.originalFileName || `doc_${index}.pdf`;
+          return new File([blob], originalName, { type: 'application/pdf' });
+        });
+        this.pdfFiles.set(restoredFiles);
+        this.pdfFile.set(restoredFiles[0]); // Anchor
+        
+        if (this.pdfObjectUrl()) {
+          URL.revokeObjectURL(this.pdfObjectUrl());
+        }
+        this.pdfObjectUrl.set(URL.createObjectURL(restoredFiles[0]));
+        try {
+          await this.pdfProcessor.loadRestoredPdfDocuments(restoredFiles, true, item.pdfChunks || []);
+        } catch (e) {
+          console.warn('Could not load restored pdfjsDocs for multi-file:', e);
+        }
+      } else if (item.pdfFileBlob) {
+        // Single file mode restore
         const restoredFile = new File([item.pdfFileBlob], item.fileName, { type: 'application/pdf' });
         this.pdfFile.set(restoredFile);
+        this.pdfFiles.set([restoredFile]);
         if (this.pdfObjectUrl()) {
           URL.revokeObjectURL(this.pdfObjectUrl());
         }
         this.pdfObjectUrl.set(URL.createObjectURL(restoredFile));
         try {
-          await this.pdfProcessor.loadPdfDocument(restoredFile);
+          await this.pdfProcessor.loadRestoredPdfDocuments([restoredFile], false, item.pdfChunks || []);
         } catch (e) {
           console.warn('Could not load restored pdfjsDoc:', e);
         }
       }
+
       this.fileName.set(item.fileName);
       this.fileSize.set(item.fileSize);
       this.pdfPages.set(item.pdfPages || []);
@@ -220,6 +249,9 @@ export class DocumentProcessingService {
       } else {
         this.selectedChunkIndex.set(item.selectedChunkIndex || 0);
       }
+      
+      // Trigger background rendering for restored project
+      this.startBackgroundPagesRendering();
 
       this.showSuccess('Đã khôi phục lịch sử chuyển đổi.');
     } catch (err: any) {

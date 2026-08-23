@@ -31,6 +31,15 @@ import { MatIconModule } from '@angular/material/icon';
             <div class="flex items-center gap-2">
               <mat-icon class="text-indigo-400 text-xl leading-none flex items-center justify-center select-none">history</mat-icon>
               <h3 class="text-sm font-bold text-slate-100 font-sans tracking-tight">Lịch sử chuyển đổi gần đây</h3>
+              <input type="file" id="import-project-input" class="hidden" accept=".zip" (change)="onImportFileSelected($event)">
+              <button 
+                type="button" 
+                (click)="triggerImportFile()"
+                title="Nhập dự án có sẵn của bạn để tiếp tục chuyển đổi."
+                class="ml-2 flex items-center gap-1.5 px-2 py-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 border border-white/10 rounded-md text-[11px] font-semibold text-slate-200 transition-colors shadow-sm focus:outline-none">
+                <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center">file_upload</mat-icon>
+                <span>Nhập dự án</span>
+              </button>
             </div>
             <button 
               type="button" 
@@ -122,21 +131,41 @@ import { MatIconModule } from '@angular/material/icon';
                     </div>
 
                     <!-- Token Usage Row -->
-                    @if (getTotalTokens(item.pdfChunks).input > 0 || getTotalTokens(item.pdfChunks).output > 0) {
-                      <div class="flex items-center gap-2 pt-1 text-[10px] font-mono text-slate-400">
-                        <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
-                          <span class="text-slate-500">Input:</span>
-                          <span class="text-emerald-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).input) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
-                          <span class="text-slate-600">|</span>
-                          <span class="text-slate-500">Output:</span>
-                          <span class="text-sky-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).output) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
-                        </span>
+                    @if (getTotalTokens(item.pdfChunks).input > 0 || getTotalTokens(item.pdfChunks).output > 0 || item.selectedOutputMode || item.outputMode) {
+                      <div class="flex flex-wrap items-center gap-2 pt-1 text-[10px] font-mono text-slate-400">
+                        @let mode = item.selectedOutputMode || item.outputMode;
+                        @if (mode) {
+                          <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
+                            <span class="text-slate-500">Phong cách chuyển đổi:</span>
+                            <span class="font-bold" [class.text-amber-400]="mode === 'markdown'" [class.text-emerald-400]="mode === 'html'">
+                              {{ mode === 'markdown' ? 'Đơn giản' : 'Bảo toàn' }}
+                            </span>
+                          </span>
+                        }
+                        @if (getTotalTokens(item.pdfChunks).input > 0 || getTotalTokens(item.pdfChunks).output > 0) {
+                          <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
+                            <span class="text-slate-500">Input:</span>
+                            <span class="text-emerald-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).input) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
+                            <span class="text-slate-600">|</span>
+                            <span class="text-slate-500">Output:</span>
+                            <span class="text-sky-400 font-bold">{{ formatTokenCount(getTotalTokens(item.pdfChunks).output) }} <span class="text-[9px] font-normal text-slate-400">token</span></span>
+                          </span>
+                        }
                       </div>
                     }
                   </div>
 
                   <!-- Quick Action: Restore button (Top-Right) -->
-                  <div class="shrink-0 flex items-center pt-0.5">
+                  <div class="shrink-0 flex items-center pt-0.5 gap-2">
+                    <button 
+                      type="button"
+                      [disabled]="isParsing() || isOptimizing()"
+                      (click)="$event.stopPropagation(); exportItem.emit(item)"
+                      class="px-3 py-1.5 flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 active:bg-slate-600 border border-white/10 disabled:opacity-50 text-slate-300 rounded-lg transition-colors shadow-sm cursor-pointer focus:outline-none"
+                      title="Xuất dự án để nhập vào tài khoản khác.">
+                      <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center text-indigo-300">file_download</mat-icon>
+                      <span>Xuất dự án</span>
+                    </button>
                     <button 
                       type="button"
                       [disabled]="isParsing() || isOptimizing()"
@@ -160,6 +189,11 @@ import { MatIconModule } from '@angular/material/icon';
                     </span>
                     
                     <div class="flex items-center gap-2 shrink-0">
+                      @if (item.isImported) {
+                        <span class="text-[14px] text-sky-400 leading-none cursor-help" title="Dự án được nhập.">
+                          <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none flex items-center justify-center">cloud_download</mat-icon>
+                        </span>
+                      }
                       <span class="text-[10px] font-mono text-slate-400">{{ item.timestamp | date:'HH:mm dd/MM/yyyy' }}</span>
                       
                       <!-- Delete Action / Confirm Delete at bottom right -->
@@ -228,8 +262,25 @@ export class HistoryModal {
   closeModal = output<void>();
   restoreItem = output<any>();
   deleteItem = output<string>();
+  exportItem = output<any>();
+  importItem = output<File>();
 
   deletingItemId = signal<string | null>(null);
+
+  triggerImportFile() {
+    const fileInput = document.getElementById('import-project-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+      fileInput.click();
+    }
+  }
+
+  onImportFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (file) {
+      this.importItem.emit(file);
+    }
+  }
 
   getCompletedChunksCount(chunks: any[]): number {
     if (!chunks) return 0;

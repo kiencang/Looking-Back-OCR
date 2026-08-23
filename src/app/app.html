@@ -153,7 +153,9 @@
       [isOptimizing]="isOptimizing()"
       (closeModal)="showHistoryModal.set(false)"
       (restoreItem)="restoreHistoryItem($event)"
-      (deleteItem)="removeHistoryItem($event)">
+      (deleteItem)="removeHistoryItem($event)"
+      (exportItem)="exportProjectItem($event)"
+      (importItem)="importProjectFile($event)">
     </app-history-modal>
   }
 

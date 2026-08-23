@@ -14,11 +14,13 @@ export interface HistoryItem {
   model?: string;
   selectedOutputMode: string;
   isMultiFileMode?: boolean;
+  isImported?: boolean;
   pdfPages?: any[];
   pdfChunks?: any[];
   pdfFileData?: any;
   documentStyleProfile?: any;
   pdfFileBlob?: Blob;
+  pdfFileBlobs?: Blob[];
 }
 
 /**
@@ -108,14 +110,23 @@ export class HistoryService {
     selectedModel: string;
     selectedOutputMode: string;
     isMultiFileMode?: boolean;
+    isImported?: boolean;
     documentStyleProfile?: any;
     pdfFileBlob?: Blob;
+    pdfFileBlobs?: Blob[];
   }): Promise<string> {
     if (!docState.fileName || docState.pdfChunks.length === 0) return '';
 
     try {
       const completedCount = docState.pdfChunks.filter((c: any) => c.status === 'completed').length;
       const historyId = docState.id || generateHistoryId();
+
+      // Khử ảnh pageImageUrl trước khi lưu để tránh quá tải IndexedDB
+      const cleanedPdfPages = (docState.pdfPages || []).map(p => ({ ...p, pageImageUrl: '' }));
+      const cleanedPdfChunks = (docState.pdfChunks || []).map(c => ({
+        ...c,
+        pages: (c.pages || []).map((p: any) => ({ ...p, pageImageUrl: '' }))
+      }));
 
       const historyItem: HistoryItem = {
         id: historyId,
@@ -128,10 +139,12 @@ export class HistoryService {
         model: docState.selectedModel,
         selectedOutputMode: docState.selectedOutputMode,
         isMultiFileMode: docState.isMultiFileMode,
-        pdfPages: docState.pdfPages,
-        pdfChunks: docState.pdfChunks,
+        isImported: docState.isImported,
+        pdfPages: cleanedPdfPages,
+        pdfChunks: cleanedPdfChunks,
         documentStyleProfile: docState.documentStyleProfile,
-        pdfFileBlob: docState.pdfFileBlob
+        pdfFileBlob: docState.pdfFileBlob,
+        pdfFileBlobs: docState.pdfFileBlobs
       };
 
       await this.saveHistoryItemAndTrim(historyItem);

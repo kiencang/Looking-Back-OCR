@@ -130,7 +130,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
                   <div class="flex items-center gap-1.5 shrink-0">
                     @for (cIdx of profile.analyzedSampleChunks; track cIdx) {
                       <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded text-[9px] font-bold">
-                        Khối {{ cIdx + 1 }}
+                        #{{ cIdx + 1 }}
                       </span>
                     }
                   </div>
