@@ -17,7 +17,7 @@ Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việ
 
 **Lưu ý**: Với trường hợp sử dụng KEY miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
 
-## Tại sao tồn tại
+## Tại sao tồn tại?
 Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng PDF scan có thể không dễ đọc do **bản chất sách gốc đã bị ố mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
 
 **Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa, sách cũ với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng lắm), đấy là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
@@ -94,6 +94,13 @@ Các thông tin thiết kế thống nhất bao gồm:
 - Cỡ font cho `h1`, `h2` `h3`;
 
 Đối với kiểu chuyển PDF -> Markdown thì không cần hồ sơ thiết kế thống nhất.
+
+### Có khả năng xử lý công thức toán
+Công cụ tích hợp sẵn khả năng xử lý và biểu diễn công thức toán học. Nếu có các file scan như đề thi, sách toán cũ, Looking-Back-OCR sẽ tái tạo rất tốt:
+<p align="center">
+  <img src="images/cong-thuc-toan.png" alt="Một đề thi toán được tái tạo lại">
+   <br><em>Một đề thi toán được tái tạo lại từ file PDF scan.</em>
+</p>
 
 ## Xuất/Nhập dự án
 Với kiểu chuyển đổi dựa trên Gemini, ngưỡng miễn phí có thể hết giữa chừng khi bạn đang chuyển đổi một cuốn sách lớn (ví dụ 400 trang, và mới chuyển được khoảng 200 trang thì hết ngưỡng miễn phí hàng ngày). Lúc này bạn có hai lựa chọn:
