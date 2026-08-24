@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nam Phong Tap Chi Q04_QN_019-024_T020-trang-test</title>
+  <title>Nam_Phong_Tap_Chi_Q04_QN_019-024_T020-trang-test</title>
   <script>
     window.MathJax = {
       tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
@@ -26,7 +26,7 @@
       color: #1e293b;
       font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       font-size: 18px;
-      line-height: 1.72;
+      line-height: 1.6;
       display: flex;
       justify-content: center;
       min-height: 100vh;
@@ -91,8 +91,8 @@
       margin-bottom: 0.6em;
     }
     h1 { font-size: 2.2em; font-weight: 700; }
-    h2 { font-size: 1.65em; font-weight: 700; }
-    h3 { font-size: 1.3em; font-weight: 600; }
+    h2 { font-size: 1.6em; font-weight: 700; }
+    h3 { font-size: 1.25em; font-weight: 600; }
     h4 { font-size: 1.15em; font-weight: 600; }
     h5 { font-size: 1.05em; font-weight: 600; }
     h6 { font-size: 0.95em; font-weight: 600; }
@@ -210,14 +210,149 @@
       -webkit-column-break-inside: avoid !important;
     }
 
-    /* 7. Chú thích chân trang (Footnotes) & Liên kết */
-    .footnotes {
-      margin-top: 36px;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 18px;
-      font-size: 0.875rem;
-      color: #64748b;
+    /* 7. Tiêu đề lặp đầu trang (Running Headers) & Chú thích chân trang (Footnotes) */
+    .running-header {
+      font-size: 0.8rem !important;
+      color: #94a3b8 !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      padding-bottom: 4px !important;
+      margin-top: 8px !important;
+      margin-bottom: 16px !important;
+      font-weight: 500 !important;
+      text-align: center !important;
+      font-style: italic !important;
+      letter-spacing: 0.05em !important;
+      user-select: none !important;
     }
+    .theme-warm .running-header {
+      color: #a89f91 !important;
+      border-bottom-color: #ebdcc9 !important;
+    }
+    .theme-mono .running-header {
+      color: #71717a !important;
+      border-bottom-color: #27272a !important;
+    }
+    .footnotes {
+      margin-top: 24px !important;
+      border-top: 1px solid #e2e8f0 !important;
+      padding-top: 12px !important;
+      font-size: 0.85rem !important;
+      color: #475569 !important;
+    }
+    .footnotes p {
+      margin-top: 4px !important;
+      margin-bottom: 4px !important;
+    }
+    .theme-warm .footnotes {
+      border-top-color: #ebdcc9 !important;
+      color: #78716c !important;
+    }
+    .theme-mono .footnotes {
+      border-top-color: #27272a !important;
+      color: #a1a1aa !important;
+    }
+    
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto !important;
+      margin: 20px 0 !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 0.92em !important;
+      line-height: 1.5 !important;
+      margin: 0 !important;
+    }
+    caption {
+      caption-side: top !important;
+      text-align: left !important;
+      font-weight: 600 !important;
+      font-size: 0.95em !important;
+      color: #334155 !important;
+      margin-bottom: 8px !important;
+    }
+    th {
+      background-color: #f1f5f9 !important;
+      font-weight: 600 !important;
+      color: #0f172a !important;
+      text-align: center !important;
+      padding: 10px 12px !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    td {
+      border: 1px solid #cbd5e1 !important;
+      padding: 8px 12px !important;
+    }
+    table.academic-table {
+      border-top: 2px solid #334155 !important;
+      border-bottom: 2px solid #334155 !important;
+    }
+    table.academic-table > thead > tr {
+      border-bottom: 1px solid #334155 !important;
+    }
+    table.academic-table th,
+    table.academic-table td {
+      border: none !important;
+    }
+    table.academic-table th {
+      background-color: transparent !important;
+    }
+    tr.summary-row {
+      border-top: 1.5px solid #334155 !important;
+      border-bottom: 3px double #334155 !important;
+      background-color: #f8fafc !important;
+      font-weight: bold !important;
+    }
+    .table-source {
+      font-size: 0.82em !important;
+      color: #64748b !important;
+      font-style: italic !important;
+      margin-top: 6px !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* --- THEME WARM CHO BẢNG --- */
+    .theme-warm caption { color: #57534e !important; }
+    .theme-warm th {
+      background-color: #f5f0e6 !important;
+      color: #292524 !important;
+      border-color: #d6d3d1 !important;
+    }
+    .theme-warm td { border-color: #d6d3d1 !important; }
+    .theme-warm table.academic-table { border-color: #57534e !important; }
+    .theme-warm table.academic-table > thead > tr { border-color: #57534e !important; }
+    .theme-warm tr.summary-row {
+      border-color: #57534e !important;
+      background-color: #f5f0e6 !important;
+    }
+    .theme-warm .table-source { color: #78716c !important; }
+
+    /* --- THEME MONO CHO BẢNG --- */
+    .theme-mono caption { color: #a1a1aa !important; }
+    .theme-mono th {
+      background-color: #18181b !important;
+      color: #f4f4f5 !important;
+      border-color: #3f3f46 !important;
+    }
+    .theme-mono td { border-color: #3f3f46 !important; }
+    .theme-mono table.academic-table { border-color: #a1a1aa !important; }
+    .theme-mono table.academic-table > thead > tr { border-color: #a1a1aa !important; }
+    .theme-mono tr.summary-row {
+      border-color: #a1a1aa !important;
+      background-color: #18181b !important;
+    }
+    .theme-mono .table-source { color: #a1a1aa !important; }
+
+    /* CJK Characters (Hán, Nôm, Nhật, Hàn) */
+    .cjk {
+      font-family: 'Noto Serif TC', 'SimSun', serif !important;
+      font-size: 0.95em !important;
+      font-weight: normal !important;
+      margin: 0 2px !important;
+    }
+
     a {
       color: #2563eb;
       text-decoration: underline;
@@ -303,7 +438,7 @@
 <body>
   <div class="doc-card">
     <div class="no-print doc-header">
-      <div class="doc-title-meta">Nam Phong Tap Chi Q04_QN_019-024_T020-trang-test (Trọn bộ tài liệu)</div>
+      <div class="doc-title-meta">Nam_Phong_Tap_Chi_Q04_QN_019-024_T020-trang-test (Trọn bộ tài liệu)</div>
       <button onclick="window.print()" class="btn-print">In tài liệu / Lưu PDF</button>
     </div>
     <article class="doc-content">
@@ -319,29 +454,29 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
-
-  <div style="text-align: center; border-bottom: 1px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 20px;">
-    <div style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; color: #334155; margin-bottom: 2px;">L’INFORMATION FRANÇAISE</div>
-    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #475569; letter-spacing: 0.05em; margin-bottom: 2px;">LA FRANCE DEVANT LE MONDE. — SON ROLE DANS LA GUERRE DES NATIONS</div>
-    <div style="font-size: 0.65rem; color: #64748b; font-style: italic;">(Publication autorisée par arrêté du 30 décembre 1916 de M. le Gouverneur Général de l’Indochine)</div>
-  </div>
-
-  <div style="text-align: center; margin-bottom: 28px;">
-    <div style="font-family: 'EB Garamond', Georgia, 'Times New Roman', serif; font-size: 3.2em; font-weight: 800; letter-spacing: 0.18em; line-height: 1.1; margin: 12px 0 6px 0; color: #0f172a;">NAM PHONG</div>
-    <div style="font-size: 1.05rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: #334155; margin-bottom: 16px;">VĂN-HỌC KHOA-HỌC TẠP-CHÍ</div>
-    <hr style="border: 0; border-top: 3px double #334155; margin: 16px auto; width: 90%;" />
-    <h1 style="font-family: 'EB Garamond', Georgia, 'Times New Roman', serif; font-size: 2.2em; font-weight: 700; line-height: 1.25; margin: 18px 0 14px 0; color: #0f172a; text-transform: uppercase; letter-spacing: 0.04em;">BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</h1>
-    <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 16px auto; width: 90%;" />
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Khi đăng cái thơ của ông Ng.-H.-V., bản-báo có nói xin bày làm cuộc công-luận, để các bạn đọc báo hẵng bàn trước, rồi khi nào công-luận đã định, bấy giờ bản-báo sẽ có bài kết-luận. Hiện nay vẫn còn có bài gởi đến, chưa đăng kịp. Nhưng tưởng những điều cốt-yếu các ngài đã bàn cả rồi, và lời công-luận đối với cái thơ ông V. có thể tóm lại một câu : là ai ai cũng cho lời lẽ ông là quá-đáng, và ai ai cũng công-nhận rằng chữ nho rất cần cho quốc-văn ta, cần hơn là các chữ khác, và không thể nào theo ý ông dùng thuần tiếng nôm trong quốc-văn được. Chính ông dễ cũng biết như vậy, nhưng ông cố khẳng-khái không chịu nhận. Kể cũng là cứng lắm, nhưng thiết-tưởng cái khí-khái ấy nếu biết hạn-chế lại một chút thì hay hơn. Ông khí-khái quá, thành ra hỏng cả. Cứ thực mà nói, những ý-kiến của ông không phải là không có giá-trị, nhưng vì ông nói quá lời nên không ai nghe được, ai cũng phải phản-đối ông, phần nhiều là phản-đối cái lời sỗ-sàng của ông hơn là phản-đối cái ý-kiến ông. Ông không biết rằng dân ta là một dân chuộng văn, dẫu lẽ phải đến đâu cũng phải có lời văn đưa đi thì người ta mới chịu nghe, mới chịu nhận. Có lẽ đó cũng là một cái tính thiên của người mình ; nhưng sao được ? Mình sinh-trưởng trong xã-hội nước mình, phải theo thói thường của xã-hội, dẫu muốn ra công cải-cách, trước cũng phải theo đã, rồi mới lựa chiều mà thay đổi lần-lần. Nếu ăn nói trái ngược hẳn người ta thì cho dẫu mình phải mười mươi cũng không ai chịu nghe, còn mong sao sửa đổi được người ? Huống cái lẽ phải của mình cũng chưa chắc lắm, mà lời nói lại ngỗ-ngược, thì ai còn dùng được ?</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Tôi chắc rằng ông viết cái thơ cho tôi đó là chỉ vì lòng thành thương tiếng nước nhà, muốn cho tiếng an-nam ta chóng độc-lập được, khỏi phải chịu cái quyền áp-chế của tiếng ngoài : ông thấy <em>Nam-Phong</em> hay dùng chữ nho, ông cho là chúng tôi đi lầm đường, ông muốn lấy lời thành-thực mà cảnh-cáo cho chúng tôi biết. Cái bụng đó thật đáng khen, đáng phục lắm. Nhưng tiếc thay, cứ lời ông nói thì ai cũng phải hiểu lầm cái bụng ông ; cứ lời ông thì tưởng suốt nước Nam chỉ có một mình ông là biết thương tiếng nước nhà, còn hết thảy người ta...</p>
-  </div>
-
-  <div style="text-align: right; font-size: 0.9rem; font-weight: bold; margin-top: 12px; padding-right: 12px; color: #475569;">1</div>
+<div style="text-align: center; font-size: 0.85rem; margin-bottom: 8px;">
+  <div><strong>L’INFORMATION FRANÇAISE</strong></div>
+  <div style="font-weight: 500;">LA FRANCE DEVANT LE MONDE. — SON ROLE DANS LA GUERRE DES NATIONS</div>
+  <div style="font-size: 0.75rem; font-style: italic;">(Publication autorisée par arrêté du 30 décembre 1916 de M. le Gouverneur Général de l’Indochine)</div>
 </div>
+
+<div style="text-align: center; margin: 16px 0 12px 0;">
+  <h1 style="font-size: 2.4em; font-weight: 700; letter-spacing: 0.12em; margin: 0;">NAM PHONG</h1>
+  <div style="font-size: 1.05em; font-weight: 600; letter-spacing: 0.08em; margin-top: 4px;">VĂN-HỌC KHOA-HỌC TẠP-CHÍ</div>
+</div>
+
+<hr style="border: 0; border-top: 1.5px solid #334155; margin: 12px 0 16px 0;" />
+
+<h2 style="text-align: center; font-size: 1.5em; font-weight: 700; line-height: 1.4; margin: 16px 0;">BÀN VỀ SỰ DÙNG CHỮ NHO TRONG<br />VĂN QUỐC-NGỮ</h2>
+
+<hr style="width: 80px; border: 0; border-top: 1px solid #334155; margin: 16px auto 20px auto;" />
+
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Khi đăng cái thơ của ông Ng.-H.-V., bản-báo có nói xin bày làm cuộc công-luận, để các bạn đọc báo hẵng bàn trước, rồi khi nào công-luận đã định, bấy giờ bản-báo sẽ có bài kết-luận. Hiện nay vẫn còn có bài gởi đến, chưa đăng kịp. Nhưng tưởng những điều cốt-yếu các ngài đã bàn cả rồi, và lời công-luận đối với cái thơ ông V. có thể tóm lại một câu: là ai ai cũng cho lời lẽ ông là quá-đáng, và ai ai cũng công-nhận rằng chữ nho rất cần cho quốc-văn ta, cần hơn là các chữ khác, và không thể nào theo ý ông dùng thuần tiếng nôm trong quốc-văn được. Chính ông để cũng biết như vậy, nhưng ông cố khẳng-khái không chịu nhận. Kể cũng là cứng lắm, nhưng thiết-tưởng cái khí-khái ấy nếu biết hạn-chế lại một chút thì hay hơn. Ông khí-khái quá, thành ra hỏng cả. Cứ thực mà nói, những ý-kiến của ông không phải là không có giá-trị, nhưng vì ông nói quá lời nên không ai nghe được, ai cũng phải phản-đối ông, phần nhiều là phản-đối cái lời sỗ-sàng của ông hơn là phản-đối cái ý-kiến ông. Ông không biết rằng dân ta là một dân chuộng văn, dẫu lẽ phải đến đâu cũng phải có lời văn đưa đi thì người ta mới chịu nghe, mới chịu nhận. Có lẽ đó cũng là một cái tính thiên của người mình; nhưng sao được? Mình sinh-trưởng trong xã-hội nước mình, phải theo thói thường của xã-hội, dẫu muốn ra công cải-cách, trước cũng phải theo đã, rồi mới lựa chiều mà thay đổi dần-dần. Nếu ăn nói trái ngược hẳn người ta thì cho dẫu mình phải mười mươi cũng không ai chịu nghe, còn mong sao sửa đổi được người? Huống cái lẽ phải của mình cũng chưa chắc lắm, mà lời nói lại ngỗ-ngược, thì ai còn dùng được?</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Tôi chắc rằng ông viết cái thơ cho tôi đó là chỉ vì lòng thành thương tiếng nước nhà, muốn cho tiếng an-nam ta chóng độc-lập được, khỏi phải chịu cái quyền áp-chế của tiếng ngoài: ông thấy <em>Nam-Phong</em> hay dùng chữ nho, ông cho là chúng tôi đi lầm đường, ông muốn lấy lời thành-thực mà cảnh-cáo cho chúng tôi biết. Cái bụng đó thật đáng khen, đáng phục lắm. Nhưng tiếc thay, cứ lời ông nói thì ai cũng phải hiểu lầm cái bụng ông; cứ lời ông thì tưởng suốt nước Nam chỉ có một mình ông là biết thương tiếng nước nhà, còn hết thảy người ta...</p>
+</div>
+
+<div style="text-align: right; font-size: 0.9rem; font-weight: bold; margin-top: 8px;">1</div>
 
 
 
@@ -355,25 +490,19 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>84</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span>84</span>
-    <span>NAM PHONG</span>
-    <span></span>
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px;">... đều là man-mọi cả, đều là u-mê cả, chỉ say-đắm chữ tàu mà không biết nghĩ đến tiếng nước mình ; cứ lời ông thì ai cũng phải cho ông là người ngỗ-nghịch, là người ngạo-mạn, không coi ai ra gì ; thậm-chí có người muốn buộc cho ông cái tội « phạm-thượng » ! Tôi biết rằng trong bụng ông không nghĩ đâu những điều xằng như vậy. Nhưng tiếc thay, cái văn ông nó hại ông ! Người ta thường nói : « Văn tức là người » (<em>Le style, c’est l’homme</em>), nghĩa là người thế nào thì phát-hiện ra lời văn như thế. Nếu cứ lấy lời văn ông mà xét người ông, thì người ta cho ông là gì ? Tôi đáp sợ phiền lòng ông, và tôi cũng chắc rằng cái văn ấy chưa phải là người ông vậy.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Kịp đến khi cái thơ của ông công-bố trong quốc-dân, thì ai ai cũng tức-giận vì lời nói ông, mà không mấy người xét kỹ đến cái chủ-ý ông. Thành ra trước sau cái vấn-đề vẫn chưa giải-quyết : hai bên nói có nhiều, bác có dữ, mà thủy-chung cái phần cốt-yếu vẫn chưa bàn đến lẽ.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Nay tôi muốn kết cái cuộc công-luận này, và bàn tường về cái vấn-đề cốt-yếu ông đã khởi-xướng ra, tức là cái vấn-đề về sự dùng chữ nho trong văn quốc-ngữ. Tôi bàn đây không phải là lấy cái tư-cách chủ-bút <em>Nam-Phong</em> mà đối-đáp với ông : nếu tôi muốn đối-đáp thì đối-đáp đã lâu rồi, nhưng thiết-tưởng tranh ăn nói không có ích gì, lấy lẽ bàn còn có bổ hơn. Vậy nay tôi bàn là chủ lấy bình-tĩnh, tức như người đứng giữa mà phân-giải các lẽ, không phải là người có quan-hệ đến những lời bình-phẩm của ông. Ngay từ đầu tôi đã giữ cái địa-vị « khách-quan », tới nay tôi cũng không muốn ra ngoài cái địa-vị đó ; thiết-tưởng có thế thì lời bàn mới có giá-trị vậy.</p>
-
-    <div style="text-align: center; margin: 16px 0; color: #64748b; letter-spacing: 0.5em;">* * *</div>
-
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Xét cho kỹ, cả cái vấn-đề chỉ gồm trong mấy câu hỏi như sau này : Văn-quốc-ngữ do hán-văn mà ra, không thể dời cái khuôn-phép của hán-văn mà thành-lập được ; nhưng hiện nay chữ hán không mấy người biết nữa, làm thế nào cho quốc-văn thành được ? Có thể bỏ hết chữ hán mà chỉ dùng tiếng nôm được không ? Nếu không thể bỏ được, thì cách dùng chữ hán trong quốc-văn phải thế nào cho thích-hợp ? — Rút lại chỉ ở một câu hỏi sau cùng đó mà thôi, vì ai cũng thừa biết rằng bỏ hết chữ hán mà chỉ dùng tiếng nôm không thể được, quốc-văn mà dời cái khuôn-phép của hán-văn không sao thành-lập được ; ai cũng đã thừa biết như thế rồi, dẫu có người ngoài mặt không chịu công-nhận, mà trong lòng cũng phải âm-nhận như vậy. Xét cho cùng, đẽ cũng chỉ vì ngoài mặt cố cưỡng không chịu công-nhận mà trong lòng không thể không âm-nhận được, trong ngoài phản-trái nhau, sinh ra bực-tức, mới ra tay búa rìu mà phá đổ cái vật nó trướng mắt mình, nghĩa là cái vật mình thường trông thấy mà không hiểu là gì. Cứ lấy thường-tình mà xét thì phải lắm, vì cái gì đã không biết còn ưa sao được ? Mình không hiểu chữ nho, cứ thấy người ta dùng chữ nho hoài, trách chi không tức giận ? Trách chi không ray tay mắm miệng, đập đất dẫm chân, mà hô, mà thét, mà la, mà dọa, cho người ta thôi đi. Nếu có quyền cấm được, cũng không đừng. Nhưng lấy lẽ phải đương-nhiên mà xét, tức giận như vậy có bổ-ích chi ? Hò, thét, la, dọa, có đủ đuổi được hết chữ nho trong quốc-văn không ? Quyết rằng không, chỉ đủ tỏ cái bụng nóng-nẩy, cái lòng căm-tức riêng mà thôi.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Nay muốn giải cái vấn-đề cho tường, phải chia ra hai đoạn như sau này :</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">1° Quốc-văn là do hán-văn mà ra, không thể bỏ chữ hán mà không dùng được, cũng không thể dời khuôn-phép của hán-văn mà thành-lập được.</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... đều là man-mọi cả, đều là u-mê cả, chỉ say-đắm chữ tàu mà không biết nghĩ đến tiếng nước mình; cứ lời ông thì ai cũng phải cho ông là người ngỗ-nghịch, là người ngạo-mạn, không coi ai ra gì; thậm-chí có người muốn buộc cho ông cái tội « phạm-thượng »! Tôi biết rằng trong bụng ông không nghĩ đâu những điều xằng như vậy. Nhưng tiếc thay, cái văn ông nó hại ông! Người ta thường nói: « Văn tức là người » (<em>Le style, c’est l’homme</em>), nghĩa là người thế nào thì phát-hiện ra lời văn như thế. Nếu cứ lấy lời văn ông mà xét người ông, thì người ta cho ông là gì? Tôi đáp sợ phiền lòng ông, và tôi cũng chắc rằng cái văn ấy chưa phải là người ông vậy.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Kịp đến khi cái thơ của ông công-bố trong quốc-dân, thì ai ai cũng tức-giận vì lời nói ông, mà không mấy người xét kỹ đến cái chủ-ý ông. Thành ra trước sau cái vấn-đề vẫn chưa giải-quyết: hai bên nói có nhiều, bác có dữ, mà thủy-chung cái phần cốt-yếu vẫn chưa bàn đến lẽ.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Nay tôi muốn kết cái cuộc công-luận này, và bàn tường về cái vấn-đề cốt-yếu ông đã khởi-xướng ra, tức là cái vấn-đề về sự dùng chữ nho trong văn quốc-ngữ. Tôi bàn đây không phải là lấy cái tư-cách chủ-bút <em>Nam-Phong</em> mà đối-đáp với ông: nếu tôi muốn đối-đáp thì đối-đáp đã lâu rồi, nhưng thiết-tưởng tranh án nói không có ích gì, lấy lẽ bàn còn có bổ hơn. Vậy nay tôi bàn là chủ lấy bình-tĩnh, tức như người đứng giữa mà phân-giải các lẽ, không phải là người có quan-hệ đến những lời bình-phẩm của ông. Ngay từ đầu tôi đã giữ cái địa-vị « khách-quan », tới nay tôi cũng không muốn ra ngoài cái địa-vị đó; thiết-tưởng có thế thì lời bàn mới có giá-trị vậy.</p>
+  <div style="text-align: center; margin: 12px 0; letter-spacing: 0.4em;">* * *</div>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Xét cho kỹ, cả cái vấn-đề chỉ gồm trong mấy câu hỏi như sau này: Văn-quốc-ngữ do hán-văn mà ra, không thể dời cái khuôn-phép của hán-văn mà thành-lập được; nhưng hiện nay chữ hán không mấy người biết nữa, làm thế nào cho quốc-văn thành được? Có thể bỏ hết chữ hán mà chỉ dùng tiếng nôm được không? Nếu không thể bỏ được, thì cách dùng chữ hán trong quốc-văn phải thế nào cho thích-hợp? — Rút lại chỉ ở một câu hỏi sau cùng đó mà thôi, vì ai cũng thừa biết rằng bỏ hết chữ hán mà chỉ dùng tiếng nôm không thể được, quốc-văn mà dời cái khuôn-phép của hán-văn không sao thành-lập được; ai cũng đã thừa biết như thế rồi, dẫu có người ngoài mặt không chịu công-nhận, mà trong lòng cũng phải âm-nhận như vậy. Xét cho cùng, đễ cũng chỉ vì ngoài mặt cố cưỡng không chịu công-nhận mà trong lòng không thể không âm-nhận được, trong ngoài phản-trái nhau, sinh ra bực-tức, mới ra tay búa rìu mà phá đổ cái vật nó trướng mắt mình, nghĩa là cái vật mình thường trông thấy mà không hiểu là gì. Cứ lấy thường-tình mà xét thì phải lắm, vì cái gì đã không biết còn ưa sao được? Mình không hiểu chữ nho, cứ thấy người ta dùng chữ nho hoài, trách chi không tức giận? Trách chi không ray tay mắm miệng, đập đất dẫm chân, mà hô, mà thét, mà la, mà dọa, cho người ta thôi đi. Nếu có quyền cấm được, cũng không đừng. Nhưng lấy lẽ phải đương-nhiên mà xét, tức giận như vậy có bổ-ích chi? Hô, thét, la, dọa, có đủ đuổi được hết chữ nho trong quốc-văn không? Quyết rằng không, chỉ đủ tỏ cái bụng nóng-nẩy, cái lòng cảm-tức riêng mà thôi.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Nay muốn giải cái vấn-đề cho tường, phải chia ra hai đoạn như sau này:</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">1° Quốc-văn là do hán-văn mà ra, không thể bỏ chữ hán mà không dùng được, cũng không thể dời khuôn-phép của hán-văn mà thành-lập được.</p>
 </div>
 
 
@@ -388,21 +517,15 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>85</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span></span>
-    <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
-    <span>85</span>
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">2° Sự dùng chữ hán trong quốc-văn đã là một lẽ tất-nhiên rồi thì phải dùng thế nào cho thích-hợp ?</p>
-
-    <div style="text-align: center; margin: 16px 0; color: #64748b; letter-spacing: 0.5em;">* * *</div>
-
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Thuộc về đoạn thứ nhất thì phàm người nào đã biết lịch-sử nước nhà cũng phải công-nhận như vậy. Nước ta học chữ tàu trong hai nghìn năm, trong hai nghìn năm lấy chữ tàu làm văn-tự chung trong nước. Chữ tàu phổ-thông trong dân-gian cho đến nỗi ngày nay vẫn còn có người gọi hán-tự là <em>chữ ta</em>, <em>chữ An-nam</em>. Thử về chốn nhà quê mà đưa cho ông lão-già hay đứa con trẻ một tờ chữ nho hỏi là chữ gì, tất ai cũng đáp là chữ An-nam. Mười năm, hai mươi năm về trước, những người theo nho-học, có ai nghĩ đến cái chữ mình học là chữ của ngoại-quốc đâu ? Hiện nay trong bọn cựu-học ở Bắc-kỳ Trung-kỳ cũng vẫn còn nhiều người như thế. Cái tư-tưởng lấy lời nôm làm quốc-văn là cái tư-tưởng mới nẩy ra gần đây mà thôi, và cũng chưa vào sâu trong dân-gian cho lắm. Trước kia quốc-văn tức là hán-văn, hán-văn tức là quốc-văn, tự-nhiên như vậy, không ai bận lòng mà phân-biệt chữ nào là chữ ngoài, tiếng nào là tiếng mình, chỉ biết <em>văn</em> thì duy có hán-văn mà thôi, mà <em>nôm</em> là lời tục trong dân-gian của những kẻ không biết chữ. Ta không phải phân-đoán sự đó là phải hay không phải, nên hay không nên, chỉ biết rằng đó là sự hiển-nhiên như thế và là cái chứng rõ rằng chữ hán đã tiêm-nhiễm vào trong trí-não người nước Nam sâu lắm rồi, đã thành cái biểu-hiệu tự-nhiên của sự tư-tưởng cảm-giác của người mình trong mấy mươi thế-kỷ nay. Con khóc cha cũng làm văn-tế bằng chữ nho, chồng dặn vợ cũng viết thơ-từ bằng chữ nho ; coi đó thì biết chữ nho phổ-thông là dường nào, tức là cái văn-tự độc-nhất-vô-nhị của nước mình. Mười năm, hai mươi năm về trước, nếu ta bảo một người học trò nho rằng : « Cái chữ bác học đó là chữ của nước ngoài, sao bác không học tiếng nước mình, sao lại bỏ của mình mà đi mượn của người cho nó phiền », tất họ kinh-ngạc không hiểu là chuyện chi rồi cười mà cho mình là người cuồng. Tất trong bụng họ nghĩ : « Chữ của ông cha, của tổ-tiên mình vẫn học xưa nay, của cả nước mình từ vua quan cho đến người thường-dân ai cũng biết, sao lại gọi là trong với ngoài ? sao lại gọi là của mình với của người ? Anh này gàn thật ! Vẫn biết rằng chữ nho là tự Tàu đem sang, nhưng đem tự đời kiếp nghiệp lai nào, mình học đã tự bao giờ đến giờ, thì là chữ của mình chớ còn của ai ? » Xét cho cùng, cái ý-kiến đó, tuy mới coi tưởng là hẹp-hòi, mà thật là có lý lắm. Chữ nho tuy phát-tích ra tự Tàu, mà từ đời cổ-xưa đã không phải là văn-tự riêng của một dân một nước Tàu rồi. Chính nước Tàu đời xưa cũng không phải là một nước, thực là một « thế-giới » bao-gồm biết bao nhiêu dân, bao nhiêu nước khác nhau. Mỗi dân có một tiếng nói riêng, mỗi nước có một phong-tục riêng, có dân nội-thuộc rồi độc-lập, có nước độc-lập mà vẫn chịu văn-hóa của Trung-hoa. Cái văn-hóa ấy tràn khắp một cõi địa-cầu, phổ-cập mấy trăm triệu con người, dẫu văn-hóa của Hi-lạp (<em>grecque</em>), la-mã (<em>latine</em>) bên Tây-phương cũng không bành-trướng được rộng bằng. Đồ dùng để truyền-bá cái văn-hóa ấy tức là chữ nho. Chữ nho là một thứ chữ viết, không phải là một thứ tiếng nói ; đem vào nước nào thì theo cái thanh-âm của nước ấy mà đọc ra, chữ vẫn là chữ chung mà đọc theo thanh âm nước nào thành ra lời riêng của nước ấy, nước khác cũng học chữ ấy mà đọc khác đi, nghe nhau không hiểu, phải viết ra chữ mới hiểu được. Không những các nước ở ngoài...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">2° Sự dùng chữ hán trong quốc-văn đã là một lẽ tất-nhiên rồi thì phải dùng thế nào cho thích-hợp?</p>
+  <div style="text-align: center; margin: 12px 0; letter-spacing: 0.4em;">* * *</div>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Thuộc về đoạn thứ nhất thì phàm người nào đã biết lịch-sử nước nhà cũng phải công-nhận như vậy. Nước ta học chữ tàu trong hai nghìn năm, trong hai nghìn năm lấy chữ tàu làm văn-tự chung trong nước. Chữ tàu phổ-thông trong dân-gian cho đến nỗi ngày nay vẫn còn có người gọi hán-tự là <em>chữ ta, chữ An-nam</em>. Thử về chốn nhà quê mà đưa cho ông lão-già hay đứa con trẻ một tờ chữ nho hỏi là chữ gì, tất ai cũng đáp là chữ An-nam. Mười năm, hai mươi năm về trước, những người theo nho-học, có ai nghĩ đến cái chữ mình học là chữ của ngoại-quốc đâu? Hiện nay trong bọn cựu-học ở Bắc-kỳ Trung-kỳ cũng vẫn còn nhiều người như thế. Cái tư-tưởng lấy lời nôm làm quốc-văn là cái tư-tưởng mới nảy ra gần đây mà thôi, và cũng chưa vào sâu trong dân-gian cho lắm. Trước kia quốc-văn tức là hán-văn, hán-văn tức là quốc-văn, tự-nhiên như vậy, không ai bận lòng mà phân-biệt chữ nào là chữ ngoài, tiếng nào là tiếng mình, chỉ biết <em>văn thì duy có hán-văn mà thôi, mà nôm là lời tục trong dân-gian của những kẻ không biết chữ</em>. Ta không phải phân-đoán sự đó là phải hay không phải, nên hay không nên, chỉ biết rằng đó là sự hiển-nhiên như thế và là cái chứng rõ rằng chữ hán đã tiêm-nhiễm vào trong tri-não người nước Nam sâu lắm rồi, đã thành cái biểu-hiệu tự-nhiên của sự tư-tưởng cảm-giác của người mình trong mấy mươi thế-kỷ nay. Con khóc cha cũng làm văn-tế bằng chữ nho, chồng dặn vợ cũng viết thơ-từ bằng chữ nho; coi đó thì biết chữ nho phổ-thông là dường nào, tức là cái văn-tự độc-nhất-vô-nhị của nước mình. Mười năm, hai mươi năm về trước, nếu ta bảo một người học trò nho rằng: « Cái chữ bác học đó là chữ của nước ngoài, sao bác không học tiếng nước mình, sao lại bỏ của mình mà đi mượn của người cho nó phiền », tất họ kinh-ngạc không hiểu là chuyện chi rồi cười mà cho mình là người cuồng. Tất trong bụng họ nghĩ: « Chữ của ông cha, của tổ-tiên mình vẫn học xưa nay, của cả nước mình từ vua quan cho đến người thường-dân ai cũng biết, sao lại gọi là trong với ngoài? sao lại gọi là của mình với của người? Anh này gàn thật! Vẫn biết rằng chữ nho là tự Tàu đem sang, nhưng đem tự đời kiếp nghiệp lại nào, mình học đã tự bao giờ đến giờ, thì là chữ của mình chớ còn của ai? » Xét cho cùng, cái ý-kiến đó, tuy mới coi tưởng là hẹp-hòi, mà thật là có lý lắm. Chữ nho tuy phát-tích ra tự Tàu, mà từ đời cổ-xưa đã không phải là văn-tự riêng của một dân một nước Tàu rồi. Chính nước Tàu đời xưa cũng không phải là một nước, thực là một « thế-giới » bao-gồm biết bao nhiêu dân, bao nhiêu nước khác nhau. Mỗi dân có một tiếng nói riêng, mỗi nước có một phong-tục riêng, có dân nội-thuộc rồi độc-lập, có nước độc-lập mà vẫn chịu văn-hóa của Trung-hoa. Cái văn-hóa ấy tràn khắp một cõi địa-cầu, phổ-cập mấy trăm triệu con người, dẫu văn-hóa của Hi-lạp (grecque), la-mã (latine) bên Tây-phương cũng không bành-trướng được rộng bằng. Đồ dùng để truyền-bá cái văn-hóa ấy tức là chữ nho. Chữ nho là một thứ chữ viết, không phải là một thứ tiếng nói; đem vào nước nào thì theo cái thanh-âm của nước ấy mà đọc ra, chữ vẫn là chữ chung mà đọc theo thanh âm nước nào thành ra lời riêng của nước ấy, nước khác cũng học chữ ấy mà đọc khác đi, nghe nhau không hiểu, phải viết ra chữ mới hiểu được. Không những các nước ở ngoài...</p>
 </div>
 
 
@@ -417,19 +540,15 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>86</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span>86</span>
-    <span>NAM PHONG</span>
-    <span></span>
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px;">... nước Tàu, mà đến các tỉnh nội-địa Tàu, tỉnh nọ đối với tỉnh kia cũng vậy : một người khách Quảng-đông nói với một người khách Bắc-kinh nói chuyện với nhau, tuy toàn là lời chữ nho mà hai người tuyệt-nhiên không hiểu gì cả, phải « bút-đàm » mới biết là nói chuyện gì. Cho nên người Tàu phải đặt ra một thứ tiếng riêng gọi là <em>quan-hoại</em> để giao-thông với nhau, nhưng <em>quan-hoại</em> là cái tiếng của người làm việc quan mà thôi, ai có học mới biết, cũng như là học một thứ tiếng ngoài vậy. Ấy người Tàu với nhau còn vậy, huống chi là người Nhật-bản, người An-nam, hay là người Cao-ly, tuy cũng chịu văn-hóa của Trung-quốc và lấy chữ nho làm văn-tự, nhưng thâu-nhập sang nước mình đã hầu thành như của riêng của mình rồi. Thí-dụ như hai chữ « văn-minh », vốn là hai chữ nho <span style="font-family: 'Noto Serif TC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;">文明</span>, mà tiếng quan-hoại Tàu đọc là <em>wen-ming</em>, tiếng tỉnh Quảng-đông bên Tàu đọc là <em>men-min</em>, không biết tiếng tỉnh Tứ-xuyên, Phúc-kiến, Vân-nam, Quí-châu, v. v., hay là tiếng Mãn-châu, Mông-cổ, Tây-tạng, là những đất phiên-li của Tàu, còn đọc khác đi đến thế nào ; đến tiếng An-nam ta thì đọc là <em>văn-minh</em>, mà tiếng Nhật-bản thì lại đọc là <em>bunmei</em>. Bấy nhiêu xứ chỉ chung nhau có hai cái hình chữ <span style="font-family: 'Noto Serif TC', 'SimSun', serif; font-size: 0.95em; font-weight: normal; margin: 0 2px;">文明</span>, còn thanh-âm thì khác nhau biết dường nào ! Hai cái hình đó giá cho là của Cao-ly, của Nhật-bản, của An-nam hay là của Mãn-châu cũng được. Chỉ vì nó xuất-hiện ra trước nhất ở đất nước Tàu, chỉ vì ngày nay người Tàu dùng nó nhiều hơn cả, nên ta gọi nó là « chữ Tàu » mà thôi. Bởi thế cho nên nước nào xưa nay dùng thứ chữ đó cũng tự nhận là chữ của mình, mà thiệt dễ cũng là chữ của mình đến một nửa, vì mình viết nó có giống người mà mình nói nó ra giọng mình, người không hiểu được, thế chẳng phải là của mình hay sao ? Nói rút lại chữ nho là một cái « tử-văn » (<em>langue morte</em>), nghĩa là một thứ chữ người ta không dùng để giao-thông bằng lời nói được, vì nó không có thanh-âm nhất-định, mà chỉ học để tập-luyện trí-thức, để thấu-hiểu các văn-chương nghĩa-lý của người đời trước để lại, văn-chương nghĩa-lý ấy là cái kho báu chung của cả nhân-loại vậy. Tức cũng như văn Hi-lạp, văn La-mã bên Âu-châu : văn Hi-lạp, văn La-mã cũng là « tử-văn » ; ngày nay có còn ai nói tiếng Hi-lạp, tiếng La-mã như trong sách <span style="font-variant: small-caps;">Homère</span> (Ô-me) hay sách <span style="font-variant: small-caps;">Cicéron</span> (Xi-xê-rông) nữa đâu ? Tiếng <em>grec</em>, tiếng <em>italien</em> ngày nay, không có giống tiếng Hi-lạp La-mã đời xưa một chút nào. Các nước Âu-châu xưa nay học chữ La-mã, chữ Hi-lạp, mượn hai thứ chữ ấy mà đặt tiếng mình, cũng tức như An-nam ta học chữ nho, mượn chữ nho và đọc chữ nho ra âm-vận an-nam vậy. Chỉ khác nước ta chịu văn-hóa của nho-học lâu đời quá, nên tiếng nước mình đối với chữ nho có cái quan-hệ mật-thiết hơn là tiếng các nước Âu-châu đối với chữ Hi-lạp hay chữ La-mã. Các nước Âu-châu không nước nào trong hai nghìn năm chỉ chuyên học chữ Hi-lạp hay chữ La-mã như nước ta chuyên học chữ nho vậy. Nhưng cái lý cũng như nhau. Vì nếu có nước nào như vậy, thì cái tình-trạng quốc-văn của nước ấy tất cũng chẳng khác gì quốc-văn ta bây giờ, nghĩa là không thể thoát-li văn cũ mà thành được.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Ngày nay những người phản-đối chữ nho thường lấy hai cớ như sau này :</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Một là chữ nho là chữ của người Tàu, người Tàu trong bao nhiêu lâu đã áp-chế dân mình, hiện nay vẫn còn tranh hết lợi-quyền của người mình về đường buôn bán. Người An-nam nên ghét người Tàu mới là phải, cớ chi lại còn học chữ tàu, dùng chữ tàu, để chịu lấy cái áp-chế vô-hình của...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... nước Tàu, mà đến các tỉnh nội-địa Tàu, tỉnh nọ đối với tỉnh kia cũng vậy: một người khách Quảng-đông với một người khách Bắc-kinh nói chuyện với nhau, tuy toàn là lời chữ nho mà hai người tuyệt-nhiên không hiểu gì cả, phải « bút-đàm » mới biết là nói chuyện gì. Cho nên người Tàu phải đặt ra một thứ tiếng riêng gọi là <em>quan-thoại</em> để giao-thông với nhau, nhưng <em>quan-thoại</em> là cái tiếng của người làm việc quan mà thôi, ai có học mới biết, cũng như là học một thứ tiếng ngoài vậy. Ấy người Tàu với nhau còn vậy, huống chi là người Nhật-bản, người An-nam, hay là người Cao-ly, tuy cũng chịu văn-hóa của Trung-quốc và lấy chữ nho làm văn-tự, nhưng thâu-nhập sang nước mình đã hầu thành như của riêng của mình rồi. Thí-dụ như hai chữ « văn-minh », vốn là hai chữ nho <span class="cjk">文明</span>, mà tiếng quan-thoại Tàu đọc là <em>wen-ming</em>, tiếng tỉnh Quảng-đông bên Tàu đọc là <em>men-min</em>, không biết tiếng tỉnh Tứ-xuyên, Phúc-kiến, Vân-nam, Quí-châu, v. v., hay là tiếng Mãn-châu, Mông-cổ, Tây-tạng, là những đất phiên-li của Tàu, còn đọc khác đi đến thế nào; đến tiếng An-nam ta thì đọc là <em>văn-minh</em>, mà tiếng Nhật-bản thì lại đọc là <em>bunmei</em>. Bấy nhiêu xứ chỉ chung nhau có hai cái hình chữ <span class="cjk">文明</span>, còn thanh-âm thì khác nhau biết dường nào! Hai cái hình đó giá cho là của Cao-ly, của Nhật-bản, của An-nam hay là của Mãn-châu cũng được. Chỉ vì nó xuất-hiện ra trước nhất ở đất nước Tàu, chỉ vì ngày nay người Tàu dùng nó nhiều hơn cả, nên ta gọi nó là « chữ Tàu » mà thôi. Bởi thế cho nên nước nào xưa nay dùng thứ chữ đó cũng tự nhận là chữ của mình, mà thiệt dễ cũng là chữ của mình đến một nửa, vì mình viết nó có giống người mà mình nói nó ra giọng mình, người không hiểu được, thế chẳng phải là của mình hay sao? Nói rút lại chữ nho là một cái « tử-văn » (<em>langue morte</em>), nghĩa là một thứ chữ người ta không dùng để giao-thông bằng lời nói được, vì nó không có thanh-âm nhất-định, mà chỉ học để tập-luyện trí-thức, để thấu-hiểu các văn-chương nghĩa-lý của người đời trước để lại, văn-chương nghĩa-lý ấy là cái kho báu chung của cả nhân-loại vậy. Tức cũng như văn Hi-lạp, văn La-mã bên Âu-châu: văn Hi-lạp, văn La-mã cũng là « tử-văn »; ngày nay có còn ai nói tiếng Hi-lạp, tiếng La-mã như trong sách Homère (Ô-me) hay sách Cicéron (Xi-xê-rông) nữa đâu? Tiếng <em>grec</em>, tiếng <em>italien</em> ngày nay, không có giống tiếng Hi-lạp La-mã đời xưa một chút nào. Các nước Âu-châu xưa nay học chữ La-mã, chữ Hi-lạp, mượn hai thứ chữ ấy mà đặt tiếng mình, cũng tức như An-nam ta học chữ nho, mượn chữ nho và đọc chữ nho ra âm-vận an-nam vậy. Chỉ khác nước ta chịu văn-hóa của nho-học lâu đời quá, nên tiếng nước mình đối với chữ nho có cái quan-hệ mật-thiết hơn là tiếng các nước Âu-châu đối với chữ Hi-lạp hay chữ La-mã. Các nước Âu-châu không nước nào trong hai nghìn năm chỉ chuyên học chữ Hi-lạp hay chữ La-mã như nước ta chuyên học chữ nho vậy. Nhưng cái lý cũng như nhau. Vì nếu có nước nào như vậy, thì cái tình-trạng quốc-văn của nước ấy tất cũng chẳng khác gì quốc-văn ta bây giờ, nghĩa là không thể thoát-li văn cũ mà thành được.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Ngày nay những người phản-đối chữ nho thường lấy hai cớ như sau này:</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Một là chữ nho là chữ của người Tàu, người Tàu trong bao nhiêu lâu đã áp-chế dân mình, hiện nay vẫn còn tranh hết lợi-quyền của người mình về đường buôn bán. Người An-nam nên ghét người Tàu mới là phải, cớ chi lại còn học chữ tàu, dùng chữ tàu, để chịu lấy cái áp-chế vô-hình của...</p>
 </div>
 
 
@@ -444,19 +563,15 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>87</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span></span>
-    <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
-    <span>87</span>
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px;">... chúng nó nữa ? — Người nào bàn như vậy là lẫn việc văn-tự với việc chính-trị, việc kinh-tế. Người Tàu xưa kia về đường chính-trị đã áp-chế ta nhiều, ta nên ghét là phải, nhưng sự ghét đó là thuộc về lịch-sử, vì là việc cũ rồi. Người Tàu ngày nay về đường kinh-tế vẫn tranh cướp lợi-quyền của ta nhiều, ta nên ghét lại là phải lắm nữa, nhưng ghét thì phải làm thế nào, phải bày mưu lập kế thế nào mà tranh lại những lợi-quyền đó mới được, chớ cứ nói ghét không, có bổ-ích gì ? Còn như chữ nho là văn-tự của Tàu thì hiện không có quan-hệ gì đến đường chính-trị, đường kinh-tế cả. Ta đã giãi rõ trên kia rằng chữ nho là một thứ « tử-văn » chung cho cả các nước Á-đông đã chịu văn-hóa của nho-học. Ta học chữ nho không phải là chịu áp-chế của người Tàu, tức cũng như người Âu-châu học chữ La-tinh không phải là chịu áp-chế của người Ý-đại-lợi ngày nay. Ta học chữ nho mà thử giở trong quốc-sử coi, biết bao nhiêu phen ta đánh Tàu siễng-liễng, đuổi được nó ra ngoài bờ-cõi nước ta ? Xét đến cái vấn-đề này phải phân-biệt rõ ràng, không nên lẫn việc nọ với việc kia mà làm cho người ta rối trí.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Hai là nước ta trong hai nghìn năm theo đòi nho-học của Tàu, mà đến đời nay trước khi nước Đại-Pháp sang khai-hóa, thế nước yếu hèn như vậy, dân-trí bán-khai như vậy, phần nhiều là tại nho-học. Nho-học đã chẳng ra gì, mình còn nên đâm đầu vào học chữ nho làm gì nữa ? — Những người nào nói như thế thật là không có cái tư-tưởng gì về lịch-sử, và là bội-bạc với tiền-nhân. Không biết rằng nước mình được như ngày nay, đã từng có một cuộc lịch-sử cũng lắm đoạn vẻ-vang chẳng kém gì người, thật là nhờ ở nho-học nhiều. Những bậc anh-hùng, hào-kiệt, chí-sĩ, cao-nhân, hiền-vinh cho nước, bởi đâu mà đã làm nên sự-nghiệp to lớn, bởi đâu mà đã để lại danh-tiếng thơm tho ? Chẳng phải là nhờ nho-học mấy đời đoàn-luyện mới nên ru ? Chẳng phải là nho-học đã gầy dựng ra gia-tộc, ra xã-hội, ra quốc-gia ta ru ? Chắc ngày nay nho-học đã nhiều phần quá cũ rồi, không hợp với đời, nhưng cũ là cái hình-thức cũ mà thôi, còn cái tinh-thần, cái đạo-đức của nho-học thì cùng với núi sông mà sống mãi muôn đời. Ta nên bỏ là bỏ cái hình-thức phiền, còn cái tinh-thần phải giữ lấy, vì nước ta còn có mặt trên địa-cầu là còn phải nhờ cái tinh-thần ấy mới sống được. Nhưng muốn giữ cái tinh-thần ấy mà lại tiệt hẳn chữ nho là biểu-hiệu của cái tinh-thần ấy thì sao được ?</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Xét cho cùng, cái vấn-đề về nho học, về quốc-văn, về sự dùng chữ nho trong văn quốc-ngữ, bấy nhiêu cái chỉ do một cớ như sau này : là trong nước ta chưa có một nền quốc-dân-giáo-dục, nghĩa là cái giáo-dục chung cho cả dân trong nước, ai cũng phải qua đấy rồi mới lên các bậc khác ; qua đấy rồi tất thông-thuộc tiếng nước mình, biết làm văn bằng lời mình, hiểu các lẽ cương-thường luân-lý của tổ-tiên, tỏ các việc công-nghiệp lớn lao của đời trước, nghĩa là trước nhất đủ cái tư-cách làm dân, bấy giờ mới ra học các tiếng nước ngoài và thâu-nhập lấy những điều hay lẽ phải mình chưa biết. Hiện nay không có cái giáo-dục chung cho cả quốc-dân như vậy, thành ra người nào theo tây-học theo từ thủa nhỏ, tuy nhiều người học giỏi thành-tài, mà hình như càng ngày càng cách-biệt với quốc-dân, lời ăn tiếng nói, cách tư-tưởng cảm-giác không gì là giống với người mình. Như vậy thì hiểu làm sao được những điều cốt-yếu trong nước, hiểu làm sao được rằng nho-học là cái học đã đào-tạo ra người mình, rằng quốc-văn là cái văn nguồn gốc...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... chúng nó nữa? — Người nào bàn như vậy là lẫn việc văn-tự với việc chính-trị, việc kinh-tế. Người Tàu xưa kia về đường chính-trị đã áp-chế ta nhiều, ta nên ghét là phải, nhưng sự ghét đó là thuộc về lịch-sử, vì là việc cũ rồi. Người Tàu ngày nay về đường kinh-tế vẫn tranh cướp lợi-quyền của ta nhiều, ta nên ghét lại là phải lắm nữa, nhưng ghét thì phải làm thế nào, phải bày mưu lập kế thế nào mà tranh lại những lợi-quyền đó mới được, chớ cứ nói ghét không, có bổ-ích gì? Còn như chữ nho là văn-tự của Tàu thì hiện không có quan-hệ gì đến đường chính-trị, đường kinh-tế cả. Ta đã giãi rõ trên kia rằng chữ nho là một thứ « tử-văn » chung cho cả các nước Á-đông đã chịu văn-hóa của nho-học. Ta học chữ nho không phải là chịu áp-chế của người Tàu, tức cũng như người Âu-châu học chữ La-tinh không phải là chịu áp-chế của người Ý-đại-lợi ngày nay. Ta học chữ nho mà thử giở trong quốc-sử coi, biết bao nhiêu phen ta đánh Tàu siềng-liễng, đuổi được nó ra ngoài bờ-cõi nước ta? Xét đến cái vấn-đề này phải phân-biệt rõ ràng, không nên lẫn việc nọ với việc kia mà làm cho người ta rối trí.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Hai là nước ta trong hai nghìn năm theo đòi nho-học của Tàu, mà đến đời nay trước khi nước Đại-Pháp sang khai-hóa, thế nước yếu hèn như vậy, dân-trí bán-khai như vậy, phần nhiều là tại nho-học. Nho-học đã chẳng ra gì, mình còn nên đâm đầu vào học chữ nho làm gì nữa? — Những người nào nói như thế thật là không có cái tư-tưởng gì về lịch-sử, và là bội-bạc với tiền-nhân. Không biết rằng nước mình được như ngày nay, đã từng có một cuộc lịch-sử cũng lắm đoạn vẻ-vang chẳng kém gì người, thật là nhờ ở nho-học nhiều. Những bậc anh-hùng, hào-kiệt, chí-sĩ, cao-nhân, hiền-vinh cho nước, bởi đâu mà đã làm nên sự-nghiệp to lớn, bởi đâu mà đã để lại danh-tiếng thơm tho? Chẳng phải là nhờ nho-học mấy đời đoàn-luyện mới nên ru? Chẳng phải là nho-học đã gầy dựng ra gia-tộc, ra xã-hội, ra quốc-gia ta ru? Chắc ngày nay nho-học đã nhiều phần quá cũ rồi, không hợp với đời, nhưng cũ là cái hình-thức cũ mà thôi, còn cái tinh-thần, cái đạo-đức của nho-học thì cùng với núi sông mà sống mãi muôn đời. Ta nên bỏ là bỏ cái hình-thức phiền, còn cái tinh-thần phải giữ lấy, vì nước ta còn có mặt trên địa-cầu là còn phải nhờ cái tinh-thần ấy mới sống được. Nhưng muốn giữ cái tinh-thần ấy mà lại tiệt hẳn chữ nho là biểu-hiệu của cái tinh-thần ấy thì sao được?</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Xét cho cùng, cái vấn-đề về nho học, về quốc-văn, về sự dùng chữ nho trong văn quốc-ngữ, bấy nhiêu cái chỉ do một cớ như sau này: là trong nước ta chưa có một nền quốc-dân-giáo-dục, nghĩa là cái giáo-dục chung cho cả dân trong nước, ai cũng phải qua đấy rồi mới lên các bậc khác; qua đấy rồi tất thông-thuộc tiếng nước mình, biết làm văn bằng lời mình, hiểu các lẽ cương-thường luân-lý của tổ-tiên, tỏ các việc công-nghiệp lớn lao của đời trước, nghĩa là trước nhất đủ cái tư-cách làm dân, bấy giờ mới ra học các tiếng nước ngoài và thâu-nhập lấy những điều hay lẽ phải mình chưa biết. Hiện nay không có cái giáo-dục chung cho cả quốc-dân như vậy, thành ra người nào theo tây-học theo từ thủa nhỏ, tuy nhiều người học giỏi thành-tài, mà hình như càng ngày càng cách-biệt với quốc-dân, lời ăn tiếng nói, cách tư-tưởng cảm-giác không gì là giống với người mình. Như vậy thì hiểu làm sao được những điều cốt-yếu trong nước, hiểu làm sao được rằng nho-học là cái học đã đào-tạo ra người mình, rằng quốc-văn là cái văn nguồn gốc...</p>
 </div>
 
 
@@ -471,19 +586,14 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>88</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span>88</span>
-    <span>NAM PHONG</span>
-    <span></span>
-  </div>
-
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px;">... tự chữ nho, không thể bỏ chữ nho mà thành-lập được ? Ấy đó, bởi người mình không có một cái gốc giáo-dục chung nên mỗi ngày một phân-lìa xa-cách nhau, đối với một việc rất cốt-yếu là việc quốc-văn mà mỗi người bàn một khác, kẻ Việt người Tần ! Than ôi ! cái vấn-đề quốc-văn cứ bình-tĩnh mà xét tưởng không lấy gì làm khó cho lắm, mà vì sự phân-lìa xa-cách đó thành ra một vấn-đề rất phiền-phức khó giải. Khó là bởi mỗi phe đứng một phương-diện, có mấy điều cốt, có mấy lẽ chánh, không chịu công-nhận trước, đã vội ra sức tranh-biện, chắc không bao giờ đồng-ý nhau được. Trước khi bàn về quốc-văn, những nhà tân-học phải hiểu rõ rằng quốc-văn không phải bỗng-dưng mà thành được, không phải không nương-tựa vào đâu mà dựng nên được, tất cũng như muôn vật ở đời phải có nguồn-gốc tự đâu mà ra, và nguồn-gốc ấy tức là hán-văn ; nay muốn ngăn nguồn bạt gốc đi thì mong sao mà thành-lập được ? Phải lấy bình-tĩnh mà suy xét như vậy mới được ; chớ cứ lấy cái lẽ rằng hiện nay mình không biết chữ nho mà cố yêu-sách bỏ chữ nho để tiện cho mình, thì sao gọi là bàn công được ? Bàn thế là bàn lệch về mặt mình, không phải là cách bàn chánh-đáng. Đã hay rằng hiện nay cái số người không biết chữ nho mỗi ngày một nhiều, nhưng không biết là tại mình quá theo thời mà quên gốc cũ, không thể cưỡng bắt quốc-văn cũng phải theo mình mà phản-bản được. Người trong nước mà vong-bản đã chẳng ra gì, quốc-văn mà phản-bản thì đi đời quốc-văn ! Vì người còn có thể như cái chong-chóng theo chiều gió mà xoay, quốc-văn là cái nền vững-vàng, phải có tiếp trước nối sau mới đứng được. Đó là điều cốt-yếu, lẽ chánh-trung, ai cũng phải công-nhận trước đã, rồi mới nên bàn về quốc-văn.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Có thế thì bàn mới chánh-đáng được, không thời là lời bàn thiên-lệch cả.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Nay nói rằng chữ nho cần cho quốc-văn, không phải là có ý khuyên người nước mình lại trở về cái cách học phiền-toái đời xưa đâu. Cách học đó đã làm ngộ người mình trong bấy lâu, nay bỏ được là may lắm. Nhưng bỏ là bỏ cái phép dạy phép học quá cũ của đời xưa mà thôi, không phải là bỏ hẳn chữ nho mà không học nữa. Trong bài du-ký Nam-kỳ (bài đầu), tôi đã từng nói về sự đó. Tôi nói rằng : « Ngày nay cần phải biết chữ nho, không phải rằng phải học chữ nho như lối ngày xưa đâu, không phải rằng phải học cho làm được thơ, được phú, được văn-sách kinh-nghĩa như xưa đâu ; không phải rằng lại phải trở về cái lối thi-cử phiền-toái, khảo-cứu tỉ-mỉ như xưa đâu. Xưa học chữ nho là vì chữ nho mà học chữ nho, nay học chữ nho là vì quốc-văn mà học chữ nho. Cái mục-đích đã khác, cái phương-pháp cũng không giống. Xưa phải dùi mài kinh-sử, từng trải thiên-kinh vạn-quyển mới thi đậu được một chân đại-khoa, mới làm nổi được một nhà văn-sĩ có tiếng. Nay chỉ học cho đủ sự cần-dùng về quốc-văn mà thôi, chỉ học cho đủ hiểu hết một quyển <em>Kim-Vân-Kiều</em> hay một quyển <em>Lục-Vân-Tiên</em> mà thôi, thì có khó gì ? Trước trăm phần nay không được một phần. Nhưng cái một phần ấy rất cần, không biết thì không thể nào cầm ngọn bút mà viết thành bài văn quốc-ngữ được, dẫu tài-giỏi khôn-khéo đến đâu cũng không làm thế nào ra cái « hơi » văn An-nam được, vì cái « hơi » ấy là tự mấy mươi đời truyền lại cho ta, không phải tự mình mà đặt lấy ra được. Cho nên những người nào đã quyết không cho văn quốc-ngữ là cần, đành bỏ vào cái địa-vị yếu-hèn, chỉ đợi ngày tiêu-diệt cho xong, thì không nói làm chi, còn ai đã có bụng...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... tự chữ nho, không thể bỏ chữ nho mà thành-lập được? Ấy đó, bởi người mình không có một cái gốc giáo-dục chung nên mỗi ngày một phân-lìa xa-cách nhau, đối với một việc rất cốt-yếu là việc quốc-văn mà mỗi người bàn một khác, kẻ Việt người Tần! Than ôi! cái vấn-đề quốc-văn cứ bình-tĩnh mà xét tưởng không lấy gì làm khó cho lắm, mà vì sự phân-lìa xa-cách đó thành ra một vấn-đề rất phiền-phức khó giải. Khó là bởi mỗi phe đứng một phương-diện, có mấy điều cốt, có mấy lẽ chánh, không chịu công-nhận trước, đã vội ra sức tranh-biện, chắc không bao giờ đồng-ý nhau được. Trước khi bàn về quốc-văn, những nhà tân-học phải hiểu rõ rằng quốc-văn không phải bỗng-dưng mà thành được, không phải không nương-tựa vào đâu mà dựng nên được, tất cũng như muôn vật ở đời phải có nguồn-gốc tự đâu mà ra, và nguồn-gốc ấy tức là hán-văn; nay muốn ngăn nguồn bạt gốc đi thì mong sao mà thành-lập được? Phải lấy bình-tĩnh mà suy xét như vậy mới được; chớ cứ lấy cái lẽ rằng hiện nay mình không biết chữ nho mà cố yêu-sách bỏ chữ nho để tiện cho mình, thì sao gọi là bàn công được? Bàn thế là bàn lệch về mặt mình, không phải là cách bàn chánh-đáng. Đã hay rằng hiện nay cái số người không biết chữ nho mỗi ngày một nhiều, nhưng không biết là tại mình quá theo thời mà quên gốc cũ, không thể cưỡng bắt quốc-văn cũng phải theo mình mà phản-bản được. Người trong nước mà vong-bản đã chẳng ra gì, quốc-văn mà phản-bản thì đi đời quốc-văn! Vì người còn có thể như cái chong-chóng theo chiều gió mà xoay, quốc-văn là cái nền vững-vàng, phải có tiếp trước nối sau mới đứng được. Đó là điều cốt-yếu, lẽ chánh-trung, ai cũng phải công-nhận trước đã, rồi mới nên bàn về quốc-văn. Có thế thì bàn mới chánh-đáng được, không thời là lời bàn thiên-lệch cả.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Nay nói rằng chữ nho cần cho quốc-văn, không phải là có ý khuyên người nước mình lại trở về cái cách học phiền-toái đời xưa đâu. Cách học đó đã làm ngộ người mình trong bấy lâu, nay bỏ được là may lắm. Nhưng bỏ là bỏ cái phép dạy phép học quá cũ của đời xưa mà thôi, không phải là bỏ hẳn chữ nho mà không học nữa. Trong bài du-ký Nam-kỳ (bài đầu), tôi đã từng nói về sự đó. Tôi nói rằng: « Ngày nay cần phải biết chữ nho, không phải rằng phải học chữ nho như lối ngày xưa đâu, không phải rằng phải học cho làm được thơ, được phú, được văn-sách kinh-nghĩa như xưa đâu; không phải rằng lại phải trở về cái lối thi-cử phiền-toái, khảo-cứu tỉ-mỉ như xưa đâu. <em>Xưa học chữ nho là vì chữ nho mà học chữ nho, nay học chữ nho là vì quốc-văn mà học chữ nho.</em> Cái mục-đích đã khác, cái phương-pháp cũng không giống. Xưa phải dùi mài kinh-sử, từng trải thiên-kinh vạn-quyển mới thi đậu được một chân đại-khoa, mới làm nổi được một nhà văn-sĩ có tiếng. Nay chỉ học cho đủ sự cần-dùng về quốc-văn mà thôi, chỉ học cho đủ hiểu hết một quyển <em>Kim-Vân-Kiều</em> hay một quyển <em>Lục-Vân-Tiên</em> mà thôi, thì có khó gì? Trước trăm phần nay không được một phần. Nhưng cái một phần ấy rất cần, không biết thì không thể nào cầm ngọn bút mà viết thành bài văn quốc-ngữ được, dẫu tài-giỏi khôn-khéo đến đâu cũng không làm thế nào ra cái « hơi » văn An-nam được, vì cái « hơi » ấy là tự mấy mươi đời truyền lại cho ta, không phải tự mình mà đặt lấy ra được. Cho nên những người nào đã quyết không cho văn quốc-ngữ là cần, đành bỏ vào cái địa-vị yếu-hèn, chỉ đợi ngày tiêu-diệt cho xong, thì không nói làm chi, còn ai đã có bụng...</p>
 </div>
 
 
@@ -498,27 +608,21 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b;">
+<div class="running-header" style="display: flex; justify-content: space-between;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>89</span>
+</div>
 
-  <div style="font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-bottom: 16px; font-weight: 500; text-align: center; font-style: italic; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
-    <span></span>
-    <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
-    <span>89</span>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... thương đến tiếng nước nhà, muốn gầy-dựng cho thành một nền quốc-văn có thể sống được ở đời này, thì phải noi theo lấy cái văn-diễn cũ của ông cha, mà cái văn-diễn cũ của ông cha ấy ngoài chữ nho không kiếm đâu cho thấy được. »</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Vậy nay muốn cho quốc-văn thành-lập được, người nước mình không thể bỏ chữ nho mà không học được. Phải nên bỏ cái lối học phiền, học sai cách của đời xưa, nhưng chính chữ thì không nên bỏ, vì bỏ không được. Duy có không cần phải học nhiều như người trước, chỉ phải học sơ-sơ cho biết những chữ cần-dùng cùng những lề-lối thường của hán-văn mà thôi, để lâm-thời có thể mượn mà dùng trong quốc-văn được, và khi đọc những thơ-văn nôm của người trước để lại có thể thông hiểu được. Phép học như vậy tưởng không khó gì; nếu dụng công chỉ trong một vài năm là thông-thông, đủ đọc được những sách tầm-thường bằng hán-văn. Thế là đủ, không cần phải học hơn nữa <sup>(1)</sup>.</p>
+  <div style="text-align: center; margin: 12px 0; letter-spacing: 0.4em;">* * *</div>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Nay đã giải rõ các lẽ đủ biết rằng chữ nho cần cho quốc-văn, không thể bỏ chữ nho mà mong quốc-văn thành được. Vậy ta xét đến đoạn thứ hai và bàn về cái cách nên dùng chữ nho trong văn quốc-ngữ thế nào cho thích-hợp. Ta đã nói cả cái vấn-đề quốc-văn chỉ rút lại có một câu hỏi đó mà thôi. Các nhà để bụng về quốc-văn trước sau cũng chỉ tranh-biện nhau có một câu đó mà thôi. Những người cố ương-ngạnh, không chịu nhận rằng tiếng nước mình đối với chữ nho có cái giây liên-lạc rất bền-chặt không thể cắt-đứt đi được, thì không nói làm chi, còn những người đã biết như vậy vẫn còn phân-vân chưa biết nên dùng chữ nho thế nào cho thích-hợp. — Người thì nói hiện nay những chữ gì đã thường dùng, nhiều người biết rồi, thì cứ nên dùng, vì những chữ ấy hình như đã « nhập-tịch » vào tiếng An-nam rồi, còn những chữ gì khó và lạ không nên dùng. — Người thì nói rằng sự dùng chữ nho là một sự bất-đắc-dĩ, phàm cái gì có thể nói ra nôm được không nên dùng chữ, dù chữ đã thông-dụng mặc lòng; còn cái gì nôm vốn không có mà có thể đặt tiếng mới ra cũng nên đặt, còn hơn là mượn chữ sẵn. — Người thì nói cách dùng chữ nho phải để tùy người làm văn chọn chữ nào là lọn nghĩa, trang-nhã, dễ đọc, dễ nghe, hợp với cái ý-nghĩa câu văn thì cứ việc dùng, không quản gì là chữ đã thông-dụng hay chưa thông-dụng, nhiều người biết hay ít người biết, vì nếu chưa thông-dụng dùng rồi mà hay tất thông-dụng, nếu ít người biết dùng rồi mà phải tất nhiều người biết. Cả chữ nho là cái kho vô-tận, nhà làm văn được tha-hồ mà kén chọn, mà lượm lặt, mà điều-hòa với tiếng nôm cho quốc-văn mỗi ngày một phong-phú thêm ra. — Người thì nói rằng bao nhiêu những chữ về cách-trí triết-học, tàu tuy cũng dịch theo Âu-châu mà chữ tàu lão-luyện thâm-thúy dịch vừa đúng nghĩa, vừa trang-nhã, tiếng nôm mình không bao giờ dịch cho bằng được, ta cứ nên mượn cả của tàu mà dùng; còn các chữ thường khác thì để tùy ý các nhà làm văn muốn dùng thế nào thì dùng, miễn là lời văn được hay thì thôi.</p>
+  <p style="margin-bottom: 16px; text-indent: 1.5em; line-height: 1.6;">Bấy nhiêu người nói đều có lẽ phải cả, mỗi người phải ra một đường, nhưng chưa người nào bàn triệt-thấu được ngành-ngọn, mà bày được cái phép-tắc nhất-định cho người ta theo.</p>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-bottom: 16px;">... thương đến tiếng nước nhà, muốn gầy-dựng cho thành một nền quốc-văn có thể sống được ở đời này, thì phải noi theo lấy cái văn-diễn cũ của ông cha, mà cái văn-diễn cũ của ông cha ấy ngoài chữ nho không kiếm đâu cho thấy được. »</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Vậy nay muốn cho quốc-văn thành-lập được, người nước mình không thể bỏ chữ nho mà không học được. Phải nên bỏ cái lối học phiền, học sai cách của đời xưa, nhưng chính chữ thì không nên bỏ, vì bỏ không được. Duy có không cần phải học nhiều như người trước, chỉ phải học sơ-sơ cho biết những chữ cần-dùng cùng những lề-lối thường của hán-văn mà thôi, để làm-thời có thể mượn mà dùng trong quốc-văn được, và khi đọc những thơ-văn nôm của người trước để lại có thể thông hiểu được. Phép học như vậy tưởng không khó gì ; nếu dụng công chỉ trong một vài năm là thông-thông, đủ đọc được những sách tầm-thường bằng hán-văn. Thế là đủ, không cần phải học hơn nữa <sup>(1)</sup>.</p>
-
-    <div style="text-align: center; margin: 16px 0; color: #64748b; letter-spacing: 0.5em;">* * *</div>
-
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Nay đã giải rõ các lẽ đủ biết rằng chữ nho cần cho quốc-văn, không thể bỏ chữ nho mà mong quốc-văn thành được. Vậy ta xét đến đoạn thứ hai và bàn về cái cách nên dùng chữ nho trong văn quốc-ngữ thế nào cho thích-hợp. Ta đã nói cả cái vấn-đề quốc-văn chỉ rút lại có một câu hỏi đó mà thôi. Các nhà đề bụng về quốc-văn trước sau cũng chỉ tranh-biện nhau có một câu đó mà thôi. Những người cố ương-ngạnh, không chịu nhận rằng tiếng nước mình đối với chữ nho có cái giây liên-lạc rất bền-chặt không thể cắt-đứt đi được, thì không nói làm chi, còn những người đã biết như vậy vẫn còn phân-vân chưa biết nên dùng chữ nho thế nào cho thích-hợp. — Người thì nói hiện nay những chữ gì đã thường dùng, nhiều người biết rồi, thì cứ nên dùng, vì những chữ ấy hình như đã « nhập-tịch » vào tiếng An-nam rồi, còn những chữ gì khó và lạ không nên dùng. — Người thì nói rằng sự dùng chữ nho là một sự bất-đắc-dĩ, phàm cái gì có thể nói ra nôm được không nên dùng chữ, dù chữ đã thông-dụng mặc lòng ; còn cái gì nôm vốn không có mà có thể đặt tiếng mới ra cũng nên đặt, còn hơn là mượn chữ sẵn. — Người thì nói cách dùng chữ nho phải để tùy người làm văn chọn chữ nào là lọn nghĩa, trang-nhã, dễ đọc, dễ nghe, hợp với cái ý-nghĩa câu văn thì cứ việc dùng, không quản gì là chữ đã thông-dụng hay chưa thông-dụng, nhiều người biết hay ít người biết, vì nếu chưa thông-dụng dùng rồi mà hay tất thông-dụng, nếu ít người biết dùng rồi mà phải tất nhiều người biết. Cả chữ nho là cái kho vô-tận, nhà làm văn được tha-hồ mà kén chọn, mà lượm lặt, mà điều-hòa với tiếng nôm cho quốc-văn mỗi ngày một phong-phú thêm ra. — Người thì nói rằng bao nhiêu những chữ về cách-trí triết-học, tàu tuy cũng dịch theo Âu-châu mà chữ tàu lão-luyện thâm-thúy dịch vừa đúng nghĩa, vừa trang-nhã, tiếng nôm mình không bao giờ dịch cho bằng được, ta cứ nên mượn cả của tàu mà dùng ; còn các chữ thường khác thì để tùy ý các nhà làm văn muốn dùng thế nào thì dùng, miễn là lời văn được hay thì thôi.</p>
-    <p style="margin-bottom: 16px; text-indent: 1.5em;">Bấy nhiêu người nói đều có lẽ phải cả, mỗi người phải ra một đường, nhưng chưa người nào bàn triệt-thấu được ngành-ngọn, mà bày được cái phép-tắc nhất-định cho người ta theo.</p>
-  </div>
-
-  <div class="footnotes" style="margin-top: 24px; border-top: 1px solid #cbd5e1; padding-top: 10px; font-size: 0.85rem; color: #475569;">
-    <p style="margin: 4px 0;">(1) Về cái vấn-đề người An-nam ngày nay nên học chữ nho thế nào, bản-báo sẽ có bài bàn tường trong một kỳ sau này.</p>
-  </div>
+<div class="footnotes" style="border-top: 1px solid #cbd5e1; margin-top: 24px; padding-top: 8px; font-size: 0.85rem; line-height: 1.5;">
+  <p style="margin: 0;"><sup>(1)</sup> Về cái vấn-đề người An-nam ngày nay nên học chữ nho thế nào, bản-báo sẽ có bài bàn tường trong một kỳ sau này.</p>
 </div><hr class="my-10 border-slate-200" />
 
 <div id="page-anchor-8" data-page="8" class="ocr-page-break-container my-6 flex items-center gap-3 w-full select-none not-prose">
@@ -531,17 +635,18 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span>90</span>
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-weight: 600;">NAM PHONG</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>90</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Cứ thực mà nói, sự dùng chữ nho trong quốc-văn thật không thể hạn-định thế nào là vừa phải được, không biết lấy gì làm bằng mà định phép-tắc được. — Như ông thứ nhất nói chỉ nên dùng những chữ thông-dụng mà thôi, nhưng cũng khó lòng mà biết chữ gì là thông-dụng, chữ gì là không thông-dụng, chữ gì là đã « nhập-tịch » tiếng An-nam, chữ gì là còn « ngoại-tịch ». Nếu gọi chữ thông-dụng là những chữ dễ hiểu, nhiều người biết, thì những chữ ấy phần nhiều là chữ trong tiếng nôm ta cũng có, có cần gì phải dùng, và dùng nữa thì có bổ-ích gì cho quốc-văn cho lắm ? Như : <em>nhĩ-mục</em> là « tai mắt », <em>tâm-tư</em> là « bụng-nghĩ », <em>sơn-xuyên</em> là « núi sông », <em>hoa-thảo</em> là « hoa cỏ », thì dùng chữ hay là dùng nôm cũng vậy, tùy cái điệu câu văn ưa nôm thì dùng nôm, ưa chữ thì dùng chữ, không hề gì. Đến như những chữ nghĩa đã hơi cao một chút, tiếng nôm đã khó tìm được tiếng tương-đương, mà người nào biết chữ nho thì cho là chữ thường-dùng, người không biết tất cho là khó là lạ. Như chữ <em>đĩnh-ngộ</em>, chữ <em>lỗi-lạc</em>, chữ <em>hoài-bão</em>, chữ <em>cảm-khái</em>, tất người biết chữ cho là thường, mà người biết ít đã lấy làm khó hiểu rồi. Cho nên nói rằng muốn phân-biệt cho rõ chữ nào là thông-dụng, chữ nào là không thông-dụng, thật không phải là dễ. — Người thứ nhì nói nên hết sức chỉ dùng nôm mà thôi, không có tiếng cũ thì đặt tiếng mới ra, bất-đắc-dĩ hẵng dùng đến chữ. Nói thì dễ lắm, mà làm tưởng không được dễ như vậy. Sự đặt tiếng không phải là việc thường, xưa nay không ai dụng-tâm mà đặt được tiếng mới bao giờ : phàm các tiếng mới là tự-nhiên mà sinh-thành ra, tự-nhiên mà lưu-thông đi. Một người tình-cờ nói ra trước : nếu cái tiếng ấy gọn-ghẽ dễ nghe thì người khác cứ thế mà truyền đi, bao giờ nói đến sự đó tất dùng đến tiếng đó, thế là thành tiếng thông-dụng. Đến như nói rằng bất-đắc-dĩ hẵng nên dùng chữ nho thì cứ các lẽ đã giải trên kia, tưởng sự bất-đắc-dĩ ấy cũng là một sự thường vậy ; bất-đắc-dĩ mà đã thành lệ thường thì sao gọi là bất-đắc-dĩ được ? — Người thứ ba nói rằng sự dùng chữ nho trong quốc-văn phải để tùy-ý nhà làm văn cân-nhắc lựa-lọc mà dùng, không thể hạn-định trước được. Điều đó thì rất phải, trong việc làm văn phải để cho nhà văn-sĩ được rộng quyền tự-do mới được. Nhưng tự-do không phải là không có đường-lối gì, mà để phóng cho các nhà làm văn muốn dùng chữ thế nào thì dùng. Ít ra cũng phải biết cái đường-lối ấy thế nào là phải, cái cách cân-nhắc lựa-lọc ấy thế nào là thích-nghi. — Người thứ tư nói những chữ về cách-trí triết-học nên theo tàu, còn các chữ thường nên tùy tiện mà dùng. Chắc rằng những chữ nho dịch các danh-từ về cách-trí triết-học của Âu-châu nhiều chữ dịch đúng và gọn-ghẽ lắm, tiếng mình không tài nào dịch được bằng, và mượn ngay tiếng tây ra cũng khó cho được thanh-thoát ; mình nên mượn của tàu mà dùng, nhưng cũng phải kén chọn mới được, chữ nào có thể theo tiếng tây được nên theo, chớ nói nhất-thiết mượn chữ nho cả thì cũng quá.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Ấy ý-kiến của nhiều người về sự dùng chữ nho còn phân-vân như vậy. Muốn đặt phép-tắc nhất-định cho biết dùng chừng nào là phải, chừng nào là quá, thì khó lắm. Cái giới-hạn đó phải để tùy ý nhà làm văn ước-lượng lấy, dùng thế nào mà lời văn được thanh-thoát là vừa, dùng thế nào mà lời văn phải trắc-trở là quá. Phải đương khi làm văn mới cân nhắc được, không thể đặt lệ trước được. Vậy chỉ nên khuyên các nhà làm văn nên cẩn-thận về sự dùng chữ : tùy cái lối văn mình...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Cứ thực mà nói, sự dùng chữ nho trong quốc-văn thật không thể hạn-định thế nào là vừa phải được, không biết lấy gì làm bằng mà định phép-tắc được. — Như ông thứ nhất nói chỉ nên dùng những chữ thông-dụng mà thôi, nhưng cũng khó lòng mà biết chữ gì là thông-dụng, chữ gì là không thông-dụng, chữ gì là đã « nhập-tịch » tiếng An-nam, chữ gì là còn « ngoại-tịch ». Nếu gọi chữ thông-dụng là những chữ dễ hiểu, nhiều người biết, thì những chữ ấy phần nhiều là chữ trong tiếng nôm ta cũng có, có cần gì phải dùng, và dùng nữa thì có bổ-ích gì cho quốc-văn cho lắm ? Như : <em>nhĩ-mục</em> là « tai-mắt », <em>tâm-tư</em> là « bụng-nghĩ », <em>sơn-xuyên</em> là « núi sông », <em>hoa-thảo</em> là « hoa cỏ », thì dùng chữ hay là dùng nôm cũng vậy, tùy cái điệu câu văn ưa nôm thì dùng nôm, ưa chữ thì dùng chữ, không hề gì. Đến như những chữ nghĩa đã hơi cao một chút, tiếng nôm đã khó tìm được tiếng tương-đương, mà người nào biết chữ nho thì cho là chữ thường-dùng, người không biết tất cho là khó là lạ. Như chữ <em>đĩnh-ngộ</em>, chữ <em>lỗi-lạc</em>, chữ <em>hoài-bão</em>, chữ <em>cảm-khái</em>, tất người biết chữ cho là thường, mà người biết ít đã lấy làm khó hiểu rồi. Cho nên nói rằng muốn phân-biệt cho rõ chữ nào là thông-dụng, chữ nào là không thông-dụng, thật không phải là dễ. — Người thứ nhì nói nên hết sức chỉ dùng nôm mà thôi, không có tiếng cũ thì đặt tiếng mới ra, bất-đắc-dĩ hẵng dùng đến chữ. Nói thì dễ lắm, mà làm tưởng không được dễ như vậy. Sự đặt tiếng không phải là việc thường, xưa nay không ai dụng-tâm mà đặt được tiếng mới bao giờ : phàm các tiếng mới là tự-nhiên mà sinh-thành ra, tự-nhiên mà lưu-thông đi. Một người tình-cờ nói ra trước : nếu cái tiếng ấy gọn-ghẽ dễ nghe thì người khác cứ thế mà truyền đi, bao giờ nói đến sự đó tất dùng đến tiếng đó, thế là thành tiếng thông-dụng. Đến như nói rằng bất-đắc-dĩ hẵng nên dùng chữ nho thì cứ các lẽ đã giải trên kia, tưởng sự bất-đắc-dĩ ấy cũng là một sự thường vậy ; bất-đắc-dĩ mà đã thành lệ thường thì sao gọi là bất-đắc-dĩ được ? — Người thứ ba nói rằng sự dùng chữ nho trong quốc-văn phải để tùy-ý nhà làm văn cân-nhắc lựa-lọc mà dùng, không thể hạn-định trước được. Điều đó thì rất phải, trong việc làm văn phải để cho nhà văn-sĩ được rộng quyền tự-do mới được. Nhưng tự-do không phải là không có đường-lối gì, mà để phóng cho các nhà làm văn muốn dùng chữ thế nào thì dùng. Ít ra cũng phải biết cái đường-lối ấy thế nào là phải, cái cách cân-nhắc lựa-lọc ấy thế nào là thích-nghị. — Người thứ tư nói những chữ về cách-trí triết-học nên theo tàu, còn các chữ thường nên tùy tiện mà dùng. Chắc rằng những chữ nho dịch các danh-từ về cách-trí triết-học của Âu-châu nhiều chữ dịch đúng và gọn-ghẽ lắm, tiếng mình không tài nào dịch được bằng, và mượn ngay tiếng tây ra cũng khó cho được thanh-thoát ; mình nên mượn của tàu mà dùng, nhưng cũng phải kén chọn mới được, chữ nào có thể theo tiếng tây được nên theo, chớ nói nhất-thiết mượn chữ nho cả thì cũng quá.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Ấy ý-kiến của nhiều người về sự dùng chữ nho còn phân-vân như vậy. Muốn đặt phép-tắc nhất-định cho biết dùng chừng nào là phải, chừng nào là quá, thì khó lắm. Cái giới-hạn đó phải để tùy ý nhà làm văn ước-lượng lấy, dùng thế nào mà lời văn được thanh-thoát là vừa, dùng thế nào mà lời văn phải trắc-trở là quá. Phải đương khi làm văn mới cân nhắc được, không thể đặt lệ trước được. Vậy chỉ nên khuyên các nhà làm văn nên cẩn-thận về sự dùng chữ : tùy cái lối văn mình
+  ...</p>
 </div>
 
 
@@ -556,21 +661,24 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-style: normal; text-transform: uppercase;">Bàn về sự dùng chữ nho trong văn quốc-ngữ</span>
-    <span>91</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>91</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... làm nên dùng nhiều hay dùng ít, phải chọn những chữ thật đích-đáng, vừa gọn-ghẽ, vừa trang-nhã, vừa dễ đọc, dễ nghe, mà cốt nhất là đúng với cái nghĩa nên dùng, xứng với cái ý lời văn; nếu ba đâu dùng đấy, làm cho câu văn bề bộn những chữ vô-ích, hoặc lời nôm đã đủ gọn-ghẽ mà còn pha thêm chữ vào cho phiền, hoặc dùng những chữ tục tiếng nôm còn hay hơn, đều là quá-đáng cả. Văn nào như vậy tất là cái văn không thông-thoát, người đọc tất không ưa, và người làm văn vì có tai sành cũng tự biết.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Song, sự dùng chữ tuy không có phép-tắc nhất-định, mà cũng không ngoài mấy cái phàm-lệ như sau này :</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">1° Phải tùy tính-cách và trình-độ bài văn. Thế nào gọi là tính-cách văn ? Văn có nhiều lối đã đành, mà văn cũng có nhiều hạng : — Có hạng văn phổ-thông nói những sự tầm-thường cho ai ai cũng dễ hiểu dễ biết, như cái văn chép tin-tức trong các nhật-báo : « Ngày hôm nay có người ngã xe ở phố nọ phố kia..., có đứa bé con lạc không biết con cái nhà ai, v. v. », hạng văn ấy thì cần gì phải dùng đến chữ nho nhiều ? — Có hạng văn tả-tình, tả-cảnh, du-hí, khôi-hài, đã cao hơn hạng trên một tầng và phải có ý-vị lý-thú mới hay, tất có nhiều ý lời ta nói không hết, nhiều cảnh tiếng nôm tả không thấu, phải mượn năm ba chữ nho cho nó nổi cái ý, chỉnh lời văn và khỏi tục-tằn quá : như tả người anh-hùng thường dùng những chữ như <em>can-đảm</em>, <em>chí-khí</em>, <em>khảng-khái</em>, <em>oanh-liệt</em>, v. v., tả người tài-hoa thường dùng những chữ như <em>nho-nhã</em>, <em>phong-lưu</em>, <em>thông-minh</em>, <em>tuấn-tú</em>, v. v. ; lại muốn nói đến cái bụng người ta mưu-muốn những sự to lớn, mong-mỏi những việc cao-xa, tất phải dùng đến chữ <em>hoài-bão</em>, v. v. ; ấy đại-loại hạng văn này phải mượn chữ như vậy, phần nhiều cũng là những chữ nho thường-dùng cả. Các thợ vẽ của ta có cái lối gọi là « điểm-nhãn », nghĩa là khi vẽ bức tranh người, các phần vẽ xong cả rồi, duy có hai con mắt là chưa, nên tuy vẽ đẹp đến đâu coi vẫn chưa có tinh-thần ; bấy giờ người thợ mới điểm hai con ngươi, tức-khắc trông bức tranh nổi ngay lên và coi như có vẻ linh-hoạt. Trong lời văn nôm cũng vậy, phải tùy chỗ mà đặt một vài chữ nho xứng-đáng, tức như cái lối « điểm-nhãn » của thợ vẽ ; không thời lời văn tất lạt-lẽo và không khỏi tục-tằn được. « Nôm-na » xưa nay vẫn là trái với « văn-vẻ », phải nên nhờ chữ quên.</p>
-
-    <p style="margin-bottom: 16px; margin-top: 0;">—Lại có hạng văn kỹ-thuật, nghị-luận, hạng này cao hơn hạng trên một tầng nữa. Văn kỹ-thuật tức là văn sử ; nhà làm sử phải có ngọn bút nghiêm-trang, đời xưa cho sử là có quyền bao-biếm, nghĩa là phán-đoán các công việc người đời, tất phải công-bằng lắm mới được. Theo nghĩa đời nay, sử tuy không có cái ý nghiêm-khắc như vậy, nhưng những việc đã đáng chép đáng thuật để lưu-truyền lại, không phải là việc tầm-thường, tất có cái ý-nghĩa sâu ở đó. Vậy làm văn kỹ-thuật, tất lời phải trang-nghiêm, phải xứng-đáng mới được; rất kỵ là những giọng hoặc tục-tĩu sỗ-sàng, hoặc tầm-thường quá, vì tầm-thường cũng không được, bình-dị thì được, tầm-thương bình-dị khác nhau lắm ; nay muốn dùng rặt tiếng nôm cả, không dùng chữ, có thể tránh được những điều đó không ? Chắc rằng không, vì nôm tức là tục, quá nôm không khỏi tục được. Thí-dụ như thuật việc Vua ra Bắc-kỳ, nếu nói : « Ông vua An-nam đi chơi Bắc-kỳ, nay đã về Kinh rồi », nghe nó sống-sượng quá, như lời người ngoại-quốc mới học tiếng ta vậy, còn có ra lời kỹ-thuật việc đại-điển trong nước sao được. Muốn cho thành lời văn-chương xứng-đáng, tất phải dùng một vài chữ nho thích-hiệp vào cái việc...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    làm nên dùng nhiều hay dùng ít, phải chọn những chữ thật đích-đáng, vừa gọn-ghẽ, vừa trang-nhã, vừa dễ đọc, dễ nghe, mà cốt nhất là đúng với cái nghĩa nên dùng, xứng với cái ý lời văn ; nếu bạ đâu dùng đấy, làm cho câu văn bề bộn những chữ vô-ích, hoặc lời nôm đã đủ gọn-ghẽ mà còn pha thêm chữ vào cho phiền, hoặc dùng những chữ tục tiếng nôm còn hay hơn, đều là quá-đáng cả. Văn nào như vậy tất là cái văn không thông-thoát, người đọc tất không ưa, và người làm văn vì có tài sành cũng tự biết.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Song, sự dùng chữ tuy không có phép-tắc nhất-định, mà cũng không ngoài mấy cái phàm-lệ như sau này :
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    1° Phải tùy tính-cách và trình-độ bài văn. Thế nào gọi là tính-cách văn ? Văn có nhiều lối đã đành, mà văn cũng có nhiều hạng : — Có hạng văn phổ-thông nói những sự tầm-thường cho ai ai cũng dễ hiểu dễ biết, như cái văn chép tin-tức trong các nhật-báo : « Ngày hôm nay có người ngã xe ở phố nọ phố kia..., có đứa bé con lạc không biết con cái nhà ai, v. v. », hạng văn ấy thì cần gì phải dùng đến chữ nho nhiều ? — Có hạng văn tả-tình, tả-cảnh, du-hí, khôi-hài, đã cao hơn hạng trên một tầng và phải có ý-vị lý-thú mới hay, tất có nhiều ý lời ta nói không hết, nhiều cảnh tiếng nôm tả không thấu, phải mượn năm ba chữ nho cho nó nổi cái ý, chỉnh lời văn và khỏi tục-tằn quá : như tả người anh-hùng thường dùng những chữ như <em>can-đảm</em>, <em>chí-khí</em>, <em>khảng-khái</em>, <em>oanh-liệt</em>, v. v., tả người tài-hoa thường dùng những chữ như <em>nho-nhã</em>, <em>phong-lưu</em>, <em>thông-minh</em>, <em>tuấn-tú</em>, v. v. ; lại muốn nói đến cái bụng người ta mưu-muốn những sự to lớn, mong-mỏi những việc cao-xa, tất phải dùng đến chữ <em>hoài-bão</em>, v. v. ; ấy đại-loại hạng văn này phải mượn chữ như vậy, phần nhiều cũng là những chữ nho thường-dùng cả. Các thợ vẽ của ta có cái lối gọi là « điểm-nhãn », nghĩa là khi vẽ bức tranh người, các phần vẽ xong cả rồi, duy có hai con mắt là chưa, nên tuy vẽ đẹp đến đâu coi vẫn chưa có tinh-thần ; bấy giờ người thợ mới điểm hai con ngươi, tức-khắc trông bức tranh nổi ngay lên và coi như có vẻ linh-hoạt. Trong lời văn nôm cũng vậy, phải tùy chỗ mà đặt một vài chữ nho xứng-đáng, tức như cái lối « điểm-nhãn » của thợ vẽ ; không thời lời văn tất lạt-lẽo và không khỏi tục-tằn được. « Nôm-na » xưa nay vẫn là trái với « văn-vẻ », phải nên nhờ chữ quen.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    — Lại có hạng văn kỹ-thuật, nghị-luận, hạng này cao hơn hạng trên một tầng nữa. Văn kỹ-thuật tức là văn sử ; nhà làm sử phải có ngọn bút nghiêm-trang, đời xưa cho sử là có quyền bao-biếm, nghĩa là phán-đoán các công việc người đời, tất phải công-bằng lắm mới được. Theo nghĩa đời nay, sử tuy không có cái ý nghiêm-khắc như vậy, nhưng những việc đã đáng chép đáng thuật để lưu-truyền lại, không phải là việc tầm-thường, tất có cái ý-nghĩa sâu ở đó. Vậy làm văn kỹ-thuật, tất lời phải trang-nghiêm, phải xứng-đáng mới được; rất kỵ là những giọng hoặc tục-tĩu sỗ-sàng, hoặc tầm-thường quá, vì tầm-thường cũng không được, bình-dị thì được, tầm-thường bình-dị khác nhau lắm ; nay muốn dùng rặt tiếng nôm cả, không dùng chữ, có thể tránh được những điều đó không? Chắc rằng không, vì nôm tức là tục, quá nôm không khỏi tục được. Thí-dụ như thuật việc Vua ra Bắc-kỳ, nếu nói : « Ông vua An-nam đi chơi Bắc-kỳ, nay đã về Kinh rồi », nghe nó sống-sượng quá, như lời người ngoại-quốc mới học tiếng ta vậy, còn có ra lời kỹ-thuật việc đại-điển trong nước sao được. Muốn cho thành lời văn-chương xứng-đáng, tất phải dùng một vài chữ nho thích-hiệp vào cái việc
+  ...</p>
 </div>
 
 
@@ -585,15 +693,15 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span>92</span>
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-weight: 600;">NAM PHONG</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>92</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... trọng mình thuật đó mới được. Tất phải nói : « Hoàng-thượng ta ngự-giá ra Bắc-kỳ, nay đã hồi-loan rồi. » Có phải lời văn trang-trọng biết bao nhiêu ! Những chữ <em>ngự-giá</em>, <em>hồi-loan</em> là chữ thường-dùng về việc vua đi lại, nhà làm văn nôm phải thuộc mới được. Các ông tây-học tất cho cách làm văn thế là phiền, nhưng đã gọi là văn tất phải có phiền một chút, nếu cứ trơ như không thì dẫu không tục cũng không văn được. Vả ngay như tiếng tây cũng vậy, cùng một ý mà cũng có nhiều hạng chữ, cao-thấp khinh-trọng khác nhau, phải tùy chỗ mà dùng. Như nói : <em>Le Gouverneur Général cause avec le Résident Supérieur</em> (quan Toàn-quyền nói chuyện với quan Thống-sứ), tất không trang-trọng bằng : <em>Le Gouverneur Général est en conférence avec le Résident Supérieur</em> (Quan Toàn-quyền ngài đương thương-thuyết với quan Thống-sứ). Chắc người không biết thì cho « nói chuyện » với « thương-thuyết » cũng như nhau, nhưng cái ý nó khác nhau biết bao nhiêu. Trong tiếng ta, đại-để cái nghĩa thường bao giờ nói bằng nôm cũng đủ, đến cái nghĩa đã cao cao một chút thì tiếng nôm thường hụt không tới kịp, tất phải mượn ít nhiều chữ nho mới được. Đến như văn nghị-luận cũng vậy. Nghị-luận là đem cái ý-kiến ra bàn bạc, tức là chọi ý-kiến với nhau, lời văn tất phải tinh-tường gẫy-gọn mới được ; rất kỵ là những giọng những tiếng hàm-hồ, song-nga, hiểu ngược cũng được, hiểu xuôi cũng được ; như vậy thì bàn sao cho xác-lý được ? Tiếng ta gọi là tiếng « nôm », nghĩa là tiếng thông-thường trong dân-gian ; tiếng thông-thường trong dân-gian thường có nhiều tiếng hàm-hồ, vì người thường cứ nghe lẫn nhau mà biết, không hay định nghĩa được phân-minh. Dùng vào văn nghị-luận tất phải mượn thêm chữ nho để chỉ những ý-kiến mà tiếng mình nói không hết được. Những ý-kiến ấy trong một bài nghị-luận thường nói đi nhắc lại nhiều lượt, bàn ngược xét xuôi nhiều lần, nếu không có chữ gọn-ghẽ mà gọi, phải diễn ra lời nôm lôi-thôi, thì thật là phiền cho cuộc nghị-luận vô-cùng. Ví dụ như bàn về sự người mình bắt chước và hóa theo người Âu-châu là hay dở thế nào, nếu phải nói dài như vậy mà nhắc đi nhắc lại đến mười lần thì phiền biết dường nào ? Chi bằng dùng một chữ « âu-hóa » (<em>européanisation</em>), tiện biết bao nhiêu ? Đại-để văn kỹ-thuật và văn nghị-luận đã là hạng văn trang-nghiêm thiết-thực, tất phải mượn chữ nho nhiều hơn hạng văn du-hí trên kia. — Sau nữa đến hạng văn thuyết-lý giảng-học. Hạng này là hạng cao hơn nhất, xưa nay người mình không dùng tiếng nôm bao giờ. Ngày nay nghiệm ra tiếng nôm cũng có đủ tư-cách mà dùng về các hạng văn đó được, nhưng phải mượn chữ nhiều hơn các hạng trên. Điều đó không những một tiếng An-nam mình mới thế. Dẫu các tiếng Âu-châu về hạng văn thuyết-lý giảng-học cũng không thể không mượn chữ cũ mà đủ dùng được. Tiếng Âu-châu thì mượn chữ <em>grec</em> (Hi-lạp), chữ <em>latin</em> (Lã-mã), là hai cái văn cổ-điển của các nước Tây-phương. Tiếng An-nam mình tất phải mượn chữ nho, là cái văn cổ-điển của Đông-phương ta. Văn thuyết-lý giảng-học lại càng trọng nghiêm-trang lắm : không nói rằng tiếng nôm mình không tài nào đủ mà diễn được những lý-tưởng học-thuyết mới, cho dẫu một đôi khi cố tìm-tòi mãi, cố đàn-diễn ra cũng có thể tiệm-tiệm đủ được, nhưng thường không tránh khỏi cái tệ nôm-na. Nói những sự cao-xa mà dùng lời nôm-na quá, không những không được gọn-ghẽ thanh-tao, mà sao cho xứng-đáng ? Ta vừa nói các tiếng Âu-châu, kể còn giàu hơn tiếng An-nam mình biết bao nhiêu, mà về đường học-...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    trọng mình thuật đó mới được. Tất phải nói : « Hoàng-thượng ta ngự-giá ra Bắc-kỳ, nay đã hồi-loan rồi. » Có phải lời văn trang-trọng biết bao nhiêu ! Những chữ <em>ngự-giá</em>, <em>hồi-loan</em> là chữ thường-dùng về việc vua đi lại, nhà làm văn nôm phải thuộc mới được. Các ông tây-học tất cho cách làm văn thế là phiền, nhưng đã gọi là văn tất phải có phiền một chút, nếu cứ trơ như không thì dẫu không tục cũng không văn được. Vả ngay như tiếng tây cũng vậy, cùng một ý mà cũng có nhiều hạng chữ, cao-thấp khinh-trọng khác nhau, phải tùy chỗ mà dùng. Như nói : <em>Le Gouverneur Général cause avec le Résident Supérieur</em> (quan Toàn-quyền nói chuyện với quan Thống-sứ), tất không trang-trọng bằng : <em>Le Gouverneur Général est en conférence avec le Résident Supérieur</em> (Quan Toàn-quyền ngài đương thương-thuyết với quan Thống-sứ). Chắc người không biết thì cho « nói chuyện » với « thương-thuyết » cũng như nhau, nhưng cái ý nó khác nhau biết bao nhiêu. Trong tiếng ta, đại-đề cái nghĩa thường bao giờ nói bằng nôm cũng đủ, đến cái nghĩa đã cao cao một chút thì tiếng nôm thường hụt không tới kịp, tất phải mượn ít nhiều chữ nho mới được. Đến như văn nghị-luận cũng vậy. Nghị-luận là đem cái ý-kiến ra bàn bạc, tức là chọi ý-kiến với nhau, lời văn tất phải tinh-tường gẫy-gọn mới được ; rất kỵ là những giọng những tiếng hàm-hồ, song-nga, hiểu ngược cũng được, hiểu xuôi cũng được ; như vậy thì bàn sao cho sắc-lý được ? Tiếng ta gọi là tiếng « nôm », nghĩa là tiếng thông-thường trong dân-gian ; tiếng thông-thường trong dân-gian thường có nhiều tiếng hàm-hồ, vì người thường cứ nghe lẫn nhau mà biết, không hay định nghĩa được phân-minh. Dùng vào văn nghị-luận tất phải mượn thêm chữ nho để chỉ những ý-kiến mà tiếng mình nói không hết được. Những ý-kiến ấy trong một bài nghị-luận thường nói đi nhắc lại nhiều lượt, bàn ngược xét xuôi nhiều lần, nếu không có chữ gọn-ghẽ mà gọi, phải diễn ra lời nôm lôi-thôi, thì thật là phiền cho cuộc nghị-luận vô-cùng. Ví dụ như bàn về sự người mình bắt chước và hóa theo người Âu-châu là hay dở thế nào, nếu phải nói dài như vậy mà nhắc đi nhắc lại đến mười lần thì phiền biết dường nào ? Chi bằng dùng một chữ « âu-hóa » (<em>européanisation</em>), tiện biết bao nhiêu ? Đại-đề văn kỹ-thuật và văn nghị-luận đã là hạng văn trang-nghiêm thiết-thực, tất phải mượn chữ nho nhiều hơn hạng văn du-hí trên kia. — Sau nữa đến hạng văn thuyết-lý giảng-học. Hạng này là hạng cao hơn nhất, xưa nay người mình không dùng tiếng nôm bao giờ. Ngày nay nghiệm ra tiếng nôm cũng có đủ tư-cách mà dùng về các hạng văn đó được, nhưng phải mượn chữ nhiều hơn các hạng trên. Điều đó không những một tiếng An-nam mình mới thế. Dẫu các tiếng Âu-châu về hạng văn thuyết-lý giảng-học cũng không thể không mượn chữ cũ mà đủ dùng được. Tiếng Âu-châu thì mượn chữ <em>grec</em> (Hi-lạp), chữ <em>latin</em> (La-mã), là hai cái văn cổ-điển của các nước Tây-phương. Tiếng An-nam mình tất phải mượn chữ nho, là cái văn cổ-điển của Đông-phương ta. Văn thuyết-lý giảng-học lại càng trọng nghiêm-trang lắm : không nói rằng tiếng nôm mình không tài nào đủ mà diễn được những lý-tưởng học-thuyết mới, cho dẫu một đôi khi cố tìm-tòi mãi, cố đắn-đo ra cũng có thể tiệm-tiệm đủ được, nhưng thường không tránh khỏi cái tệ nôm-na. Nói những sự cao-xa mà dùng lời nôm-na quá, không những không được gọn-ghẽ thanh-tao, mà sao cho xứng-đáng ? Ta vừa nói các tiếng Âu-châu, kể còn giàu hơn tiếng An-nam mình biết bao nhiêu, mà về đường học-
+  ...</p>
 </div>
 
 
@@ -608,15 +716,15 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-style: normal; text-transform: uppercase;">Bàn về sự dùng chữ nho trong văn quốc-ngữ</span>
-    <span>93</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>93</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... thuật nghĩa-lý phần nhiều các chữ dùng là lấy gốc tự chữ <em>grec</em>, chữ <em>latin</em> cả : cứ giở ngay một quyển tự-điển Pháp, bất-cứ trang nào, nhìn qua một lượt, có phải nhan-nhản ra những chữ gốc tự grec, tự latin không ? Còn chữ gì tầm-thường bằng chữ <em>individu</em> (mỗi người, người một, cá-nhân); thử tra xem gốc tự đâu ? Gốc tự chữ la-mã <em>individuus</em>, nguyên-nghĩa là cái gì không phân-dời ra được, trọn vẹn một mình, tức là riêng một phần, biệt một người, không dính-dáng với phần khác, người khác. Lại chữ <em>société</em> (xã-hội), là do chữ la-mã <em>societas</em> ; — chữ <em>autocrate</em> (vua chuyên-chế), do chữ hi-lạp <em>autokratês</em>, bởi hai chữ <em>autos</em> nghĩa là tự-mình, <em>kratos</em> nghĩa là quyền-lực, quyền-lực tự mình, muốn làm gì thì làm, mà thành ra ; — chữ <em>autonomie</em> (tự-trị), là gồm hai chữ hi-lạp <em>autos</em> = tự mình, <em>nomos</em> = pháp-luật, pháp-luật tự-mình, mà thành ra ; v. v. Xin ai thong-thả cứ thử ngồi giở qua một quyển tự-điển Pháp xem có phải trang nào cũng đầy những chữ như vậy không. Tiếng Pháp mượn chữ của la-mã hi-lạp mà âm ra giọng Pháp, có khác gì tiếng ta mượn chữ nho mà âm ra giọng ta không ? Người Pháp nói <em>autocrate</em> mà không nói <em>autokratês</em>, có khác gì ta nói <em>chuyên-chế</em> mà không nói <em>tchoen-tche</em> (theo tiếng « quan-hoại » tàu) không ? Đó còn là những tiếng thường-thường, đến những tiếng về các nghĩa-lý cao, thì lại mượn của hi-lạp la-mã nhiều hơn nữa ; như : <em>Philosophie</em> (triết-học), là do hai chữ hi-lạp <em>philos</em> = người bạn, người hay ưa sự gì, <em>sophia</em> = sự nghĩa-lý, điều khôn-ngoan, tức là người ưa xét những điều nghĩa-lý khôn-ngoan ; — <em>esthétique</em> (mĩ-học, học về sự đẹp), là do chữ hi-lạp <em>aistêtikos</em> ; — <em>métaphysique</em> (siêu-hình-học, thuần-lý-học), do chữ hi-lạp <em>meta ta phusika</em>, chính nghĩa là học sau những vật có hình, tức là học về những sự ở trên, ở ngoài hình-thức, về các lẽ rất mầu-nhiệm của trời đất ; — <em>géographie</em> (địa-dư học), bởi hai chữ hi-lạp <em>gêo</em> = đất, <em>graphein</em> = tả, vẽ, nghĩa là hình-dung tả vẽ về đất, tức là học về đất ; v. v. Ay bao nhiêu những chữ về học-lý đều do chữ cổ-văn mà đặt ra ; có ai kêu rằng tiếng Pháp phải đi mượn chữ ngoài nhiều không ? Coi đó thì biết sự mượn chữ cổ-văn là những chữ đã thành-thuộc lão-luyện rồi để diễn về những điều nghĩa-lý cao-xa, không có ngại gì cả. Càng mượn được càng hay, miễn là mượn cho cẩn-thận thì thôi. Tất những chữ mới mượn nghe có lạ tai, nhưng vì những sự-vật, những nghĩa-lý của các chữ ấy chỉ ra cũng là mới cả, xưa nay mình chưa từng biết bao giờ, đã có tên đâu mà gọi thường ; đến khi những nghĩa-lý, những sự-vật ấy trong trí đã quen rồi thì cái chữ dùng để gọi nó ra tai nghe cũng không lấy làm lạ nữa. Trước kia ta đã từng lấy sự đẹp làm một môn học đâu, mà ta thường dùng chữ « mĩ-học » (<em>esthétique</em>) ? Trước kia ta đã từng phân-biệt đâu rằng trong tâm-giới người ta có hai phần, một phần « ý-thức » (<em>conscience</em>) là cái phần sáng suốt để cảm biết các vật các lẽ, một phần « tiềm-thức » (<em>subconscience</em>) là cái phần u-âm, ở dưới ý-thức, gồm những tư-tưởng cảm-giác phảng-phất mập-mờ, trong khi mơ ngủ thường xuất-hiện ra trong trí người ta ; ta đã từng phân-biệt đâu như vậy mà thường dùng đến những chữ « ý-thức » và « tiềm-thức » ? Chữ chẳng qua là cái áo bọc, cái tên gọi những tư-tưởng cùng sự-vật : có biết đến cái sự-vật ấy, có nghĩ đến cái tư-tưởng ấy thì mới tìm tên gọi cho xứng đáng, tìm áo bọc cho vừa vặn. Nhà học-giả là người hay tìm-tòi thâu-nhặt những điều hay, lẽ phải, ý mới, vật lạ, cố diễn-giải ra lời nói câu văn mà đem công-bố ra trước mọi người, tất lúc mới đầu nhiều người chưa quen chưa...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    thuật nghĩa-lý phần nhiều các chữ dùng là lấy gốc tự chữ <em>grec</em>, chữ <em>latin</em> cả : cứ giở ngay một quyển tự-điển Pháp, bất-cứ trang nào, nhìn qua một lượt, có phải nhan-nhản ra những chữ gốc tự grec, tự latin không ? Còn chữ gì tầm-thường bằng chữ <em>individu</em> (mỗi người, người một, cá-nhân); thử tra xem gốc tự đâu ? Gốc tự chữ la-mã <em>individuus</em>, nguyên-nghĩa là cái gì không phân-dời ra được, trọn vẹn một mình, tức là riêng một phần, biệt một người, không dính-dáng với phần khác, người khác. Lại chữ <em>société</em> (xã-hội), là do chữ la-mã <em>societas</em> ; — chữ <em>autocrate</em> (vua chuyên-chế), do chữ hi-lạp <em>autokratês</em>, bởi hai chữ <em>autos</em> nghĩa là tự-mình, <em>kratos</em> nghĩa là quyền-lực, quyền-lực tự mình, muốn làm gì thì làm, mà thành ra ; — chữ <em>autonomie</em> (tự-trị), là gồm hai chữ hi-lạp <em>autos</em> = tự mình, <em>nomos</em> = pháp-luật, pháp-luật tự-mình, mà thành ra ; v. v. Xin ai thông-thá cứ thử ngồi giở qua một quyển tự-điển Pháp xem có phải trang nào cũng đầy những chữ như vậy không. Tiếng Pháp mượn chữ của la-mã hi-lạp mà âm ra giọng Pháp, có khác gì tiếng ta mượn chữ nho mà âm ra giọng ta không ? Người Pháp nói <em>autocrate</em> mà không nói <em>autokratês</em>, có khác gì ta nói <em>chuyên-chế</em> mà không nói <em>tchoen-tche</em> (theo tiếng « quan-hoại » tàu) không ? Đó còn là những tiếng thường-thường, đến những tiếng về các nghĩa-lý cao, thì lại mượn của hi-lạp la-mã nhiều hơn nữa ; như : <em>Philosophie</em> (triết-học), là do hai chữ hi-lạp <em>philos</em> = người bạn, người hay ưa sự gì, <em>sophia</em> = sự nghĩa-lý, điều khôn-ngoan, tức là người ưa xét những điều nghĩa-lý khôn-ngoan ; — <em>esthétique</em> (mĩ-học, học về sự đẹp), là do chữ hi-lạp <em>aistêtikos</em> ; — <em>métaphysique</em> (siêu-hình-học, thuần-lý-học), do chữ hi-lạp <em>meta ta phusika</em>, chính nghĩa là học sau những vật có hình, tức là học về những sự ở trên, ở ngoài hình-thức, về các lẽ rất mầu-nhiệm của trời đất ; — <em>géographie</em> (địa-dư học), bởi hai chữ hi-lạp <em>géo</em> = đất, <em>graphein</em> = tả, vẽ, nghĩa là hình-dung tả vẽ về đất, tức là học về đất ; v. v. Ấy bao nhiêu những chữ về học-lý đều do chữ cổ-văn mà đặt ra ; có ai kêu rằng tiếng Pháp phải đi mượn chữ ngoài nhiều không ? Coi đó thì biết sự mượn chữ cổ-văn là những chữ đã thành-thuộc lão-luyện rồi để diễn về những điều nghĩa-lý cao-xa, không có ngại gì cả. Càng mượn được càng hay, miễn là mượn cho cẩn-thận thì thôi. Tất những chữ mới mượn nghe có lạ tai, nhưng vì những sự-vật, những nghĩa-lý của các chữ ấy chỉ ra cũng là mới cả, xưa nay mình chưa từng biết bao giờ, đã có tên đâu mà gọi thường ; đến khi những nghĩa-lý, những sự-vật ấy trong trí đã quen rồi thì cái chữ dùng để gọi nó ra tai nghe cũng không lấy làm lạ nữa. Trước kia ta đã từng lấy sự đẹp làm một môn học đâu, mà ta thường dùng chữ « mĩ-học » (<em>esthétique</em>) ? Trước kia ta đã từng phân-biệt đâu rằng trong tâm-giới người ta có hai phần, một phần « ý-thức » (<em>conscience</em>) là cái phần sáng suốt để cảm biết các vật các lẽ, một phần « tiềm-thức » (<em>subconscience</em>) là cái phần u-ám, ở dưới ý-thức, gồm những tư-tưởng cảm-giác phảng-phất mập-mờ, trong khi mơ ngủ thường xuất-hiện ra trong trí người ta ; ta đã từng phân-biệt đâu như vậy mà thường dùng đến những chữ « ý-thức » và « tiềm-thức » ? Chữ chẳng qua là cái áo bọc, cái tên gọi những tư-tưởng cùng sự-vật : có biết đến cái sự-vật ấy, có nghĩ đến cái tư-tưởng ấy thì mới tìm tên gọi cho xứng đáng, tìm áo bọc cho vừa vặn. Nhà học-giả là người hay tìm-tòi thâu-nhặt những điều hay, lẽ phải, ý mới, vật lạ, cố diễn-giải ra lời nói câu văn mà đem công-bố ra trước mọi người, tất lúc mới đầu nhiều người chưa quen chưa
+  ...</p>
 </div>
 
 
@@ -631,19 +739,21 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span>94</span>
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-weight: 600;">NAM PHONG</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>94</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... hiểu lấy làm lạ mắt lạ tai, nhưng dần dần đã hiểu đã quen rồi thì có lạ gì ? Trong <em>Nam-phong</em> số thứ 1, bắt đầu in tập tự-vựng thích-nghĩa những danh-từ mới mượn của chữ nho, tôi đã từng nói : « Phàm chữ mới chỉ mới một lúc đầu thôi. Dùng một lần thì còn mới, dùng vài ba lần thì nghe đã quen tai, dùng đến mười lần thì nghe đã cũ rích vậy. Mười năm trước, ai từng nói đến những tiếng như <em>văn-minh</em>, <em>xã-hội</em> ? Thế mà bây giờ những tiếng ấy thông-dụng rồi. Ngày nay những tiếng như <em>quan-niệm</em>, <em>thái-độ</em>, nghe còn lạ tai, an-trí ít lâu nữa lại chẳng thành những tiếng thường-dùng ư ? Tiếng An-nam ta đối với chữ Tàu có cái « hấp-lực » rất mạnh, cốt là bây giờ dùng chữ nào định-nghĩa phân-minh chữ ấy là đủ vậy ». Nay nói riêng về sự mượn những chữ học mới thì phải nên phân-biệt như sau này. Đại-khái các môn học mới của Thái-Tây ngày nay chia ra làm hai hạng : một hạng chuyên học về « vật-giới » (<em>sciences physiques et naturelles</em>), nghĩa là những vật có hình trong thế-giới, như hóa-học, địa-chất-học, động-vật-học, v. v. ; một hạng chuyên học về « tâm-giới » (<em>sciences morales</em>), nghĩa là những sự vô-hình thuộc về tâm-tính người ta, như triết-học, mĩ-học, tâm-lý-học, v. v. Muốn đặt cái lệ chung làm bằng thì có thể nói rằng bao nhiêu những chữ về « tâm-giới » nên mượn chữ nho nhiều hơn, vì chữ nho về phần ấy vốn giàu lắm và thâu-nhập vào tiếng nôm cũng đã nhiều ; còn những chữ về « vật-giới », thì phần nhiều hoặc nên tùy hình-chất mà đặt tên nôm cho dễ gọi, hoặc nên theo chữ tây mà phiên-dịch ra cho tiện hơn, khi nào cần hẵng nên mượn chữ nho. Nhưng cái lệ đó cũng không phải là nhất-định như thế ; khi mượn chữ đặt tiếng phải tùy-nghi châm-chước mới được.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Ấy là kể qua tính-cách các hạng văn tra dùng chữ nho ít nhiều thế nào. Đến cái trình-độ văn cũng là do ở tính-cách ấy mà ra, nghĩa là tùy các hạng văn mà cái trình-độ hoặc cao, hoặc thấp, hoặc vừa-vừa. Cái văn phổ-thông là cái văn thấp, chủ nói những sự tầm-thường cho nhiều người dễ hiểu, thì không cần phải mượn chữ nho mấy tí, chỉ những chữ nào đã thông-dụng lắm hẵng nên dùng mà thôi ; — cái văn chơi bời, đạo-tình, tả-cảnh, bỡn-cợt, trăng-hoa, là đứng vào bậc trung-bình, thì tiếng nôm mình cũng đã thừa đủ dùng rồi : <em>hoa hồng</em>, <em>lá liễu</em>, <em>mắt phượng</em>, <em>mày ngài</em>, <em>con oanh học nói</em>, <em>con én đưa thoi</em>, <em>thơ-thần thẫn-thờ</em>, <em>mơ-màng giấc điệp</em>, v. v., các thơ nôm, truyện nôm, ca nôm, vè nôm, đã đầy ra những tiếng những câu sẵn như vậy, các nhà làm văn về hạng này không cần phải mượn chữ nho cho lắm, chỉ nên thỉnh-thoảng điểm một vài chữ cho nó nổi câu văn mà thôi ; — cái văn kỹ-thuật nghị-luận thời đã vào bậc cao rồi, như trên kia đã nói cần phải mượn chữ nho nhiều hơn các hạng trên thì lời văn mới được nghiêm-trang và khỏi tục-tằn ; — đến văn thuyết-lý giảng-học là văn cao hơn nhất, mượn chữ nho lại phải nhiều hơn cả, vì tiếng nôm đã quyết là không đủ dùng rồi.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Coi đó thì biết cái trình-độ văn càng cao bao nhiêu lại càng cần phải dùng chữ nho bấy nhiêu. Đó là một lẽ tất-nhiên, vì văn nôm mình xưa nay chỉ dùng đến bậc phổ-thông du-hí mà thôi, từ bậc văn nghị-luận trở lên các cụ ngày xưa không từng viết nôm bao giờ ; cho nên cái trình-độ văn càng cao lên lại càng cần phải mượn chữ nhiều mới đủ dùng. Báo Nam-Phong chủ một cái mục-đích có hơi cao hơn các báo khác : là thâu-nhặt các học-thuật tư-tưởng hay của đời xưa đời nay mà cố diễn-thuật ra lời nôm...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    hiểu lấy làm lạ mắt lạ tai, nhưng dần dần đã hiểu đã quen rồi thì có lạ gì ? Trong <em>Nam-phong</em> số thứ 1, bắt đầu in tập tự-vựng thích-nghĩa những danh-từ mới mượn của chữ nho, tôi đã từng nói : « Phàm chữ mới chỉ mới một lúc đầu thôi. Dùng một lần thì còn mới, dùng vài ba lần thì nghe đã quen tai, dùng đến mười lần thì nghe đã cũ rích vậy. Mười năm trước, ai từng nói đến những tiếng như <em>văn-minh</em>, <em>xã-hội</em> ? Thế mà bây giờ những tiếng ấy thông-dụng rồi. Ngày nay những tiếng như <em>quan-niệm</em>, <em>thái-độ</em>, nghe còn lạ tai, an-trí ít lâu nữa lại chẳng thành những tiếng thường-dùng ư ? Tiếng An-nam ta đối với chữ Tàu có cái « hấp-lực » rất mạnh, cốt là bây giờ dùng chữ nào định-nghĩa phân-minh chữ ấy là đủ vậy ». Nay nói riêng về sự mượn những chữ học mới thì phải nên phân-biệt như sau này. Đại-khái các môn học mới của Thái-Tây ngày nay chia ra làm hai hạng : một hạng chuyên học về « vật-giới » (<em>sciences physiques et naturelles</em>), nghĩa là những vật có hình trong thế-giới, như hóa-học, địa-chất-học, động-vật-học, v. v. ; một hạng chuyên học về « tâm-giới » (<em>sciences morales</em>), nghĩa là những sự vô-hình thuộc về tâm-tính người ta, như triết-học, mĩ-học, tâm-lý-học, v. v. Muốn đặt cái lệ chung làm bằng thì có thể nói rằng bao nhiêu những chữ về « tâm-giới » nên mượn chữ nho nhiều hơn, vì chữ nho về phần ấy vốn giàu lắm và thâu-nhập vào tiếng nôm cũng đã nhiều ; còn những chữ về « vật-giới », thì phần nhiều hoặc nên tùy hình-chất mà đặt tên nôm cho dễ gọi, hoặc nên theo chữ tây mà phiên-dịch ra cho tiện hơn, khi nào cần hẵng nên mượn chữ nho. Nhưng cái lệ đó cũng không phải là nhất-định như thế ; khi mượn chữ đặt tiếng phải tùy-nghi châm-chước mới được.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Ấy là kể qua tính-cách các hạng văn tra dùng chữ nho ít nhiều thế nào. Đến cái trình-độ văn cũng là do ở tính-cách ấy mà ra, nghĩa là tùy các hạng văn mà cái trình-độ hoặc cao, hoặc thấp, hoặc vừa-vừa. Cái văn phổ-thông là cái văn thấp, chỉ nói những sự tầm-thường cho nhiều người dễ hiểu, thì không cần phải mượn chữ nho mấy tí, chỉ những chữ nào đã thông-dụng lắm hẵng nên dùng mà thôi ; — cái văn chơi bời, đạo-tình, tả-cảnh, bỡn-cợt, trăng-hoa, là đứng vào bậc trung-bình, thì tiếng nôm mình cũng đã thừa đủ dùng rồi : <em>hoa hồng</em>, <em>lá liễu</em>, <em>mắt phượng</em>, <em>mày ngài</em>, <em>con oanh học nói</em>, <em>con én đưa thoi</em>, <em>thơ-thần văn-vở</em>, <em>mơ-màng giấc điệp</em>, v. v., các thơ nôm, truyện nôm, ca nôm, vè nôm, đã dẫy ra những tiếng những câu sẵn như vậy, các nhà làm văn về hạng này không cần phải mượn chữ nho cho lắm, chỉ nên thỉnh-thoảng điểm một vài chữ cho nó nổi câu văn mà thôi ; — cái văn kỹ-thuật nghị-luận thời đã vào bậc cao rồi, như trên kia đã nói cần phải mượn chữ nho nhiều hơn các hạng trên thì lời văn mới được nghiêm-trang và khỏi tục-tằn ; — đến văn thuyết-lý giảng-học là văn cao hơn nhất, mượn chữ nho lại phải nhiều hơn cả, vì tiếng nôm đã quyết là không đủ dùng rồi.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Coi đó thì biết cái trình-độ văn càng cao bao nhiêu lại càng cần phải dùng chữ nho bấy nhiêu. Đó là một lẽ tất-nhiên, vì văn nôm mình xưa nay chỉ dùng đến bậc phổ-thông du-hí mà thôi, từ bậc văn nghị-luận trở lên các cụ ngày xưa không từng viết nôm bao giờ ; cho nên cái trình-độ văn càng cao lên lại càng cần phải mượn chữ nhiều mới đủ dùng. Báo <em>Nam-Phong</em> chủ một cái mục-đích có hơi cao hơn các báo khác : là thâu-nhặt các học-thuật tư-tưởng hay của đời xưa đời nay mà cố diễn-thuật ra lời nôm
+  ...</p>
 </div>
 
 
@@ -658,19 +768,21 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-style: normal; text-transform: uppercase;">Bàn về sự dùng chữ nho trong văn quốc-ngữ</span>
-    <span>95</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>95</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... mình, vụ cho văn nôm vượt được qua hạng phổ-thông du-hí mà bước tới bậc thuyết-lý giảng-học ; cái trình-độ văn có cao hơn văn thường một chút, nên sự cần-dùng về chữ nho tất phải rộng. Nhiều người kêu rằng khó hiểu ; thiết-tưởng sự khó hiểu đó phần nhiều là bởi người đọc chưa quen những lý-tưởng học-thuật mới, không chịu ra công suy-nghĩ, hơn là bởi dùng nhiều chữ khó. Người nào đã quen những lý-tưởng học-thuật đó rồi, tất phải chịu rằng không dùng chữ nho không thể nào nói ra cho thanh-thoát được. Vì chúng tôi chỉ chủ làm lối văn phổ-thông nói những sự tầm-thường, hoặc chuyện lối văn du-hí cốt lấy cho người đọc được vui, thì quyết là không cần phải dùng đến chữ nho nhiều làm gì. Nhưng cái chí chúng tôi không ở đó ; chúng tôi lại ước-ao cho người đọc báo nên nghiền-ngẫm suy-nghĩ để rộng thêm trí-thức, hơn là đọc lướt qua đi để vui thú được một lúc. Bởi cái mục-đích có cao một chút như vậy, nên lời văn cũng phải vụ cho xứng-đáng mới được.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">2° Cách dùng chữ nho trong văn quốc-ngữ phải tùy trình-độ văn đã đành rồi, trong khi dùng chữ các nhà làm văn lại phải cẩn-thận về cách kén-chọn lựa-lọc lắm mới được, dù làm về hạng văn nào cũng vậy. Chữ nho có chữ tục, có chữ nhã, có chữ điểm vào lời nôm dễ nghe, làm cho lời nôm lộn-trọng lên, có chữ dùng lẫn với tiếng ta sống-sượng khó nghe, có chữ đặt vào đoạn này thì xứng-đáng mà để vào đoạn kia thì bề-bộn ; cái thuật luyện chữ, hóa chữ, là ở cái tài người làm văn, không thể định trước được. Người làm văn khéo thì chữ dùng hồn-nhiên, nghĩa là chảy-chuốt chơn-chu, đặt vào lời nôm như hóa thành nôm, để vào chỗ nào như in vào đấy, tưởng bỏ ra mà đặt chữ khác vào không được. Thường nhận nhất là ở Nam-kỳ có nhiều nhà làm văn quốc-ngữ hay dùng chữ lắm, mà thường là những chữ không hóa không luyện, chỗ không cần phải dùng cũng dùng, hình như đã đọc qua các tiểu-thuyết cũ của tàu nhiều như <em>Tam-quốc</em>, <em>Thủy-hử</em>, v. v., nhớ được những câu sáo cùng những tục-ngữ phương-ngôn, khi viết văn cứ thế mà đệ vào, không có cân-nhắc lựa-lọc gì cả. Trong một bài văn thường thấy những chữ như: <em>chư-vị khán-quan</em>, <em>chư-tôn quân-tử</em>, <em>quốc-gia</em>, <em>bá-tánh</em>, <em>trí ư độ ngoại</em>, <em>lã tồn ư ngã</em>, v. v., hay là những câu sẵn như : <em>anh-hùng bất úy tử</em>, <em>úy tử bất anh-hùng</em>, <em>nhất-thốn quang-âm nhất thốn kim</em>, v. v., thậm là vô-vị, thà dùng tiếng nôm còn hơn. Ấy cách dùng chữ như vậy thì có hại mà không có lợi cho quốc-văn. Đại-loại những chữ những câu giọng tuồng giọng « truyện » như vậy rất kỵ không nên dùng, vì nó làm cho lời văn « phệnh-phao » như câu hò câu hát trên sân khấu vậy.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">3° Phàm dùng chữ gì nên định nghĩa cho rất phân-minh, nhất là các chữ mới. Những chữ mới diễn các nghĩa-lý mới, nếu biết dùng phải đường trúng nghĩa thì hay lắm, nếu dùng hỗn-độn không rõ ràng thì không gì bậy bằng, vì làm lầm người sau cứ theo mình mà dùng sai đi. Chữ mới phần nhiều là của tàu dịch hoặc định nghĩa theo chữ Âu-châu, nhưng chữ tàu vốn giàu có, nên đặt chữ dễ và khéo lắm, vừa đúng nghĩa, vừa gọn-ghẽ, lại vừa hồn-nhã, có chữ hay hơn nguyên-văn tây nhiều. Nhà làm văn phải thuộc các chữ mới, nghĩa mới đó mới được ; lắm khi biết chữ nho không không đủ, phải có thiệp-liệp các tư-tưởng học-thuật mới thì mới hiểu rõ được. Cho nên nhiều nhà nho cũ thông chữ nho mà không hiểu được các chữ nho mới đó. Như nói về « xã-hội-chủ-nghĩa »</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    mình, vụ cho văn nôm vượt được qua hạng phổ-thông du-hí mà bước tới bậc thuyết-lý giảng-học ; cái trình-độ văn có cao hơn văn thường một chút, nên sự cần-dùng về chữ nho tất phải rộng. Nhiều người kêu rằng khó hiểu ; thiết-tưởng sự khó hiểu đó phần nhiều là bởi người đọc chưa quen những lý-tưởng học-thuật mới, không chịu ra công suy-nghĩ, hơn là bởi dùng nhiều chữ khó. Người nào đã quen những lý-tưởng học-thuật đó rồi, tất phải chịu rằng không dùng chữ nho không thể nào nói ra cho thanh-thoát được. Vì chúng tôi chỉ chủ làm lối văn phổ-thông nói những sự tầm-thường, hoặc chuyện lối văn du-hí cốt lấy cho người đọc được vui, thì quyết là không cần phải dùng đến chữ nho nhiều làm gì. Nhưng cái chí chúng tôi không ở đó ; chúng tôi lại ước-ao cho người đọc báo nên nghiền-ngẫm suy-nghĩ để rộng thêm trí-thức, hơn là đọc lướt qua đi để vui thú được một lúc. Bởi cái mục-đích có cao một chút như vậy, nên lời văn cũng phải vụ cho xứng-đáng mới được.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    2° Cách dùng chữ nho trong văn quốc-ngữ phải tùy trình-độ văn đã đành rồi, trong khi dùng chữ các nhà làm văn lại phải cẩn-thận về cách kén-chọn lựa-lọc lắm mới được, dù làm về hạng văn nào cũng vậy. Chữ nho có chữ tục, có chữ nhã, có chữ điểm vào lời nôm dễ nghe, làm cho lời nôm lộn-trọng lên, có chữ dùng lẫn với tiếng ta sống-sượng khó nghe, có chữ đặt vào đoạn này thì xứng-đáng mà đề vào đoạn kia thì bề-bộn ; cái thuật luyện chữ, hóa chữ, là ở cái tài người làm văn, không thể định trước được. Người làm văn khéo thì chữ dùng hồn-nhiên, nghĩa là chầy-chuốt chơn-chu, đặt vào lời nôm như hóa thành nôm, đề vào chỗ nào như in vào đấy, tưởng bỏ ra mà đặt chữ khác vào không được. Thường nhận nhất là ở Nam-kỳ có nhiều nhà làm văn quốc-ngữ hay dùng chữ lắm, mà thường là những chữ không hóa không luyện, chỗ không cần phải dùng cũng dùng, hình như đã đọc qua các tiểu-thuyết cũ của tàu nhiều như <em>Tam-quốc</em>, <em>Thủy-hử</em>, v. v., nhớ được những câu sáo cùng những tục-ngữ phương-ngôn, khi viết văn cứ thế mà đệ vào, không có cân-nhắc lựa-lọc gì cả. Trong một bài văn thường thấy những chữ như: <em>chư-vị khán-quan</em>, <em>chư-tôn quân-tử</em>, <em>quốc-gia</em>, <em>bá-tánh</em>, <em>trí ư độ ngoại</em>, <em>lã tồn ư ngã</em>, v. v., hay là những câu sẵn như : <em>anh-hùng bất úy tử</em>, <em>úy tử bất anh-hùng</em>, <em>nhất-thốn quang-âm nhất thốn kim</em>, v. v., thậm là vô-vị, thà dùng tiếng nôm còn hơn. Ấy cách dùng chữ như vậy thì có hại mà không có lợi cho quốc-văn. Đại-loại những chữ những câu giọng tuồng giọng « truyện » như vậy rất kỵ không nên dùng, vì nó làm cho lời văn « phệnh-phao » như câu hò câu hát trên sân khấu vậy.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    3° Phàm dùng chữ gì nên định nghĩa cho rất phân-minh, nhất là các chữ mới. Những chữ mới diễn các nghĩa-lý mới, nếu biết dùng phải đường trúng nghĩa thì hay lắm, nếu dùng hỗn-độn không rõ ràng thì không gì bậy bằng, vì làm lầm người sau cứ theo mình mà dùng sai đi. Chữ mới phần nhiều là của tàu dịch hoặc định nghĩa theo chữ Âu-châu, nhưng chữ tàu vốn giàu có, nên đặt chữ dễ và khéo lắm, vừa đúng nghĩa, vừa gọn-ghẽ, lại vừa hồn-nhã, có chữ hay hơn nguyên-văn tây nhiều. Nhà làm văn phải thuộc các chữ mới, nghĩa mới đó mới được ; lắm khi biết chữ nho không không đủ, phải có thiệp-liệp các tư-tưởng học-thuật mới thì mới hiểu rõ được. Cho nên nhiều nhà nho cũ thông chữ nho mà không hiểu được các chữ nho mới đó. Như nói về « xã-hội-chủ-nghĩa »
+  </p>
 </div>
 
 
@@ -685,17 +797,18 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span>96</span>
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-weight: 600;">NAM PHONG</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>96</span>
+  <span>NAM PHONG</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">(<em>socialisme</em>), nói về « cộng-sản-chủ-nghĩa » (<em>communisme</em>), nói về đảng « quá-kích » (<em>les radicaux</em>), nói về đảng « lao-động » (<em>les travaillistes</em>), toàn là những chữ nho mới cả, mà người nào không từng biết các chủ-nghĩa cùng các đảng-phái đó thì dẫu biết chữ nho cũng không hiểu là gì. Tư-tưởng với văn-tự phải tiến ngang nhau mới được : nếu có tư-tưởng mà không đủ chữ nói ra, như phần nhiều các nhà tây-học ngày nay, thì cũng cực ; nếu có chữ dùng mà không hiểu các nghĩa-lý mới, dùng chữ sai lầm, như phần nhiều các nhà cựu-học bây giờ, thì cũng khốn. Thường nghe thấy nhiều người mới đọc qua mấy quyển tân-thư, tập <em>Am-băng</em> của Lương Khải-Siêu, hay tập <em>Du-ký</em> của Khang Hữu-Vi, thuộc được ít nhiều chữ mới chưa hiểu rõ ý-nghĩa thế nào, cầm bút viết tất dùng những chữ : <em>thiên-diễn</em>, <em>đào-thải</em>, <em>sinh-tồn-cạnh-tranh</em>, <em>văn minh tiến-hóa</em>, <em>tôn-chỉ</em>, <em>chủ-đích</em>, <em>tiêu-cực</em>, <em>tích-cực</em>, <em>khách-quan</em>, <em>chủ-quan</em>, v. v., bấy nhiêu chữ đều có nghĩa nhất-định cả mà không hiểu rõ thường dùng lộn bậy chẳng đâu vào đâu ; lại nhiều người hay chứng-dẫn các tên người, vơ-vào chẳng ăn thua vào đâu : bất-cứ nói chuyện gì tất phải gọi đến tên ông Nã-phá-luân (<em>Napoléon</em>), ông Ti-ti-mạch (<em>Bismark</em>), ông Kha-luận-bố (<em>Christophe Colomb</em>), ông Đạt-nhĩ-văn (<em>Darwin</em>), ông Lư-thoa (<em>Rousseau</em>), ông Mạnh-đức-tư-cưu (<em>Montesquieu</em>), ông Ti-tân-tắc (<em>Spencer</em>), kéo một thôi một sốc các ông thánh mới ra, thật là vô-vị quá. Không hiểu chữ mà dùng chữ bậy không gì hại bằng. Cho nên trong khi mượn các chữ mới của tàu phải biết rõ những chữ ấy chỉ sự gì vật gì ; phải định nghĩa cho phân-minh, rồi chỉ dùng về một nghĩa đó mà thôi. Có vậy thì sự mượn chữ mới có lợi, không thời hại cho quốc-văn nhiều lắm.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">4° Còn một điều nữa về các tên đất tên người, nên dịch theo tiếng tây hay bắc chước chữ tàu. Cứ lẽ thời theo tiếng tây cả là phải lắm, chỉ trừ những tên người tên đất riêng của Tàu thì nên đọc theo chữ nho mà thôi. Nhưng có nhiều tên đất tên người ta đọc theo của Tàu đã quen rồi (như Âu-châu, Á-châu, nước Pháp, nước Đức, ông Nã-phá-luân, ông Hoa-thịnh-đốn), không ai là không dùng và không ai là không hiểu. Vả những tên ấy âm ra giọng mình dễ nghe hơn là đọc theo ngay giọng tây : như Âu-châu đọc chẳng dễ nghe hơn là <em>Europe</em>, Đại-tây-dương, đọc chẳng thanh-thoát hơn là <em>Océan Atlantique</em>, ư ? Vậy nay tưởng nên định một cái lệ chung như sau này : Trừ tên các châu (<em>continents</em>) lớn, các bể lớn, các nước lớn, cùng mấy cái sông mấy cái núi lớn trong thế-giới, đọc theo chữ nho đã quen lắm rồi thì cứ đọc theo như vậy, khi viết ra thì nên chua tên tây bên cạnh cho rõ ; còn hết thảy tên người tên đất khác trong sách tây nên đọc theo viết theo tiếng tây cả cho có bằng-cứ và dễ tra-khảo. Ngày nay, dẫu người không biết chữ tây mà chỉ biết quốc-ngữ, đọc văn tây cũng được, có sai cũng không sai mấy, còn hơn là theo hẳn chữ tàu, vì tàu đã đọc theo tiếng nước khác, mình lại theo tàu, thành ra theo mấy lần, còn biết dò đâu mà tra-khảo được. Như nói thành <em>Dâblin</em>, thành <em>Manchester</em>, thành <em>Edimbourg</em> là ba tỉnh lớn của nước Anh : tên Anh đó tuy là đọc theo chữ tàu mà đã thông dụng lắm rồi, ai cũng biết là nước <em>Angleterre</em>, cứ nên dùng như vậy vừa tiện vừa dễ hơn ; còn tên ba tỉnh kia thì ít người biết, nên viết theo chữ tây, dẫu đọc có sai tiếng Anh ít nhiều mà còn có nguyên-văn, muốn tra trong địa-đồ cũng dễ ; hơn là đọc theo tàu : Đô-bối-linh (<em>Dublin</em>), Mãn-triệt-đức-nhĩ (<em>Manchester</em>), Ái-đinh-bộ-nhĩ (<em>Edimbourg</em>),...</p>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">
+    (<em>socialisme</em>), nói về « cộng-sản-chủ-nghĩa » (<em>communisme</em>), nói về đảng « quá-kích » (<em>les radicaux</em>), nói về đảng « lao-động » (<em>les travaillistes</em>), toàn là những chữ nho mới cả, mà người nào không từng biết các chủ-nghĩa cùng các đảng-phái đó thì dẫu biết chữ nho cũng không hiểu là gì. Tư-tưởng với văn-tự phải tiến ngang nhau mới được: nếu có tư-tưởng mà không đủ chữ nói ra, như phần nhiều các nhà tây-học ngày nay, thì cũng cực ; nếu có chữ dùng mà không hiểu các nghĩa-lý mới, dùng chữ sai lầm, như phần nhiều các nhà cựu-học bây giờ, thì cũng khốn. Thường nghe thấy nhiều người mới đọc qua mấy quyển tân-thư, tập <em>Am-băng</em> của Lương Khải-Siêu, hay tập <em>Du-ký</em> của Khang Hữu-Vi, thuộc được ít nhiều chữ mới chưa hiểu rõ ý-nghĩa thế nào, cầm bút viết tất dùng những chữ : <em>thiên-diễn</em>, <em>đào-thải</em>, <em>sinh-tồn-cạnh-tranh</em>, <em>văn minh tiến-hóa</em>, <em>tôn-chỉ</em>, <em>chủ-đích</em>, <em>tiêu-cực</em>, <em>tích-cực</em>, <em>khách-quan</em>, <em>chủ-quan</em>, v. v., bấy nhiêu chữ đều có nghĩa nhất-định cả mà không hiểu rõ thường dùng lộn bậy chẳng đâu vào đâu ; lại nhiều người hay chứng-dẫn các tên người, vơ-vào chẳng ăn thua vào đâu : bất-cứ nói chuyện gì tất phải gọi đến tên ông Nã-phá-luân (Napoléon), ông Ti-ti-mạch (Bismark), ông Kha-luận-bố (Christophe Colomb), ông Đạt-nhĩ-văn (Darwin), ông Lư-thoa (Rousseau), ông Mạnh-đức-tư-cưu (Montesquieu), ông Ti-tân-tắc (Spencer), kéo một thôi một sốc các ông thánh mới ra, thật là vô-vị quá. Không hiểu chữ mà dùng chữ bậy không gì hại bằng. Cho nên trong khi mượn các chữ mới của tàu phải biết rõ những chữ ấy chỉ sự gì vật gì ; phải định-nghĩa cho phân-minh, rồi chỉ dùng về một nghĩa đó mà thôi. Có vậy thì sự mượn chữ mới có lợi, không thời hại cho quốc-văn nhiều lắm.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    4° Còn một điều nữa về các tên đất tên người, nên dịch theo tiếng tây hay bắc chước chữ tàu. Cứ lẽ thời theo tiếng tây cả là phải lắm, chỉ trừ những tên người tên đất riêng của Tàu thì nên đọc theo chữ nho mà thôi. Nhưng có nhiều tên đất tên người ta đọc theo của Tàu đã quen rồi (như Âu-châu, Á-châu, nước Pháp, nước Đức, ông Nã-phá-luân, ông Hoa-thịnh-đốn), không ai là không dùng và không ai là không hiểu. Vả những tên ấy âm ra giọng mình dễ nghe hơn là đọc theo ngay giọng tây : như Âu-châu đọc chẳng dễ nghe hơn là Europe, Đại-tây-dương, đọc chẳng thanh-thoát hơn là Océan Atlantique, ư ? Vậy nay tưởng nên định một cái lệ chung như sau này : Trừ tên các châu (<em>continents</em>) lớn, các bể lớn, các nước lớn, cùng mấy cái sông mấy cái núi lớn trong thế-giới, đọc theo chữ nho đã quen lắm rồi thì cứ đọc theo như vậy, khi viết ra thì nên chua tên tây bên cạnh cho rõ ; còn hết thảy tên người tên đất khác trong sách tây nên đọc theo viết theo tiếng tây cả cho có bằng-cứ và dễ tra-khảo. Ngày nay, dẫu người không biết chữ tây mà chỉ biết quốc-ngữ, đọc văn tây cũng được, có sai cũng không sai mấy, còn hơn là theo hẳn chữ tàu, vì tàu đã đọc theo tiếng nước khác, mình lại theo tàu, thành ra theo mấy lần, còn biết dò đâu mà tra-khảo được. Như nói thành <em>Dublin</em>, thành <em>Manchester</em>, thành <em>Edimbourg</em> là ba tỉnh lớn của nước Anh : tên Anh đó tuy là đọc theo chữ tàu mà đã thông dụng lắm rồi, ai cũng biết là nước Angleterre, cứ nên dùng như vậy vừa tiện vừa dễ hơn ; còn tên ba tỉnh kia thì ít người biết, nên viết theo chữ tây, dẫu đọc có sai tiếng Anh ít nhiều mà còn có nguyên-văn, muốn tra trong địa-đồ cũng dễ ; hơn là đọc theo tàu : Đô-bối-linh (<em>Dublin</em>), Mãn-triệt-đức-nhĩ (<em>Manchester</em>), Ái-đinh-bộ-nhĩ (<em>Edimbourg</em>),
+  ...</p>
 </div>
 
 
@@ -710,29 +823,28 @@
 </div>
 
 
-<div style="font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; line-height: 1.72; color: #1e293b; max-width: 100%;">
-  <div style="font-size: 0.85rem; color: #94a3b8; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 18px; font-weight: 500; display: flex; justify-content: space-between; letter-spacing: 0.05em;">
-    <span style="font-family: 'EB Garamond', Georgia, serif; font-style: normal; text-transform: uppercase;">Bàn về sự dùng chữ nho trong văn quốc-ngữ</span>
-    <span>97</span>
-  </div>
+<div class="running-header" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; margin-top: 8px; margin-bottom: 16px; font-weight: 500; font-style: italic; letter-spacing: 0.05em;">
+  <span>BÀN VỀ SỰ DÙNG CHỮ NHO TRONG VĂN QUỐC-NGỮ</span>
+  <span>97</span>
+</div>
 
-  <div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
-    <p style="margin-top: 0; margin-bottom: 16px;">... tuy âm-vận có dễ nghe, hợp với giọng ta hơn, nhưng không có chữ tây thì còn ai biết là tên những tỉnh thành gì ? Nếu có sợ những người không thuộc văn tây gặp những tên tây như vậy ở giữa bài văn quốc-ngữ bị ngắt lại không đọc luôn được, thì dưới mỗi tên tây nên ngoặc hai cái ( ) và chua âm ra chữ quốc-ngữ, cũng không phiền gì : Như Manchester (Măng-xét-te), Edimbourg (Ê-đinh-bua), v. v...</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Văn quốc-ngữ đã không dời được chữ nho, không thể bỏ chữ nho mà thành được, thì cách dùng chữ nho trong văn quốc-ngữ, xét ra có mấy cái phàm-lệ như trên kia, các nhà làm văn phải nên chú-ý. Đó cũng là nói những điều đại-khái mà thôi, còn việc dùng chữ phải để tùy cái tài cái khéo của các nhà văn, không thể đặt phép-tắc nhất-định được. Vậy chỉ dám khuyên các tay văn-sĩ trong Nam ngoài Bắc nên hết sức cẩn-thận trong việc dùng chữ, chớ mắc phải mấy cái tệ như đã kể trên kia, và ra công ráng sức làm cho quốc-văn mỗi ngày một giàu có, một mềm-mại, một tốt đẹp thêm ra.</p>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Trong bài này chỉ bàn riêng về sự dùng chữ nho trong văn quốc-ngữ mà thôi. Chắc văn quốc-ngữ cũng phải mượn của văn tây nhiều, vừa mượn chữ, vừa mượn phép làm văn ; nhưng đó là một vấn-đề khác, xin để khi khác sẽ bàn.</p>
-
-    <div style="text-align: center; margin: 16px 0;">
-      <hr style="width: 50px; border: 0; border-top: 1px solid #94a3b8; display: inline-block; margin: 0 auto;" />
-    </div>
-
-    <p style="text-indent: 1.5em; margin-bottom: 16px; margin-top: 0;">Than ôi ! thương tiếng nước nhà, thương tiếng nước nhà cũng có năm bảy đường. Thương mà phải đường ra thì ích-lợi cho quốc-văn biết dường nào. Thương mà sai đường thì không những không lợi mà lại hại cho quốc-văn hơn là ghét bội-phần. Tôi đây cũng là nhiệt-thành thương tiếng nước nhà, lâu nay đã tự-nguyện hi-sinh một đời để gây dựng cho cái tiếng ấy thành văn-chương, cho nước ta có một nền quốc-văn đứng riêng được một cõi, cho người mình khỏi phải cái cực đi học mượn viết nhờ ! Lắm lúc bình-tâm tĩnh-lự, tự mình lại hỏi mình nên dùng cách nào cho đạt tới cái mục-đích đó. Nghĩ nát ruột mà không tìm được cách nào, ngoài cái lề-lối của ông cha để lại. Nhìn ngược nhìn xuôi, trông xa trông gần, chỉ thấy rừng Nho man-mác, lá rậm ùm-tum, muốn thoát ra ngoài mà không thoát được, đi mãi không cùng. Bấy giờ mới tỉnh-ngộ mà biết rằng dân mình sinh-trưởng trong gốc rừng này đã mấy mươi đời, những khi phong-ba bão-táp được ẩn thân ở dưới cây lớn cỗi cao, nay muốn thoát-li mà ra ngoài, bỗng-lông trong đồng rộng bể khơi sao đành ? Chi bằng ta cứ nương náu ở đây, mở rộng phá quang, đặt đường sẻ lối, cho tiện sự giao-thông, để đón lấy gió Âu mưa Mĩ, mà ra công ráng sức gây dựng cho cái đất cũ mấy nghìn năm này được tỏ-rạng cùng non sông, vẻ-vang với thế-giới ! Ai ôi ! xin cố gắng lên, nhưng chớ nên thương quẩn sót quanh mà làm cho người ta thiên lòng rối trí. Có thương tiếng nước nhà nên thương cho phải đường.</p>
-
-    <div style="text-align: right; margin-top: 24px; font-weight: bold; font-family: 'EB Garamond', Georgia, serif; font-size: 1.1em; letter-spacing: 0.05em;">
-      PHẠM QUỲNH
-    </div>
-  </div>
+<div style="columns: 2; column-gap: 28px; column-rule: 1px solid #cbd5e1; column-fill: balance; text-align: justify;" class="multi-column-flow">
+  <p style="margin-bottom: 16px; line-height: 1.6;">... 
+    tuy âm-vận có dễ nghe, hợp với giọng ta hơn, nhưng không có chữ tây thì còn ai biết là tên những tỉnh thành gì ? Nếu có sợ những người không thuộc văn tây gặp những tên tây như vậy ở giữa bài văn quốc-ngữ bị ngắt lại không đọc luôn được, thì dưới mỗi tên tây nên ngoặc hai cái ( ) và chua âm ra chữ quốc-ngữ, cũng không phiền gì : Như Manchester (Măng-xét-te), Edimbourg (Ê-đinh-bua), v. v...
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Văn quốc-ngữ đã không dời được chữ nho, không thể bỏ chữ nho mà thành được, thì cách dùng chữ nho trong văn quốc-ngữ, xét ra có mấy cái phàm-lệ như trên kia, các nhà làm văn phải nên chú-ý. Đó cũng là nói những điều đại-khái mà thôi, còn việc dùng chữ phải để tùy cái tài cái khéo của các nhà văn, không thể đặt phép-tắc nhất-định được. Vậy chỉ dám khuyên các tay văn-sĩ trong Nam ngoài Bắc nên hết sức cẩn-thận trong việc dùng chữ, chớ mắc phải mấy cái tệ như đã kể trên kia, và ra công ráng sức làm cho quốc-văn mỗi ngày một giàu có, một mềm-mại, một tốt đẹp thêm ra.
+  </p>
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Trong bài này chỉ bàn riêng về sự dùng chữ nho trong văn quốc-ngữ mà thôi. Chắc văn quốc-ngữ cũng phải mượn của văn tây nhiều, vừa mượn chữ, vừa mượn phép làm văn ; nhưng đó là một vấn-đề khác, xin để khi khác sẽ bàn.
+  </p>
+  <hr style="width: 80px; border: 0; border-top: 1px solid #334155; margin: 20px auto;" />
+  <p style="margin-bottom: 16px; line-height: 1.6; text-indent: 1.5em;">
+    Than ôi ! thương tiếng nước nhà, thương tiếng nước nhà cũng có năm bảy đường. Thương mà phải đường ra thì ích-lợi cho quốc-văn biết dường nào. Thương mà sai đường thì không những không lợi mà lại hại cho quốc-văn hơn là ghét bội-phần. Tôi đây cũng là nhiệt-thành thương tiếng nước nhà, lâu nay đã tự-nguyện hi-sinh một đời để gây dựng cho cái tiếng ấy thành văn-chương, cho nước ta có một nền quốc-văn đứng riêng được một cõi, cho người mình khỏi phải cái cực đi học mượn viết nhờ ! Lắm lúc bình-tâm tĩnh-lự, tự mình lại hỏi mình nên dùng cách nào cho đạt tới cái mục-đích đó. Nghĩ nát ruột mà không tìm được cách nào, ngoài cái lề-lối của ông cha đề lại. Nhìn ngược nhìn xuôi, trông xa trông gần, chỉ thấy rừng Nho man-mác, lá rậm ùm-tum, muốn thoát ra ngoài mà không thoát được, đi mãi không cùng. Bấy giờ mới tỉnh-ngộ mà biết rằng dân mình sinh-trưởng trong gốc rừng này đã mấy mươi đời, những khi phong-ba bão-táp được ẩn thân ở dưới cây lớn cỗi cao, nay muốn thoát-li mà ra ngoài, bồng-lông trong đồng rộng bể khơi sao đành? Chi bằng ta cứ nương náu ở đây, mở rộng phá quang, đặt đường sẻ lối, cho tiện sự giao-thông, để đón lấy gió Âu mưa Mĩ, mà ra công ráng sức gây dựng cho cái đất cũ mấy nghìn năm này được tỏ-rạng cùng non sông, vẻ-vang với thế-giới ! Ai ôi ! xin cố gắng lên, nhưng chớ nên thương quẩn sốt quanh mà làm cho người ta thiên lòng rối trí. Có thương tiếng nước nhà nên thương cho phải đường.
+  </p>
+  <p style="text-align: right; font-weight: bold; margin-top: 24px; font-variant: small-caps; letter-spacing: 0.05em; break-inside: avoid;">
+    PHẠM QUỲNH
+  </p>
 </div>
     </article>
   </div>
