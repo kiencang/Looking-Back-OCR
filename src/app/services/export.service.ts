@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, inject } from '@angular/core';
 import JSZip from 'jszip';
 import { PdfProcessor, PdfPageData } from '../pdf-processor';

@@ -14,6 +14,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { PdfProcessor } from './pdf-processor';
 import { DocumentProcessingService, PdfChunk } from './services/document-processing.service';
+import { ImageToPdfService } from './services/image-to-pdf.service';
 import { HistoryService } from './services/history.service';
 import { ExportService } from './services/export.service';
 
@@ -67,6 +68,7 @@ export class App {
   public docService = inject(DocumentProcessingService);
   public historyService = inject(HistoryService);
   public exportService = inject(ExportService);
+  private imageToPdfService = inject(ImageToPdfService);
 
   // Script and engine status
   isScriptLoaded = computed(() => this.pdfProcessor.isScriptLoaded());
@@ -199,7 +201,53 @@ export class App {
   }
 
   async processPdfFiles(files: File[]) {
-    const success = await this.docService.processPdfFiles(files);
+    if (!files || files.length === 0) return;
+
+    const hasPdf = files.some(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+    const hasImage = files.some(f => f.type.startsWith('image/'));
+
+    if (hasPdf && hasImage) {
+      this.apiError.set('🔴 Vui lòng không tải lên lẫn lộn file PDF và Hình ảnh. Hãy tải lên cùng một loại định dạng.');
+      return;
+    }
+
+    let filesToProcess = files;
+
+    if (hasImage) {
+      const MAX_IMAGES = 100;
+      const MAX_SIZE_MB = 5;
+
+      if (files.length > MAX_IMAGES) {
+        this.apiError.set(`🔴 Vui lòng chỉ tải lên tối đa ${MAX_IMAGES} hình ảnh cùng lúc.`);
+        return;
+      }
+
+      const validImages = files.filter(f => f.size <= MAX_SIZE_MB * 1024 * 1024);
+      if (validImages.length < files.length) {
+        this.docService.warningMessage.set(`Đã bỏ qua ${files.length - validImages.length} ảnh do vượt quá ${MAX_SIZE_MB}MB.`);
+      }
+
+      if (validImages.length === 0) {
+        this.apiError.set(`🔴 Không có hình ảnh nào hợp lệ (Tất cả đều lớn hơn ${MAX_SIZE_MB}MB).`);
+        return;
+      }
+
+      this.docService.isParsing.set(true);
+      this.docService.parsingStatus.set('Đang chuyển đổi hình ảnh thành PDF...');
+      
+      try {
+        const convertedPdf = await this.imageToPdfService.convertImagesToPdf(validImages);
+        filesToProcess = [convertedPdf];
+      } catch (err: any) {
+        this.docService.isParsing.set(false);
+        this.apiError.set(`🔴 Lỗi khi chuyển đổi hình ảnh: ${err.message || err}`);
+        return;
+      }
+      
+      // Do not set isParsing to false here because docService.processPdfFiles will handle it.
+    }
+
+    const success = await this.docService.processPdfFiles(filesToProcess);
     if (success) {
       this.selectedTab.set('pdf');
     }

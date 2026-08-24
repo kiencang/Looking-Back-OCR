@@ -30,7 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
         <input 
           #fileInput 
           type="file" 
-          accept="application/pdf" 
+          accept="application/pdf, image/jpeg, image/png" 
           multiple
           (change)="onFileSelected($event)" 
           class="hidden" />
@@ -56,20 +56,23 @@ import { MatIconModule } from '@angular/material/icon';
               </h2>
             } @else {
               <span class="text-[11px] font-sans font-medium text-slate-500 text-center uppercase tracking-wider select-none">
-                [Tối đa: 1 file ≤ 500 trang hoặc 20 file ≤ 12 trang/file]
+                Quy định tải lên
               </span>
             }
           </div>
 
           <!-- Stable Description slot (height fixed) -->
           <div class="min-h-[44px] flex items-center justify-center mb-8 max-w-md mx-auto">
-            <p class="text-[11px] text-slate-400 font-sans text-center leading-normal">
+            <div class="text-[11px] text-slate-400 font-sans text-center leading-relaxed">
               @if (isParsing()) {
                 <span class="text-indigo-300 font-medium">{{ parsingStatus() || 'Hệ thống đang cấu trúc thông tin' }}</span>
               } @else {
-                Hỗ trợ tải lên 1 tệp PDF (tối đa 100 MB và 500 trang) hoặc chọn cùng lúc tối đa 20 tệp PDF (mỗi tệp không quá 10 MB và 12 trang). Kéo thả file vào đây hoặc nhấp để chọn.
+                <p>[Tối đa: 1 file PDF ≤ 500 trang và không quá 100MB] hoặc</p>
+                <p>[20 file PDF, mỗi file ≤ 12 trang, và không quá 10MB] hoặc</p>
+                <p>[100 file ảnh (JPG, PNG), mỗi file ≤ 5MB]</p>
+                <p class="mt-1.5 text-indigo-300/80">Vui lòng không tải lên lẫn lộn 2 định dạng cùng lúc.</p>
               }
-            </p>
+            </div>
           </div>
 
           <!-- Stable Action slot (height fixed) -->
@@ -77,7 +80,7 @@ import { MatIconModule } from '@angular/material/icon';
             @if (!isParsing()) {
               <span class="px-8 py-3.5 flex items-center gap-2 text-base font-semibold bg-indigo-600 hover:bg-indigo-500 rounded-lg transition shadow-lg shadow-indigo-600/10 font-sans text-white select-none">
                 <mat-icon class="text-[20px] w-5 h-5 leading-[20px]">description</mat-icon>
-                Chọn tệp tin PDF
+                Chọn tệp tin PDF / Hình ảnh
               </span>
             } @else {
               <div class="w-full bg-slate-900 rounded-full h-1.5 max-w-xs overflow-hidden border border-white/5 mx-auto">
@@ -109,14 +112,14 @@ export class EmptyState {
     event.stopPropagation();
     if (this.isParsing()) return;
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
-      const pdfFiles = Array.from(event.dataTransfer.files).filter(
-        f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+      const validFiles = Array.from(event.dataTransfer.files).filter(
+        f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf') || f.type.startsWith('image/jpeg') || f.type.startsWith('image/png')
       );
-      if (pdfFiles.length === 1) {
-        this.fileSelected.emit(pdfFiles[0]);
-        this.filesSelected.emit(pdfFiles);
-      } else if (pdfFiles.length > 1) {
-        this.filesSelected.emit(pdfFiles);
+      if (validFiles.length === 1) {
+        this.fileSelected.emit(validFiles[0]);
+        this.filesSelected.emit(validFiles);
+      } else if (validFiles.length > 1) {
+        this.filesSelected.emit(validFiles);
       }
     }
   }
