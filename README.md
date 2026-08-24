@@ -3,7 +3,14 @@
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
-Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini hoặc Meta AI. File đầu vào có thể là định dạng PDF hoặc ảnh (JPG, PNG).
+Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini hoặc Meta AI. File đầu vào có thể là định dạng **PDF** hoặc **ảnh (JPG, PNG)**.
+- Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang;
+- Nếu bạn tải lên nhiều file PDF cùng lúc, số lượng tối đa không quá 20 file, mỗi file không quá 12 trang & không lớn hơn 10MB mỗi file;
+- Nếu bạn tải lên nhiều ảnh, số lượng không quá 100 ảnh, mỗi ảnh không quá 5MB;
+- Lưu ý, công cụ sẽ không nhận file tải lên lẫn lộn định dạng, tức là vừa PDF vừa ảnh.
+- Bạn chỉ nên tải lên hoặc là file PDF hoặc là file ảnh (có thể vừa JPG vừa PNG, cái này thì không vấn đề gì).
+
+Phần `Lịch sử` (nằm bên phải trên header) chứa danh sách 10 dự án chuyển đổi gần đây nhất, để bạn có thể tiện xem lại khi cần.
 
 ## Demo
 - Bản PDF scan: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
