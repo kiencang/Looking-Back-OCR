@@ -64,7 +64,7 @@ BẮT BUỘC SUY LUẬN NỘI BỘ TRƯỚC KHI TRẢ JSON [Không được xu�
    - Đơn cách kỹ thuật, công nghệ: "JetBrains Mono"
    ==> Chọn ra đúng 1 `headingFont` trong 10 font có độ tương đồng hình thái cao nhất với tiêu đề bản gốc.
 2. CHỌN BODY FONT TƯƠNG THÍCH (SANS-SERIF): Tra cứu Ma trận Phối chữ ở trên để chọn `bodyFont` thuộc nhóm Không Chân (Sans-serif) tương ứng, đảm bảo tối đa hóa khả năng đọc màn hình.
-3. THIẾT LẬP CÔNG THÁI HỌC: Xác định `bodyFontSize` (17.5px - 20px), `lineHeight` (1.65 - 1.8) và `textAlign` (`justify` cho văn xuôi, `left` cho kỹ thuật/danh mục).
+3. THIẾT LẬP CÔNG THÁI HỌC: Xác định `bodyFontSize` (17.5px - 20px), `lineHeight` (1.6 - 1.8) và `textAlign` (`justify` cho văn xuôi, `left` cho kỹ thuật/danh mục).
 4. ƯỚC LƯỢNG TỶ LỆ TIÊU ĐỀ: Đo lường độ tương phản kích cỡ của tiêu đề so với thân bài trong tài liệu mẫu để gán các giá trị kích cỡ phù hợp cho `H1`, `H2`, `H3`.
 </analysis_process>
 
@@ -74,7 +74,7 @@ QUY TẮC CHI TIẾT:
 - `headingFont`: Bắt buộc chọn 1 font trong danh mục 10 font sao cho TƯƠNG ĐỒNG NHẤT VỚI TIÊU ĐỀ TÀI LIỆU GỐC.
 - `bodyFont`: BẮT BUỘC chọn 1 font Sans-serif ("Be Vietnam Pro", "Plus Jakarta Sans", "Inter", "Roboto") theo đúng Ma trận Phối chữ. TUYỆT ĐỐI KHÔNG chọn font Serif, Montserrat hoặc "JetBrains Mono" cho bodyFont.
 - `bodyFontSize`: Kích cỡ chữ thân bài tối ưu cho đọc màn hình. Chọn: '17.5px', '18px', '18.5px', '19px' hoặc '20px' (Mặc định khuyến nghị: '18px' hoặc '18.5px').
-- `lineHeight`: Chọn '1.65', '1.7', '1.72', '1.75' hoặc '1.8' (Mặc định khuyến nghị: '1.7' hoặc '1.72' giúp dòng chữ thoáng đãng).
+- `lineHeight`: Chọn '1.6', '1.62', '1.65', '1.67', '1.7', '1.72', '1.75', '1.78' hoặc '1.8' (Hãy tìm điểm cân bằng giữa cách trình bày của bản gốc, và kích cỡ font chữ mà bạn chọn để đưa ra chọn lựa tốt nhất).
 - `textAlign`: Chọn 'justify' (cho văn xuôi/sách đọc dài) hoặc 'left' (cho sách kỹ thuật/hành chính/danh mục).
 - `paragraphSpacing`: Chọn '14px', '16px' hoặc '18px' (mặc định '16px').
 
@@ -107,7 +107,7 @@ CẢNH BÁO NGHIÊM NGẶT: BẮT BUỘC TRẢ VỀ DUY NHẤT 1 CHUỖI JSON H�
   "bodyFont": "<1 trong các font Sans-serif cho phép theo ma trận phối>",
   "headingFont": "<1 trong 10 font cho phép mô phỏng tiêu đề gốc>",
   "bodyFontSize": "<17.5px | 18px | 18.5px | 19px | 20px>",
-  "lineHeight": "<1.65 | 1.7 | 1.72 | 1.75 | 1.8>",
+  "lineHeight": "<1.6 | 1.62 | 1.65 | 1.67 | 1.7 | 1.72 | 1.75 | 1.78 | 1.8>",
   "textAlign": "<justify | left>",
   "paragraphSpacing": "<14px | 16px | 18px>",
   "h1FontSize": "<giá trị em tương ứng tỷ lệ tài liệu>",
