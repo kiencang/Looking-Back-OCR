@@ -33,7 +33,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
     <header class="h-14 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-4 md:px-6 flex items-center justify-between shrink-0 gap-3 z-20">
       
       <!-- Left: File Title & Chunk Info -->
-      <div class="flex items-center gap-3 min-w-0">
+      <div class="flex-1 flex items-center gap-3 min-w-0">
         <div class="flex items-center gap-2 bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-mono shrink-0">
           <mat-icon class="text-sm">compare</mat-icon>
           <span class="font-bold">Đối chiếu 1:1</span>
@@ -41,22 +41,19 @@ import { DocumentProcessingService } from './services/document-processing.servic
         <div class="truncate">
           <span class="text-xs font-bold text-slate-200 block truncate" title="{{ fileName() }}">{{ fileName() }}</span>
           <span class="text-[10px] text-slate-400 font-mono block">
-            {{ activeChunk()?.id || 'Toàn bộ tài liệu' }} 
-            @if (activeChunk()?.startPageNum) {
-              (Trang {{ activeChunk()?.startPageNum }} - {{ activeChunk()?.endPageNum }})
-            }
+            {{ activeChunk()?.id || 'Toàn bộ tài liệu' }}
           </span>
         </div>
       </div>
 
       <!-- Center: Page Jumping & Navigation Controls -->
-      <div class="hidden sm:flex items-center gap-2 bg-slate-950/80 border border-white/10 px-3 py-1 rounded-xl">
+      <div class="hidden sm:flex items-center gap-2 bg-slate-800/80 border border-white/20 shadow-sm px-3 py-1.5 rounded-xl">
         <button 
           (click)="prevPage()"
           [disabled]="currentPageIndex() <= 0"
-          class="p-1 rounded text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          class="p-1 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center justify-center"
           title="Trang trước">
-          <mat-icon class="text-base">chevron_left</mat-icon>
+          <mat-icon class="text-[24px] !w-[24px] !h-[24px] leading-none flex items-center justify-center">chevron_left</mat-icon>
         </button>
 
         <div class="flex items-center gap-1.5 text-xs font-mono px-2">
@@ -64,7 +61,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
           <select 
             [value]="currentPageNum()" 
             (change)="onPageSelectChange($event)"
-            class="bg-slate-900 text-white font-bold px-2 py-0.5 rounded border border-white/10 text-xs focus:outline-none focus:border-indigo-500 cursor-pointer">
+            class="bg-slate-900 text-white font-bold px-2 py-0.5 rounded border border-white/20 text-xs focus:outline-none focus:border-indigo-500 cursor-pointer">
             @for (page of currentPages(); track page.pageNum) {
               <option [value]="page.pageNum">{{ page.pageNum }}</option>
             }
@@ -75,14 +72,14 @@ import { DocumentProcessingService } from './services/document-processing.servic
         <button 
           (click)="nextPage()"
           [disabled]="currentPageIndex() >= currentPages().length - 1"
-          class="p-1 rounded text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          class="p-1 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center justify-center"
           title="Trang tiếp theo">
-          <mat-icon class="text-base">chevron_right</mat-icon>
+          <mat-icon class="text-[24px] !w-[24px] !h-[24px] leading-none flex items-center justify-center">chevron_right</mat-icon>
         </button>
       </div>
 
       <!-- Right: Zoom, Theme, Download & Exit -->
-      <div class="flex items-center gap-2">
+      <div class="flex-1 flex items-center justify-end gap-2">
         
         <!-- PDF Zoom Controls -->
         <div class="hidden md:flex items-center gap-1 bg-slate-950/80 border border-white/10 px-2 py-1 rounded-xl text-xs font-mono text-slate-400">
@@ -131,36 +128,12 @@ import { DocumentProcessingService } from './services/document-processing.servic
           </div>
         }
 
-        <!-- Quick Export Buttons (Desktop) -->
-        @if (isAllCompleted()) {
-          <div class="hidden lg:flex items-center gap-1.5 border-l border-white/10 pl-2">
-            @if (outputMode() === 'html') {
-              <button 
-                (click)="downloadHtml.emit()"
-                class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
-                title="Tải tệp HTML độc lập trọn bộ">
-                <mat-icon class="text-xs">html</mat-icon>
-                <span>Tải HTML trọn bộ</span>
-              </button>
-            } @else {
-              <button 
-                (click)="downloadDocx.emit()"
-                class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm cursor-pointer"
-                title="Tải Microsoft Word">
-                <mat-icon class="text-xs">description</mat-icon>
-                <span>Word</span>
-              </button>
-            }
-          </div>
-        }
-
         <!-- Exit Fullscreen Button -->
         <button 
           (click)="closeModal.emit()"
           class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95 ml-1">
           <mat-icon class="text-sm">close</mat-icon>
           <span class="hidden sm:inline">Thoát</span>
-          <span class="text-[9px] bg-rose-500/30 px-1 rounded text-rose-200 uppercase font-mono">Esc</span>
         </button>
 
       </div>
