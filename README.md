@@ -17,7 +17,7 @@ Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việ
 
 **Lưu ý**: Với trường hợp sử dụng KEY miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
 
-### Lưu ý một số giới hạn
+### Một số giới hạn tải lên
 - Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang;
 - Nếu bạn tải lên nhiều file PDF cùng lúc, số lượng tối đa không quá 20 file, mỗi file không quá 12 trang & không lớn hơn 10MB mỗi file;
 - Nếu bạn tải lên nhiều ảnh, số lượng không quá 100 ảnh, mỗi ảnh không quá 5MB;
