@@ -1,9 +1,8 @@
 {
   "name": "ai-studio-angular-app",
-  "version": "1.0.65",
+  "version": "1.0.66",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
     "dev": "cross-env ng serve --port=3000 --host=0.0.0.0 --allowed-hosts=true ${DISABLE_HMR:+--live-reload=false}",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
