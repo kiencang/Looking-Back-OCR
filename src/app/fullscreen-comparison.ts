@@ -171,12 +171,14 @@ import { DocumentProcessingService } from './services/document-processing.servic
               
               <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-2">
                 <span class="font-bold text-slate-200">Trang số {{ page.pageNum }}</span>
-                <button 
-                  (click)="scrollToHtmlAnchor(page.pageNum)"
-                  class="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 text-[11px] font-sans cursor-pointer hover:underline">
-                  <span>Xem chữ OCR tương ứng</span>
-                  <mat-icon class="text-xs">arrow_forward</mat-icon>
-                </button>
+                @if (outputMode() === 'html') {
+                  <button 
+                    (click)="scrollToHtmlAnchor(page.pageNum)"
+                    class="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 text-[11px] font-sans cursor-pointer hover:underline">
+                    <span>Xem chữ OCR tương ứng</span>
+                    <mat-icon class="text-xs">arrow_forward</mat-icon>
+                  </button>
+                }
               </div>
 
               <!-- Zoomable PDF Image Page -->
