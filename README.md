@@ -3,7 +3,11 @@
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
-Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini (Google) hoặc Meta AI (công ty mẹ của Facebook). File đầu vào có thể là định dạng **PDF** hoặc **ảnh (JPG, PNG)**. Looking-Back-OCR cũng có khả năng **bảo toàn công thức toán** rất tốt, vì thế sách toán cũ nói riêng & sách khoa học nói chung cũng được xử lý ổn thỏa.
+Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini (Google) hoặc Meta AI (công ty mẹ của Facebook). File đầu vào có thể là định dạng **PDF** hoặc **ảnh (JPG, PNG)**. 
+
+Looking-Back-OCR cũng có khả năng **bảo toàn công thức toán** rất tốt, vì thế sách toán cũ nói riêng & sách khoa học nói chung cũng được xử lý ổn thỏa.
+
+Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & các phiên bản khác nhau của ứng dụng. Người dùng cuối không cần cài bất cứ phần mềm nào, bạn chỉ việc truy cập vào công cụ đã được đóng gói sẵn để dùng (xem mục `Sử dụng`).
 
 ## Demo
 - Bản PDF scan tải lên: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
