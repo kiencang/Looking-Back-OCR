@@ -96,7 +96,7 @@ Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển �
 Một cuốn sách sẽ được Looking-Back-OCR chủ động chia thành nhiều chunk (phần), ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định mỗi chunk có tối đa 12 trang) sẽ được công cụ tự động đưa vào bước phân tích thiết kế. Mục đích là để tạo ra thiết kế thống nhất cho toàn bộ kết quả của từng chunk.
 
 <p align="center">
-  <img src="images/ho-so-thiet-ke.png" alt="Hồ sơ thiết kế đồng nhất">
+  <img src="images/ho-so-thiet-ke-dong-nhat.png" alt="Hồ sơ thiết kế đồng nhất">
    <br><em>Thiết kế chung được áp dụng cho file kết quả</em>
 </p>
 
