@@ -371,6 +371,11 @@ td .ocr-preview-img {
   color: #a1a1aa !important;
 }
 
+/* Protect preview content from inheriting the UI font (Inter) */
+.prose {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 /* Tables */
 .table-wrapper {
   overflow-x: auto !important;
