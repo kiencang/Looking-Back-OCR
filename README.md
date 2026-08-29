@@ -3,31 +3,31 @@
    <br><em>Một file PDF được OCR bởi Looking-Back-OCR</em>
 </p>
 
-Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini hoặc Meta AI. File đầu vào có thể là định dạng **PDF** hoặc **ảnh (JPG, PNG)**. Looking-Back-OCR cũng có khả năng bảo toàn công thức toán rất tốt, vì thế sách toán cũ nói riêng & sách khoa học nói chung cũng được xử lý ổn thỏa.
+Công cụ OCR tài liệu, sách xưa, sách scan bị mờ chữ tiếng Việt (ví dụ: `Nam Phong Tạp Chí`) bằng Gemini (Google) hoặc Meta AI (công ty mẹ của Facebook). File đầu vào có thể là định dạng **PDF** hoặc **ảnh (JPG, PNG)**. Looking-Back-OCR cũng có khả năng **bảo toàn công thức toán** rất tốt, vì thế sách toán cũ nói riêng & sách khoa học nói chung cũng được xử lý ổn thỏa.
 
 ## Demo
 - Bản PDF scan tải lên: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
-- Bản web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
-- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Trước khi chuyển, bạn nhìn xuống footer, chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng web).
+- Bản Web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
+- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Trước khi chuyển, bạn nhìn xuống footer/chân trang, chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
 
 ## Sử dụng
 - **Mọi người có thể dùng phiên bản trên AI Studio thông qua link này**: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng **ngưỡng miễn phí hàng ngày** tương đổi rộng rãi của Gemini).
-- Bản web: https://looking-back-ocr.wpsila.com/ (chỉ key trả phí mới dùng được).
+- Bản web: https://looking-back-ocr.wpsila.com (chỉ key trả phí mới dùng được).
 
 2 bản trên là một, và có chất lượng như nhau.
 
-**Lưu ý**: Với trường hợp sử dụng KEY miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
+**Lưu ý**: Với trường hợp sử dụng KEY miễn phí trên AI Studio (Gemini) hoặc sử dụng model trợ giá của Meta AI (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo AI của họ.
 
 ### Một số giới hạn tải lên
-- Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang;
+- Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang. Nếu file lớn quá nên dùng công cụ cắt file PDF trước khi tải lên, ví dụ công cụ này: https://smallpdf.com/vi/split-pdf;
 - Nếu bạn tải lên nhiều file PDF cùng lúc, số lượng tối đa không quá 20 file, mỗi file không quá 12 trang & không lớn hơn 10MB mỗi file;
 - Nếu bạn tải lên nhiều ảnh, số lượng không quá 100 ảnh, mỗi ảnh không quá 5MB;
 - Lưu ý, công cụ sẽ không nhận file tải lên lẫn lộn định dạng, tức là vừa PDF vừa ảnh.
 - Bạn chỉ nên tải lên hoặc là file PDF hoặc là file ảnh (có thể vừa JPG vừa PNG, cái này thì không vấn đề gì).
 
-Phần `Lịch sử` (nằm bên phải trên header) chứa danh sách 10 dự án chuyển đổi gần đây nhất, để bạn có thể tiện xem lại khi cần.
+Phần `Lịch sử` (nằm bên phải trên header/đầu trang) chứa danh sách 10 dự án chuyển đổi gần đây nhất, để bạn có thể tiện xem lại khi cần. Phần `Lịch sử` này sẽ được lưu cục bộ trên trình duyệt cụ thể, và trên máy tính cụ thể mà bạn đang dùng, bạn tắt máy hôm sau bật chúng vẫn còn (và không cần kết nối mạng vẫn xem lại được), tuy nhiên nếu dùng trình duyệt khác hoặc máy tính khác thì sẽ không thấy.
 
-## Tại sao tồn tại?
+## Tại sao công cụ này tồn tại?
 Sách xưa có khá nhiều cuốn thú vị, tuy nhiên định dạng PDF scan có thể không dễ đọc do **bản chất sách gốc đã bị ố mờ** hoặc do **phương pháp scan không đủ tốt** để tạo ra phiên bản nét đọc được ngay.
 
 **Looking-Back-OCR** ra đời nhằm khắc phục phần nào tình trạng đó. Nó giúp tái tạo lại sách xưa, sách cũ với chữ rõ ràng & dễ đọc hơn. Ngoài ra là hiệu ứng phụ tích cực (dù có thể không quan trọng lắm), đấy là bản OCR thường có dung lượng nhẹ hơn đáng kể so với bản gốc, việc truyền tải, chia sẻ do vậy sẽ dễ dàng hơn.
@@ -37,7 +37,7 @@ OCR giờ nở rộ (một phần vì các AI cần phải nạp thông tin có 
 
 Đặt lên bàn cân giữa Looking-Back-OCR và một công nghệ OCR hàng đầu hiện nay như [PaddleOCR](https://aistudio.baidu.com/paddleocr) có thể thấy rõ ưu và nhược của từng cái.
 
-PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan. Tuy nhiên về độ chính xác, đặc biệt là chính tả, Looking-Back-OCR lại tỏ ra vượt trội (không phải do tôi thông minh hơn, mà vì Gemini thông minh hơn!).
+PaddleOCR vẫn tách được ảnh kể cả trong các file PDF scan, trong khi Looking-Back-OCR không tách được ảnh trong file PDF scan, nó chỉ xử lý văn bản. Tuy nhiên về độ chính xác, đặc biệt là **chính tả**, Looking-Back-OCR lại tỏ ra vượt trội (không phải do tôi thông minh hơn, mà vì Gemini thông minh hơn!).
 
 Một đối thủ mạnh khác là [MinerU](https://mineru.net/), so với nó, Looking-Back-OCR cũng có chất lượng chính tả tốt hơn nhiều.
 
