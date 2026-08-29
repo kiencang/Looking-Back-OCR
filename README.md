@@ -93,7 +93,7 @@ Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở góc ngoài cùng bê
 Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "Đơn giản"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại.
 
 ### Hồ sơ thiết kế đồng nhất
-Một cuốn sách sẽ được chia thành nhiều chunk (phần), do vậy để thống nhất thiết kế, ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định ứng dụng chia ngưỡng chunk tối đa là 12 trang một chunk) sẽ được đưa vào bước phân tích thiết kế. Mục đích là để tạo ra sự thống nhất thiết kế cho toàn bộ kết quả của từng chunk.
+Một cuốn sách sẽ được Looking-Back-OCR chủ động chia thành nhiều chunk (phần), ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định mỗi chunk có tối đa 12 trang) sẽ được công cụ tự động đưa vào bước phân tích thiết kế. Mục đích là để tạo ra thiết kế thống nhất cho toàn bộ kết quả của từng chunk.
 
 <p align="center">
   <img src="images/ho-so-thiet-ke.png" alt="Hồ sơ thiết kế đồng nhất">
