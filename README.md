@@ -12,7 +12,7 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & các
 ## Demo
 - Bản PDF scan tải lên: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
 - Bản Web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
-- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Để có phiên bản `.docx`, trước khi chuyển, bạn chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
+- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Để có phiên bản `.docx`, trước khi chuyển, bạn chọn kiểu chuyển "DOCX" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
 
 ## Sử dụng
 - **Mọi người có thể dùng phiên bản trên AI Studio thông qua link này**: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng **ngưỡng miễn phí hàng ngày** tương đổi rộng rãi của Gemini).
@@ -75,26 +75,24 @@ Looking-Back-OCR kế thừa và phát triển từ công cụ trước đó (c�
 Ngoài Gemini, công cụ này còn tích hợp thêm Meta AI. Meta có khả năng OCR không tốt bằng Gemini, nhưng nó đỡ khó tính hơn Gemini trong vấn đề chặn chuyển đổi. Gemini đôi khi nhận nhầm một sách đã hết hạn bảo hộ là vẫn còn bản quyền và không cho phép chuyển.
 
 ### Các model
-Có 4 model có thể chọn lựa qua giao diện của ứng dụng:
-- 3 model mới nhất của Gemini là Flash, Lite, Pro;
+Có 3 model có thể chọn lựa qua giao diện của ứng dụng:
+- 2 model mới nhất của Gemini là Flash, Pro;
 - 1 model mới nhất của Meta AI;
 
 Trong đó mặc định ứng dụng sẽ sử dụng model Flash, nó có chất lượng tốt và ngưỡng miễn phí đủ rộng. Nó có khả năng xử lý các tài liệu có cấu trúc phức tạp, chữ mờ khó nhìn.
-
-Model Lite ở thời điểm hiện tại chỉ nên dùng như một dạng kiểm tra, test thử, hoặc nếu muốn dùng chính thức thì chỉ cho các tài liệu có cấu trúc đơn giản và chữ vẫn còn nhìn khá rõ.
 
 Model Pro là model mạnh nhất trong dòng Gemini, tốc độ chậm hơn, có thể phù hợp cho tài liệu có cấu trúc rất phức tạp. Trên tài khoản miễn phí, model Pro bị giới hạn lượt request sớm hơn khá nhiều so với model Flash.
 
 ## Hai kiểu tái tạo
 Trước khi OCR, người dùng có quyền chọn một trong hai định dạng dưới đây:
-- **HTML/CSS**: Định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản HTML/CSS cũng chia 2 cột. Tuy nhiên điều này không có nghĩa là sao chép định dạng gốc 100%, nó thiên về tái tạo hơn, và có thể có những điểm không giống, ví dụ như loại font chữ hoặc cỡ font;
-- **Markdown**: Định dạng tối giản, nhưng lại có khả năng xuất ra Docx, giúp người dùng có thể biên tập thêm khi cần;
+- **Bảo toàn**: Định dạng web, giúp bảo toàn tối đa định dạng gốc, ví dụ bản gốc chia 2 cột thì bản web cũng chia 2 cột. Tuy nhiên điều này không có nghĩa là sao chép định dạng gốc 100%, nó thiên về tái tạo hơn, và có thể có những điểm không giống;
+- **DOCX**: Định dạng tối giản, nhưng lại có khả năng xuất ra Docx, giúp người dùng có thể biên tập thêm khi cần;
 
-Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc, không chỉ nội dung mà còn là cả hình thức, hãy dùng cách chuyển đổi HTML/CSS (còn gọi là "Bảo toàn"). Còn nếu bạn quan tâm đơn thuần đến việc đọc, muốn tiết kiệm token đầu ra (ví dụ khi bạn dùng API Key trả phí) hãy dùng kiểu chuyển sang Markdown (còn gọi là "Đơn giản"). Ngoài ra nếu có nhu cầu biên tập lại thì chỉ có kiểu Markdown mới giúp bạn có được định dạng Docx.
+Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc, không chỉ nội dung mà còn là cả hình thức, hãy dùng cách chuyển "Bảo toàn". Còn nếu bạn có nhu cầu biên tập lại thì chỉ có kiểu DOCX mới giúp bạn có được định dạng có thể chỉnh sửa này.
 
-Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở ngay trước nút bấm `Xử lý tất cả`. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn", tức là bản OCR sẽ có định dạng tương đồng với bản gốc. 
+Hai tùy chọn "DOCX" và "Bảo toàn" nằm ngay trên nút bấm `Xử lý tất cả`. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn", tức là bản OCR sẽ có định dạng tương đồng với bản gốc. 
 
-Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "Đơn giản"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại. Tóm lại việc chọn kiểu chuyển đổi nên được thực hiện trước khi tiến hành `Xử lý tất cả`.
+Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "DOCX"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại. Tóm lại việc chọn kiểu chuyển đổi nên được thực hiện trước khi tiến hành `Xử lý tất cả`.
 
 ### Hồ sơ thiết kế đồng nhất
 Một cuốn sách sẽ được Looking-Back-OCR chủ động chia thành nhiều chunk (phần), ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định mỗi chunk có tối đa 12 trang) sẽ được công cụ tự động đưa vào bước phân tích thiết kế. Mục đích là để tạo ra thiết kế thống nhất cho toàn bộ kết quả của từng chunk.
@@ -154,6 +152,6 @@ Dưới đây là danh sách các thư viện quan trọng được Looking-Back
 *   **[mathml2omml](https://github.com/fiduswriter/mathml2omml)**: Thư viện JS dùng để chuyển `MathML` thành chuẩn công thức toán chuẩn (`OMML`) cho định dạng DOCX.
 
 ### 4. Đọc/Ghi & Tạo định dạng đầu ra
-*   **[Docx.js](https://docx.js.org/)** – Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (.docx) chạy trực tiếp trên trình duyệt (Client-side). Cái này dành cho luồng PDF -> Markdown (kiểu chuyển Đơn giản), người dùng sau khi chuyển xong có thể tải về định dạng .docx để biên tập thêm.
-*   **[Marked.js](https://marked.js.org/)** – Trình biên dịch Markdown, giúp biên dịch dữ liệu markdown từ AI phản hồi thành mã HTML sạch, để hiển thị xem trước (dành riêng cho luồng PDF -> Markdown [kiểu chuyển Đơn giản], vì luồng PDF -> HTML/CSS [kiểu chuyển Bảo toàn], thì AI đã trả thẳng về HTML rồi).
+*   **[Docx.js](https://docx.js.org/)** – Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (.docx) chạy trực tiếp trên trình duyệt (Client-side). Cái này dành cho luồng PDF -> Markdown (kiểu xuất được DOCX), người dùng sau khi chuyển xong có thể tải về định dạng .docx để biên tập thêm.
+*   **[Marked.js](https://marked.js.org/)** – Trình biên dịch Markdown, giúp biên dịch dữ liệu markdown từ AI phản hồi thành mã HTML sạch, để hiển thị xem trước (dành riêng cho luồng PDF -> Markdown [kiểu xuất được DOCX], vì luồng PDF -> HTML/CSS [kiểu chuyển Bảo toàn], thì AI đã trả thẳng về HTML rồi).
 *   **[JSZip](https://stuk.github.io/jszip/)** – Phát triển bởi **Stuart Knightley**. Thư viện giúp đóng gói dữ liệu nén định dạng ZIP để tải về. Được dùng khi người dùng muốn tải dự án về và chuyển sang tài khoản khác để chuyển đổi tiếp. Định dạng `.zip` sẽ thân thiện cho người dùng phổ thông hơn là định dạng `JSON`.
