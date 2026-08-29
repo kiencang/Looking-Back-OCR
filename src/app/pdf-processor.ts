@@ -148,7 +148,7 @@ export class PdfProcessor {
   private async renderPageFromDoc(doc: any, localPageNum: number): Promise<string> {
     try {
       const page = await doc.getPage(localPageNum);
-      const viewport = page.getViewport({ scale: 1.4 }); // Scale = 1.4 per requirement
+      const viewport = page.getViewport({ scale: 1.4 * (window.devicePixelRatio || 1) }); // Scale for high DPI screens
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       if (!ctx) return '';
