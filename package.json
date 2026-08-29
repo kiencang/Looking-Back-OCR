@@ -1,6 +1,6 @@
 {
   "name": "ai-studio-angular-app",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "scripts": {
     "ng": "ng",
     "dev": "cross-env ng serve --port=3000 --host=0.0.0.0 --allowed-hosts=true ${DISABLE_HMR:+--live-reload=false}",
@@ -26,6 +26,7 @@
     "jszip": "^3.10.1",
     "katex": "^0.17.0",
     "marked": "^18.0.4",
+    "mathml2omml": "^0.5.0",
     "motion": "^12.23.24",
     "openai": "^7.4.0",
     "pdf-lib": "^1.17.1",

@@ -15,8 +15,16 @@ import {
   MathSquareBrackets,
   MathAngledBrackets,
   createMathBase,
-  Math as DocxMath
+  Math as DocxMath,
+  ImportedXmlComponent
 } from 'docx';
+import * as mathml2ommlPkg from 'mathml2omml';
+
+const mml2ommlFn: (mml: string) => string =
+  (mathml2ommlPkg as any).mml2omml ||
+  (mathml2ommlPkg as any).default?.mml2omml ||
+  (mathml2ommlPkg as any).default ||
+  mathml2ommlPkg;
 
 export interface InlineToken {
   text: string;
@@ -712,7 +720,27 @@ export function convertNodeToMathComponent(node: Node): any[] {
   return Array.from(node.childNodes).flatMap(child => convertNodeToMathComponent(child));
 }
 
-export function parseMathML(mathmlString: string): DocxMath {
+export function parseMathML(mathmlString: string): any {
+  try {
+    const mathMatch = mathmlString.match(/<math[\s\S]*?<\/math>/i);
+    const cleanMathML = (mathMatch ? mathMatch[0] : mathmlString)
+      .replace(/<annotation[\s\S]*?<\/annotation>/g, '');
+
+    if (typeof mml2ommlFn === 'function') {
+      const omml = mml2ommlFn(cleanMathML);
+      if (omml && typeof omml === 'string' && omml.includes('<m:oMath')) {
+        const compWrapper = ImportedXmlComponent.fromXmlString(omml);
+        const rootArr = (compWrapper as any).root;
+        if (Array.isArray(rootArr) && rootArr.length > 0) {
+          return rootArr[0];
+        }
+        return compWrapper;
+      }
+    }
+  } catch (err) {
+    console.warn('mathml2omml conversion error, falling back to AST parser:', err);
+  }
+
   try {
     const parser = new DOMParser();
     const doc = parser.parseFromString(mathmlString, 'text/html');

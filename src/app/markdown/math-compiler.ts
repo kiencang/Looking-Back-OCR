@@ -1,5 +1,16 @@
 import katex from 'katex';
 
+function normalizeLatexGroupings(latex: string): string {
+  // Normalize (expression)^power, [expression]^power, (expression)_sub to \left(...\right) so KaTeX outputs grouped MathML
+  return latex.replace(/(\([^[\](){}]*?\)|\[[^[\](){}]*?\])\s*(\^|_)(?:(\{([^{}]+?)\})|([0-9a-zA-Z]))/g, (_match, base, op, fullGroup, _innerGroup, singleExp) => {
+    const exp = fullGroup || `{${singleExp}}`;
+    const openChar = base.slice(0, 1);
+    const closeChar = base.slice(-1);
+    const inner = base.slice(1, -1);
+    return `\\left${openChar}${inner}\\right${closeChar}${op}${exp}`;
+  });
+}
+
 export class MathCompiler {
   /**
    * Compiles LaTeX formulas ($...$, $$...$$, \(...\), \[...\]) into standard MathML tags.
@@ -18,7 +29,8 @@ export class MathCompiler {
     for (const item of blockRegexes) {
       compiled = compiled.replace(item.regex, (_match, formula) => {
         try {
-          const mathml = katex.renderToString(formula.trim(), {
+          const normalized = normalizeLatexGroupings(formula.trim());
+          const mathml = katex.renderToString(normalized, {
             displayMode: true,
             output: 'mathml',
             throwOnError: true
@@ -45,7 +57,8 @@ export class MathCompiler {
     for (const item of inlineRegexes) {
       compiled = compiled.replace(item.regex, (_match, formula) => {
         try {
-          const mathml = katex.renderToString(formula.trim(), {
+          const normalized = normalizeLatexGroupings(formula.trim());
+          const mathml = katex.renderToString(normalized, {
             displayMode: false,
             output: 'mathml',
             throwOnError: true

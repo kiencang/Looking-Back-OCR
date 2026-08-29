@@ -23,7 +23,7 @@ export class ImageToPdfService {
       let pdfImage;
       try {
         pdfImage = await pdfDoc.embedJpg(buffer);
-      } catch (e) {
+      } catch {
         throw new Error('Lỗi nhúng ảnh vào PDF (có thể do lỗi định dạng).');
       }
 
