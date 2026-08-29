@@ -12,7 +12,7 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & các
 ## Demo
 - Bản PDF scan tải lên: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
 - Bản Web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
-- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Trước khi chuyển, bạn chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
+- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Để có phiên bản `.docx`, trước khi chuyển, bạn chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
 
 ## Sử dụng
 - **Mọi người có thể dùng phiên bản trên AI Studio thông qua link này**: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng **ngưỡng miễn phí hàng ngày** tương đổi rộng rãi của Gemini).
