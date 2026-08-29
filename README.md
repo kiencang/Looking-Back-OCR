@@ -95,6 +95,11 @@ Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển �
 ### Hồ sơ thiết kế đồng nhất
 Một cuốn sách sẽ được chia thành nhiều chunk (phần), do vậy để thống nhất thiết kế, ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định ứng dụng chia ngưỡng chunk tối đa là 12 trang một chunk) sẽ được đưa vào bước phân tích thiết kế. Mục đích là để tạo ra sự thống nhất thiết kế cho toàn bộ kết quả của từng chunk.
 
+<p align="center">
+  <img src="images/ho-so-thiet-ke.png" alt="Hồ sơ thiết kế đồng nhất">
+   <br><em>Thiết kế chung được áp dụng cho file kết quả</em>
+</p>
+
 3 chunk mẫu này sẽ gồm một chunk ở đầu cuốn và 2 chunk ở giữa cuốn. Ở những phiên bản cũ hơn, ứng dụng lấy 3 chunk là đầu, giữa và cuối, tuy nhiên tôi nhận thấy phần cuối thường ít phản ánh thiết kế đặc trưng của sách, do vậy tôi chuyển thành như hiện tại, thay thế chunk cuối bằng một chunk nữa ở giữa sách.
 
 Các thông tin thiết kế thống nhất bao gồm:
@@ -116,6 +121,11 @@ Công cụ tích hợp sẵn khả năng xử lý và biểu diễn công thức
 Với kiểu chuyển đổi dựa trên Gemini, ngưỡng miễn phí có thể hết giữa chừng khi bạn đang chuyển đổi một cuốn sách lớn (ví dụ 400 trang, và mới chuyển được khoảng 200 trang thì hết ngưỡng miễn phí hàng ngày). Lúc này bạn có hai lựa chọn:
 - Đợi đến ngày hôm sau, khi ngưỡng miễn phí được cấp lại rồi tiến hành chuyển đổi tiếp;
 - hoặc Xuất dự án, rồi Nhập lại dự án trên tài khoản khác (còn ngưỡng miễn phí) để chuyển đổi tiếp ngay lập tức;
+
+<p align="center">
+  <img src="images/xuat-nhap-du-an.png" alt="Xuất nhập dự án">
+   <br><em>Xuất nhập dự án để chuyển sang tài khoản khác chuyển đổi tiếp</em>
+</p>
 
 Button "Xuất dự án" và "Nhập dự án" nằm ở khu vực "Lịch sử".
 
