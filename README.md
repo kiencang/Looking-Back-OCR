@@ -143,7 +143,8 @@ Dưới đây là danh sách các thư viện quan trọng được Looking-Back
 
 ### 2. Xử lý và Phân tích tài liệu PDF
 *   **[PDF-Lib](https://pdf-lib.js.org/)** – Xử lý tách trang, chia chunk.
-*   **[KaTeX](https://katex.org/)**: Thư viện xử lý và hiển thị công thức toán học do Khan Academy phát triển. Đóng vai trò là engine chuyển đổi các công thức toán học LaTeX (được AI bóc tách từ tài liệu) sang định dạng XML chuẩn `MathML`. Nhờ cấu trúc MathML nguyên bản này, các công thức phức tạp được giữ nguyên định dạng khi xuất sang dạng tài liệu **Microsoft Word (.docx)**.
+*   **[KaTeX](https://katex.org/)**: Thư viện xử lý và hiển thị công thức toán học do Khan Academy phát triển. Đóng vai trò là engine chuyển đổi các công thức toán học LaTeX (được AI bóc tách từ tài liệu) sang định dạng XML chuẩn `MathML`.
+*   **[mathml2omml](https://github.com/fiduswriter/mathml2omml)**: Thư viện JS dùng để chuyển MathML thành chuẩn công thức toán cho DOCX.
 
 ### 3. Đọc/Ghi & Tạo định dạng đầu ra
 *   **[Docx.js](https://docx.js.org/)** – Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (.docx) chạy trực tiếp trên trình duyệt (Client-side).
