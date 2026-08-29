@@ -51,7 +51,7 @@ import { MatIconModule } from '@angular/material/icon';
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">2</div>
             <div>
               <p class="text-sm font-bold text-slate-100 mb-1.5">Tải lên tài liệu PDF hoặc ảnh JPG/PNG</p>
-              <p>Kéo thả trực tiếp tệp tin PDF/ảnh hoặc nhấp chọn tệp từ máy tính. Tùy chọn mặc định model AI là Flash thường thích hợp nhất để phân tích đa số các file. Còn model Lite chỉ đủ dùng cho các file rất đơn giản. Model Muse của Meta có thể phù hợp với các tài liệu mà Gemini hiểu nhầm và từ chối chuyển đổi.</p>
+              <p>Kéo thả trực tiếp tệp tin PDF/ảnh hoặc nhấp chọn tệp từ máy tính. Tùy chọn mặc định model AI là Flash thường thích hợp nhất trong đa số trường hợp. Model Pro có thể cần thiết khi muốn tái tạo các file có cấu trúc rất phức tạp. Model Muse của Meta có thể phù hợp với các tài liệu mà Gemini hiểu nhầm và từ chối chuyển đổi.</p>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ import { MatIconModule } from '@angular/material/icon';
             <div class="h-6 w-6 rounded-lg bg-indigo-600/25 border border-indigo-500/20 text-indigo-400 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">3</div>
             <div>
               <p class="text-sm font-bold text-slate-100 mb-1.5">OCR tài liệu</p>
-              <p>Công cụ sẽ tách file lớn thành nhiều phần khác nhau & xử lý dần dần. Tùy chọn mặc định OCR là "Bảo toàn", đây là chọn lựa phù hợp để bạn có phiên bản cho việc đọc ngay, với cấu trúc tương tự bản gốc. Nếu bạn muốn tải về bản .DOCX để biên tập lại, thì trước khi chuyển đổi chính thức diễn ra, ở thanh công cụ bên trái, chọn "Đơn giản" thay vì mặc định "Bảo toàn", rồi sau đó nhấn nút "Xử lý tất cả". Nếu bạn đã tiến hành xử lý rồi, thì để đổi định dạng đầu ra, bạn cần up lại tài liệu lên.</p>
+              <p>Công cụ sẽ tách file lớn thành nhiều phần khác nhau & xử lý dần dần. Tùy chọn mặc định OCR là "Bảo toàn", đây là chọn lựa phù hợp để bạn có phiên bản cho việc đọc ngay, với cấu trúc tương tự bản gốc. Nếu bạn muốn tải về bản .DOCX để biên tập lại, thì trước khi chuyển đổi chính thức diễn ra, ở thanh công cụ bên trái, chọn "DOCX" thay vì mặc định "Bảo toàn", rồi sau đó nhấn nút "Xử lý tất cả". Nếu bạn đã tiến hành xử lý rồi, thì để đổi định dạng đầu ra, bạn cần up lại tài liệu lên.</p>
             </div>
           </div>
 

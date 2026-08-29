@@ -171,10 +171,9 @@ import { OutputMode } from './header';
               [class.text-slate-400]="selectedOutputMode() !== 'markdown'"
               [class.hover:text-slate-200]="selectedOutputMode() !== 'markdown' && !isOutputModeLocked()">
               <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-cyan-400]="selectedOutputMode() === 'markdown'">article</mat-icon>
-              <span>Đơn giản</span>
+              <span>DOCX</span>
               <!-- Tooltip Simple -->
               <div class="absolute bottom-full left-0 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
-                <div class="font-bold text-cyan-400 mb-0.5">Markdown (Đơn giản)</div>
                 <span>Tái tạo đơn giản, phù hợp xuất DOCX. Tiết kiệm token tối đa.</span>
               </div>
             </button>
@@ -191,7 +190,6 @@ import { OutputMode } from './header';
               <span>Bảo toàn</span>
               <!-- Tooltip HTML -->
               <div class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
-                <div class="font-bold text-emerald-400 mb-0.5">HTML/CSS (Bảo toàn)</div>
                 <span>Tái tạo bảng biểu, cột, lề, font chữ tương tự bản gốc.</span>
               </div>
             </button>

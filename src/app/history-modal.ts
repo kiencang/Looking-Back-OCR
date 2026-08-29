@@ -118,14 +118,11 @@ import { MatIconModule } from '@angular/material/icon';
                           [class.border-violet-500/20]="currentModel === 'gemini-pro-latest'"
                           [class.bg-emerald-500/10]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'"
                           [class.text-emerald-300]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'"
-                          [class.border-emerald-500/20]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'"
-                          [class.bg-indigo-500/10]="currentModel === 'gemini-flash-lite-latest'"
-                          [class.text-indigo-300]="currentModel === 'gemini-flash-lite-latest'"
-                          [class.border-indigo-500/20]="currentModel === 'gemini-flash-lite-latest'">
+                          [class.border-emerald-500/20]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'">
                           <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none flex items-center justify-center">
-                            {{ currentModel === 'gemini-flash-latest' ? 'bolt' : (currentModel === 'gemini-pro-latest' ? 'psychology' : ((currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2') ? 'auto_awesome' : 'spa')) }}
+                            {{ currentModel === 'gemini-flash-latest' ? 'bolt' : (currentModel === 'gemini-pro-latest' ? 'psychology' : 'auto_awesome') }}
                           </mat-icon>
-                          <span>{{ currentModel === 'gemini-flash-latest' ? 'Flash' : (currentModel === 'gemini-pro-latest' ? 'Pro' : ((currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2') ? 'Muse' : 'Lite')) }}</span>
+                          <span>{{ currentModel === 'gemini-flash-latest' ? 'Flash' : (currentModel === 'gemini-pro-latest' ? 'Pro' : 'Muse') }}</span>
                         </span>
                       }
                     </div>
@@ -138,7 +135,7 @@ import { MatIconModule } from '@angular/material/icon';
                           <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-white/5 px-2 py-0.5 rounded-md text-slate-300">
                             <span class="text-slate-500">Phong cách chuyển đổi:</span>
                             <span class="font-bold" [class.text-amber-400]="mode === 'markdown'" [class.text-emerald-400]="mode === 'html'">
-                              {{ mode === 'markdown' ? 'Đơn giản' : 'Bảo toàn' }}
+                              {{ mode === 'markdown' ? 'DOCX' : 'Bảo toàn' }}
                             </span>
                           </span>
                         }
