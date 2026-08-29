@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, output, inject, signal, effect, Ele
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentProcessingService } from './services/document-processing.service';
+import { OutputMode } from './header';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -144,6 +145,65 @@ import { DocumentProcessingService } from './services/document-processing.servic
 
       <!-- Processing Controls -->
       <div class="space-y-2.5 shrink-0">
+        <!-- Output Mode Toggle -->
+        <div class="flex items-center w-full justify-center mb-2">
+          <div class="relative flex items-center bg-slate-900/90 border border-white/5 rounded-lg p-0.5 shadow-inner transition-opacity duration-200 w-full"
+               [class.opacity-75]="isOutputModeLocked()">
+            
+            <!-- Sliding Indicator -->
+            <div 
+              class="absolute top-0.5 bottom-0.5 rounded-md border transition-all duration-300 pointer-events-none overflow-hidden"
+              [class.bg-cyan-500/15]="selectedOutputMode() === 'markdown'"
+              [class.border-cyan-500/40]="selectedOutputMode() === 'markdown'"
+              [class.bg-emerald-500/15]="selectedOutputMode() === 'html'"
+              [class.border-emerald-500/40]="selectedOutputMode() === 'html'"
+              style="width: calc(50% - 2px);"
+              [style.left]="selectedOutputMode() === 'markdown' ? '2px' : 'calc(50%)'">
+            </div>
+
+            <!-- Buttons -->
+            <button 
+              type="button"
+              (click)="onOutputModeSelect('markdown')"
+              [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
+              class="relative w-1/2 h-7 flex items-center justify-center gap-1.5 text-xs font-bold font-sans transition-all duration-200 z-10 rounded-md cursor-pointer disabled:cursor-not-allowed group"
+              [class.text-cyan-400]="selectedOutputMode() === 'markdown'"
+              [class.text-slate-400]="selectedOutputMode() !== 'markdown'"
+              [class.hover:text-slate-200]="selectedOutputMode() !== 'markdown' && !isOutputModeLocked()">
+              <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-cyan-400]="selectedOutputMode() === 'markdown'">article</mat-icon>
+              <span>Đơn giản</span>
+              <!-- Tooltip Simple -->
+              <div class="absolute bottom-full left-0 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
+                <div class="font-bold text-cyan-400 mb-0.5">Markdown (Đơn giản)</div>
+                <span>Tái tạo đơn giản, phù hợp xuất DOCX. Tiết kiệm token tối đa.</span>
+              </div>
+            </button>
+
+            <button 
+              type="button"
+              (click)="onOutputModeSelect('html')"
+              [disabled]="isOptimizing() || isParsing() || isOutputModeLocked()"
+              class="relative w-1/2 h-7 flex items-center justify-center gap-1.5 text-xs font-bold font-sans transition-all duration-200 z-10 rounded-md cursor-pointer disabled:cursor-not-allowed group"
+              [class.text-emerald-400]="selectedOutputMode() === 'html'"
+              [class.text-slate-400]="selectedOutputMode() !== 'html'"
+              [class.hover:text-slate-200]="selectedOutputMode() !== 'html' && !isOutputModeLocked()">
+              <mat-icon class="!text-[14px] !w-3.5 !h-3.5 leading-none" [class.text-emerald-400]="selectedOutputMode() === 'html'">code</mat-icon>
+              <span>Bảo toàn</span>
+              <!-- Tooltip HTML -->
+              <div class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-slate-950 border border-white/15 text-slate-200 text-[10px] font-normal leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[200px] text-left z-50 pointer-events-none whitespace-normal">
+                <div class="font-bold text-emerald-400 mb-0.5">HTML/CSS (Bảo toàn)</div>
+                <span>Tái tạo bảng biểu, cột, lề, font chữ tương tự bản gốc.</span>
+              </div>
+            </button>
+            
+            @if (isOutputModeLocked()) {
+               <div class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 rounded-full w-4 h-4 flex items-center justify-center shadow-lg border border-slate-900" title="Đã khóa sau khi bắt đầu xử lý">
+                 <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none">lock</mat-icon>
+               </div>
+            }
+          </div>
+        </div>
+
         <!-- Batch Process Button -->
         <div class="flex items-center gap-2">
           @if (isBatchProcessing()) {
@@ -307,6 +367,12 @@ export class WorkspaceAside {
   stopBatch = output<void>();
   selectChunk = output<number>();
   optimizeChunk = output<number>();
+  outputModeChange = output<OutputMode>();
+
+  onOutputModeSelect(mode: OutputMode) {
+    if (this.isOptimizing() || this.isParsing() || this.isOutputModeLocked()) return;
+    this.outputModeChange.emit(mode);
+  }
 
   formatFileSize(fileSize: string | undefined): string {
     if (!fileSize) return '';

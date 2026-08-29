@@ -51,7 +51,8 @@
           (startBatch)="startBatchProcessing()"
           (stopBatch)="stopBatchProcessing()"
           (selectChunk)="selectChunk($event)"
-          (optimizeChunk)="optimizeChunkWithAI($event)">
+          (optimizeChunk)="optimizeChunkWithAI($event)"
+          (outputModeChange)="onOutputModeChanged($event)">
         </app-workspace-aside>
 
         <!-- Right Panel: Tabs, Workspace Preview and Live Editor Component -->
@@ -82,8 +83,7 @@
   <app-footer
     [isDevMode]="isDevMode()"
     (toggleDevMode)="isDevMode.set(!isDevMode())"
-    (openInstruction)="showInstruction.set(true)"
-    (outputModeChange)="onOutputModeChanged($event)">
+    (openInstruction)="showInstruction.set(true)">
   </app-footer>
 
   <!-- Fullscreen Dual-Pane Comparison Modal Component -->
