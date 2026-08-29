@@ -12,7 +12,7 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & các
 ## Demo
 - Bản PDF scan tải lên: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.pdf) (Kho sách xưa - Huỳnh Chiếu Đẳng) 
 - Bản Web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
-- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Trước khi chuyển, bạn nhìn xuống footer/chân trang, chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
+- Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Trước khi chuyển, bạn chọn kiểu chuyển "Đơn giản" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
 
 ## Sử dụng
 - **Mọi người có thể dùng phiên bản trên AI Studio thông qua link này**: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng **ngưỡng miễn phí hàng ngày** tương đổi rộng rãi của Gemini).
@@ -92,9 +92,9 @@ Trước khi OCR, người dùng có quyền chọn một trong hai định dạ
 
 Tóm lại: Nếu bạn muốn đọc bản OCR có mức độ giống cao nhất với bản gốc, không chỉ nội dung mà còn là cả hình thức, hãy dùng cách chuyển đổi HTML/CSS (còn gọi là "Bảo toàn"). Còn nếu bạn quan tâm đơn thuần đến việc đọc, muốn tiết kiệm token đầu ra (ví dụ khi bạn dùng API Key trả phí) hãy dùng kiểu chuyển sang Markdown (còn gọi là "Đơn giản"). Ngoài ra nếu có nhu cầu biên tập lại thì chỉ có kiểu Markdown mới giúp bạn có được định dạng Docx.
 
-Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở góc ngoài cùng bên trái thuộc footer/chân trang. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn", tức là bản OCR sẽ có định dạng tương đồng với bản gốc. 
+Hai tùy chọn "Đơn giản" và "Bảo toàn" nằm ở ngay trước nút bấm `Xử lý tất cả`. Mặc định Looking-Back-OCR thiết lập cài đặt là "Bảo toàn", tức là bản OCR sẽ có định dạng tương đồng với bản gốc. 
 
-Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "Đơn giản"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại.
+Sau khi đã thực hiện OCR rồi, nếu muốn thay đổi kiểu chuyển đổi (ví dụ từ "Bảo toàn" sang "Đơn giản"), bạn bắt buộc phải tải lại file lên, chọn kiểu bạn muốn, rồi thực hiện chuyển đổi lại. Tóm lại việc chọn kiểu chuyển đổi nên được thực hiện trước khi tiến hành `Xử lý tất cả`.
 
 ### Hồ sơ thiết kế đồng nhất
 Một cuốn sách sẽ được Looking-Back-OCR chủ động chia thành nhiều chunk (phần), ở kiểu chuyển đổi sang HTML/CSS, trước khi chuyển đổi chính thức được thực hiện, 3 chunk mẫu (mặc định mỗi chunk có tối đa 12 trang) sẽ được công cụ tự động đưa vào bước phân tích thiết kế. Mục đích là để tạo ra thiết kế thống nhất cho toàn bộ kết quả của từng chunk.
