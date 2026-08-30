@@ -20,7 +20,7 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & lị
 
 2 bản trên là một, và có chất lượng như nhau.
 
-**Lưu ý**: Với trường hợp sử dụng KEY miễn phí trên AI Studio (Gemini) hoặc sử dụng model trợ giá của Meta AI (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo AI của họ.
+**Lưu ý**: Với trường hợp [sử dụng KEY miễn phí trên AI Studio](https://github.com/kiencang/Looking-Back-OCR/blob/main/create-api-key.md) (Gemini) hoặc sử dụng model trợ giá của Meta AI (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo AI của họ.
 
 ### Một số giới hạn tải lên
 - Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang. Nếu file lớn quá ngưỡng trên, nên dùng công cụ cắt file PDF cho nó nhỏ bớt đi trước khi tải lên, ví dụ công cụ này: https://smallpdf.com/vi/split-pdf;
