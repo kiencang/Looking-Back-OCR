@@ -140,18 +140,18 @@ Looking-Back-OCR cũng như người phát triển nó không đưa ra bất k�
 Dưới đây là danh sách các thư viện quan trọng được Looking-Back-OCR sử dụng:
 
 ### 1. Nền tảng Ứng dụng & Giao diện (Framework & UI)
-*   **[Angular (v21)](https://angular.dev/)** – Phát triển bởi **Google**. Lõi chính của ứng dụng.
-*   **[Tailwind CSS (v4)](https://tailwindcss.com/)** – Cung cấp giao diện cho ứng dụng.
+*   **[Angular (v21)](https://angular.dev/)**: Phát triển bởi **Google**. Lõi chính của ứng dụng.
+*   **[Tailwind CSS (v4)](https://tailwindcss.com/)**: Cung cấp giao diện cho ứng dụng.
 
 ### 2. Xử lý tài liệu PDF
-*   **[PDF-Lib](https://pdf-lib.js.org/)** – Xử lý tách trang, chia chunk (chia cuốn sách lớn thành các phần nhỏ, mặc định tối đa là 12 trang một chunk).
-*   **[Mozilla PDF.js](https://mozilla.github.io/pdf.js/)** – Phát triển bởi **Mozilla**. Thư viện chạy hoàn toàn trên Client-side, công cụ này sẽ render từng trang trong file PDF thành dạng ảnh để người dùng xem khi cần đối chiếu với file gốc.
+*   **[PDF-Lib](https://pdf-lib.js.org/)**: Xử lý tách trang, chia chunk (chia cuốn sách lớn thành các phần nhỏ, mặc định tối đa là 12 trang một chunk).
+*   **[Mozilla PDF.js](https://mozilla.github.io/pdf.js/)**: Phát triển bởi **Mozilla**. Thư viện chạy hoàn toàn trên Client-side, thư viện PDF.js sẽ render từng trang trong file PDF thành dạng ảnh để người dùng xem khi cần đối chiếu với file gốc.
 
 ### 3. Tái tạo công thức toán học
-*   **[KaTeX](https://katex.org/)**: Thư viện xử lý và hiển thị công thức toán do **Khan Academy** phát triển, ưu điểm là tốc độ cao. Đóng vai trò là engine chuyển đổi các công thức toán học LaTeX (được AI bóc tách từ tài liệu) sang định dạng XML chuẩn `MathML` để hiển thị ở giao diện web.
+*   **[KaTeX](https://katex.org/)**: Thư viện xử lý và hiển thị công thức toán do **Khan Academy** phát triển, ưu điểm là tốc độ cao. Đóng vai trò là engine chuyển đổi các công thức toán học LaTeX (được AI bóc tách từ tài liệu) sang định dạng XML chuẩn `MathML` để hiển thị ở giao diện web (giao diện xem trước trên ứng dụng)... Đối với file HTML tải về ở luồng PDF -> HTML/CSS, công cụ vẫn dùng thư viện MathJax để hiển thị công thức toán LaTeX.
 *   **[mathml2omml](https://github.com/fiduswriter/mathml2omml)**: Thư viện JS dùng để chuyển `MathML` thành chuẩn công thức toán chuẩn (`OMML`) cho định dạng DOCX.
 
 ### 4. Đọc/Ghi & Tạo định dạng đầu ra
-*   **[Docx.js](https://docx.js.org/)** – Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (.docx) chạy trực tiếp trên trình duyệt (Client-side). Cái này dành cho luồng PDF -> Markdown (kiểu xuất được DOCX), người dùng sau khi chuyển xong có thể tải về định dạng .docx để biên tập thêm.
-*   **[Marked.js](https://marked.js.org/)** – Trình biên dịch Markdown, giúp biên dịch dữ liệu markdown từ AI phản hồi thành mã HTML sạch, để hiển thị xem trước (dành riêng cho luồng PDF -> Markdown [kiểu xuất được DOCX], vì luồng PDF -> HTML/CSS [kiểu chuyển Bảo toàn], thì AI đã trả thẳng về HTML rồi).
-*   **[JSZip](https://stuk.github.io/jszip/)** – Phát triển bởi **Stuart Knightley**. Thư viện giúp đóng gói dữ liệu nén định dạng ZIP để tải về. Được dùng khi người dùng muốn tải dự án về và chuyển sang tài khoản khác để chuyển đổi tiếp. Định dạng `.zip` sẽ thân thiện cho người dùng phổ thông hơn là định dạng `JSON`.
+*   **[Docx.js](https://docx.js.org/)**: Phát triển bởi **Dolan Miu**. Thư viện tạo tệp tin Microsoft Word (`.docx`) chạy trực tiếp trên trình duyệt (Client-side). Cái này dành cho luồng PDF -> Markdown (kiểu xuất được DOCX), người dùng sau khi chuyển xong có thể tải về định dạng `.docx` để biên tập thêm.
+*   **[Marked.js](https://marked.js.org/)**: Trình biên dịch Markdown, giúp biên dịch dữ liệu markdown từ AI phản hồi thành mã HTML sạch, để hiển thị xem trước (dành riêng cho luồng PDF -> Markdown [kiểu xuất được DOCX], vì luồng PDF -> HTML/CSS [kiểu chuyển Bảo toàn], thì AI đã trả thẳng về HTML rồi).
+*   **[JSZip](https://stuk.github.io/jszip/)**: Phát triển bởi **Stuart Knightley**. Thư viện giúp đóng gói dữ liệu nén định dạng ZIP. Được dùng khi người dùng muốn tải dự án về và chuyển sang tài khoản khác để chuyển đổi tiếp. Định dạng `.zip` sẽ thân thiện cho người dùng phổ thông hơn là định dạng `.json`.
