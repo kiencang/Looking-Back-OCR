@@ -43,7 +43,7 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="space-y-6">
           <!-- Description -->
           <p class="text-xs text-slate-300 leading-relaxed font-sans">
-            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR cao và ngưỡng miễn phí ngày khá rộng rãi.
+            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR cao và ngưỡng miễn phí ngày khá rộng rãi trên AI Studio. Đối với Meta AI, bạn bắt buộc phải dùng gói trả phí của Meta mới có API (thanh toán trực tiếp với Meta AI).
           </p>
 
           <!-- Gemini Input section -->
@@ -81,6 +81,9 @@ import { MatIconModule } from '@angular/material/icon';
               <label for="modal-meta-key-input" class="block text-[10px] font-sans font-bold text-emerald-400 uppercase tracking-wider">
                 Meta API Key cá nhân (Muse)
               </label>
+              <a href="https://dev.meta.ai/api-keys/" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 text-xs hover:underline">
+                Lấy Key Meta
+              </a>
             </div>
             <div class="relative bg-slate-950 border border-white/15 rounded-xl overflow-hidden focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/25 transition-all">
               <input 
@@ -117,12 +120,12 @@ import { MatIconModule } from '@angular/material/icon';
               <input 
                 id="modal-meta-model-input"
                 type="text"
-                placeholder="muse-spark-1.2-contributor" 
+                placeholder="muse-spark-1.3-contributor" 
                 [value]="tempMetaModelName()"
                 (input)="onMetaModelInputChange($event)"
                 class="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-700 font-mono focus:border-emerald-500 focus:outline-none transition-colors" />
               <p class="text-[10px] text-slate-500 leading-tight">
-                Bạn có thể đổi sang mã Model Meta Vision khác được tài khoản của bạn hỗ trợ. Model mặc định (khi không có điều chỉnh nào): <code class="text-emerald-400 font-mono">muse-spark-1.2-contributor</code>
+                Bạn có thể đổi sang mã Model Meta Vision khác được tài khoản của bạn hỗ trợ. Model mặc định (khi không có điều chỉnh nào): <code class="text-emerald-400 font-mono">muse-spark-1.3-contributor</code>
               </p>
             </div>
           </div>
@@ -133,7 +136,7 @@ import { MatIconModule } from '@angular/material/icon';
               Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
             </p>
             <p class="text-[10.5px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 leading-relaxed">
-              <strong class="font-semibold text-amber-300">Lưu ý:</strong> Với trường hợp sử dụng Key miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (muse-spark-1.2-contributor) chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
+              <strong class="font-semibold text-amber-300">Lưu ý:</strong> Với trường hợp sử dụng Key miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (muse-spark-1.3-contributor) chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
             </p>
           </div>
 
@@ -143,7 +146,7 @@ import { MatIconModule } from '@angular/material/icon';
           <!-- Remix App Banner -->
           <div class="flex flex-col gap-3 items-start text-left">
             <p class="text-xs text-slate-400 font-sans leading-relaxed">
-              Bạn có thể remix ứng dụng này để sao chép mã thành ứng dụng của riêng bạn và vibe coding (chỉnh sửa thêm) nếu cần.
+              Bạn có thể remix ứng dụng này để sao chép mã thành ứng dụng của riêng bạn và vibe coding (chỉnh sửa thêm) nếu cần. Thi thoảng bạn hãy quay lại phiên bản gốc để remix lại nếu có cập nhật.
             </p>
             <img src="/remix-app.png" alt="Remix this app on AI Studio" class="rounded-lg border border-white/10 shadow-lg w-full object-cover" referrerpolicy="no-referrer" />
           </div>
@@ -180,7 +183,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class ApiKeyModal implements OnInit {
   clientApiKey = input.required<string>();
   metaApiKey = input<string>('');
-  metaModel = input<string>('muse-spark-1.2-contributor');
+  metaModel = input<string>('muse-spark-1.3-contributor');
   
   closeModal = output<void>();
   save = output<{geminiKey: string, metaKey: string, metaModel: string}>();
@@ -192,12 +195,12 @@ export class ApiKeyModal implements OnInit {
   tempMetaApiKey = signal('');
   showApiKeyMeta = signal(false);
 
-  tempMetaModelName = signal('muse-spark-1.2-contributor');
+  tempMetaModelName = signal('muse-spark-1.3-contributor');
 
   ngOnInit() {
     this.tempGeminiApiKey.set(this.clientApiKey());
     this.tempMetaApiKey.set(this.metaApiKey());
-    this.tempMetaModelName.set(this.metaModel() || 'muse-spark-1.2-contributor');
+    this.tempMetaModelName.set(this.metaModel() || 'muse-spark-1.3-contributor');
   }
 
   onGeminiInputChange(event: Event) {
@@ -216,7 +219,7 @@ export class ApiKeyModal implements OnInit {
   }
 
   resetDefaultMetaModel() {
-    this.tempMetaModelName.set('muse-spark-1.2-contributor');
+    this.tempMetaModelName.set('muse-spark-1.3-contributor');
   }
 
   toggleShowKeyGemini() {

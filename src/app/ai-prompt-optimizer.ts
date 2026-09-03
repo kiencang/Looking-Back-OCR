@@ -292,7 +292,7 @@ export class AiPromptOptimizer {
     };
 
     // --- NHÁNH 1: META AI (MUSE) ---
-    if (modelName === 'muse-spark-1.2-contributor' || modelName.startsWith('muse-')) {
+    if (modelName === 'muse-spark-1.3-contributor' || modelName.startsWith('muse-')) {
       const samplePdfBase64 = await this.buildSamplePdf(fileOrFiles, sampleChunks);
       return this.metaService.analyzeDocumentStyle(
         apiKey,

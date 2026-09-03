@@ -116,9 +116,9 @@ import { MatIconModule } from '@angular/material/icon';
                           [class.bg-violet-500/10]="currentModel === 'gemini-pro-latest'"
                           [class.text-violet-300]="currentModel === 'gemini-pro-latest'"
                           [class.border-violet-500/20]="currentModel === 'gemini-pro-latest'"
-                          [class.bg-emerald-500/10]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'"
-                          [class.text-emerald-300]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'"
-                          [class.border-emerald-500/20]="currentModel === 'muse-spark-1.2-contributor' || currentModel === 'muse-spark-1.2'">
+                          [class.bg-emerald-500/10]="currentModel === 'muse-spark-1.3-contributor' || currentModel === 'muse-spark-1.3'"
+                          [class.text-emerald-300]="currentModel === 'muse-spark-1.3-contributor' || currentModel === 'muse-spark-1.3'"
+                          [class.border-emerald-500/20]="currentModel === 'muse-spark-1.3-contributor' || currentModel === 'muse-spark-1.3'">
                           <mat-icon class="!text-[10px] !w-2.5 !h-2.5 leading-none flex items-center justify-center">
                             {{ currentModel === 'gemini-flash-latest' ? 'bolt' : (currentModel === 'gemini-pro-latest' ? 'psychology' : 'auto_awesome') }}
                           </mat-icon>

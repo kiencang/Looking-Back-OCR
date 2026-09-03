@@ -46,7 +46,7 @@ export class DocumentProcessingService {
   selectedOutputMode = signal<OutputMode>('html');
   clientApiKey = signal('');
   metaApiKey = signal('');
-  metaModelName = signal('muse-spark-1.2-contributor');
+  metaModelName = signal('muse-spark-1.3-contributor');
 
   // Execution State
   isParsing = signal(false);
@@ -462,8 +462,8 @@ export class DocumentProcessingService {
     const file = this.pdfFile();
     const chunks = this.pdfChunks();
     const modelType = this.selectedModel();
-    const isMeta = modelType === 'muse-spark-1.2-contributor';
-    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.2-contributor') : modelType;
+    const isMeta = modelType === 'muse-spark-1.3-contributor';
+    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.3-contributor') : modelType;
     const apiKey = (isMeta ? this.metaApiKey() : this.clientApiKey()).trim();
 
     if (!file || chunks.length === 0 || !apiKey) {
@@ -516,8 +516,8 @@ export class DocumentProcessingService {
     }
 
     const modelType = this.selectedModel();
-    const isMeta = modelType === 'muse-spark-1.2-contributor';
-    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.2-contributor') : modelType;
+    const isMeta = modelType === 'muse-spark-1.3-contributor';
+    const effectiveModelName = isMeta ? (this.metaModelName()?.trim() || 'muse-spark-1.3-contributor') : modelType;
 
     let apiKey = '';
     if (isMeta) {
@@ -599,7 +599,7 @@ export class DocumentProcessingService {
       return false;
     }
 
-    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
+    const isMeta = this.selectedModel() === 'muse-spark-1.3-contributor';
     if (isMeta) {
       if (!this.metaApiKey().trim()) {
         this.apiError.set('Vui lòng điền Meta API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải để sử dụng mô hình Muse.');
@@ -650,7 +650,7 @@ export class DocumentProcessingService {
       return;
     }
 
-    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
+    const isMeta = this.selectedModel() === 'muse-spark-1.3-contributor';
     if (isMeta) {
       if (!this.metaApiKey().trim()) {
         this.apiError.set('Vui lòng điền Meta API Key của bạn ở mục *Nhập API Key* nằm ở phía trên bên phải để sử dụng mô hình Muse.');
@@ -729,7 +729,7 @@ export class DocumentProcessingService {
   }
 
   private async processSingleChunkForBatch(chunkIndex: number): Promise<boolean> {
-    const isMeta = this.selectedModel() === 'muse-spark-1.2-contributor';
+    const isMeta = this.selectedModel() === 'muse-spark-1.3-contributor';
     try {
       this.selectedChunkIndex.set(chunkIndex);
       await this.executeChunkOptimization(chunkIndex);

@@ -171,7 +171,7 @@ export class App {
       const savedMetaKey = safeGetItem('user_meta_api_key');
       this.metaApiKey.set(savedMetaKey);
 
-      const savedMetaModel = safeGetItem('custom_meta_model_name')?.trim() || 'muse-spark-1.2-contributor';
+      const savedMetaModel = safeGetItem('custom_meta_model_name')?.trim() || 'muse-spark-1.3-contributor';
       this.metaModelName.set(savedMetaModel);
 
       // Global zoom helper for rendered HTML images
@@ -329,7 +329,7 @@ export class App {
     this.metaApiKey.set(trimmedMeta);
     safeSetItem('user_meta_api_key', trimmedMeta);
 
-    const modelName = keys.metaModel?.trim() || 'muse-spark-1.2-contributor';
+    const modelName = keys.metaModel?.trim() || 'muse-spark-1.3-contributor';
     this.metaModelName.set(modelName);
     safeSetItem('custom_meta_model_name', modelName);
     
@@ -344,7 +344,7 @@ export class App {
     this.metaApiKey.set('');
     safeRemoveItem('user_meta_api_key');
 
-    this.metaModelName.set('muse-spark-1.2-contributor');
+    this.metaModelName.set('muse-spark-1.3-contributor');
     safeRemoveItem('custom_meta_model_name');
     
     this.showApiKeyModal.set(false);
