@@ -22,3 +22,5 @@ Rồi làm theo các bước sau:
   <img src="images/tao-key-d.png" alt="Tạo key d">
   <br><em>Bước 4: Thấy key có chữ `Free tier`, nghĩa là bạn đã tạo đúng Key miễn phí</em>
 </p>
+
+Sử dụng Key miễn phí, bạn không cần liên kết bất kỳ thẻ thanh toán nào vào Gemini.
