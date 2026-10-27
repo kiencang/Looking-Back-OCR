@@ -19,41 +19,46 @@ import { MatIconModule } from '@angular/material/icon';
         tabindex="0"
         (click)="$event.stopPropagation()"
         (keydown)="$event.stopPropagation()"
-        class="bg-slate-900 border border-white/10 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl relative text-left cursor-default animate-scale-up">
+        class="bg-slate-900 border border-white/10 rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl relative text-left cursor-default animate-scale-up">
         
-        <!-- Close Button -->
-        <button 
-          type="button"
-          (click)="closeModal.emit()"
-          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors focus:outline-none z-10">
-          <mat-icon class="text-[20px] w-5 h-5 flex items-center justify-center">close</mat-icon>
-        </button>
-
         <!-- Scrollable Content -->
-        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="h-10 w-10 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-400 border border-indigo-500/10 shrink-0">
-              <mat-icon>vpn_key</mat-icon>
+        <div class="px-6 pt-5 pb-6 md:px-8 md:pt-6 md:pb-8 overflow-y-auto custom-scrollbar">
+          <!-- Header: Title and Close Button on same row -->
+          <div class="flex items-center justify-between gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-400 border border-indigo-500/10 shrink-0">
+                <mat-icon>vpn_key</mat-icon>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white font-sans">Cấu hình API Key</h3>
+              </div>
             </div>
-            <div>
-              <h3 class="text-lg font-bold text-white font-sans">Cấu hình API Key</h3>
-            </div>
+
+            <!-- Close Button -->
+            <button 
+              type="button" 
+              (click)="closeModal.emit()"
+              class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors focus:outline-none shrink-0"
+              title="Đóng">
+              <mat-icon class="text-[20px] w-5 h-5 flex items-center justify-center">close</mat-icon>
+            </button>
           </div>
 
           <div class="space-y-6">
           <!-- Description -->
-          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+          <p class="text-sm text-slate-300 leading-relaxed font-sans">
             Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR cao và ngưỡng miễn phí ngày khá rộng rãi trên AI Studio. Đối với Meta AI, bạn bắt buộc phải dùng gói trả phí của Meta mới có API (thanh toán trực tiếp với Meta AI).
           </p>
 
           <!-- Gemini Input section -->
           <div class="space-y-2">
             <div class="flex justify-between items-center">
-              <label for="modal-gemini-key-input" class="block text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider">
+              <label for="modal-gemini-key-input" class="block text-xs font-sans font-bold text-slate-400 uppercase tracking-wider">
                 Gemini API Key cá nhân
               </label>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 text-xs hover:underline">
-                Lấy Key Gemini
+              <a href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-[13px] hover:underline transition-colors">
+                <span>Lấy Gemini Key</span>
+                <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center">open_in_new</mat-icon>
               </a>
             </div>
             <div class="relative bg-slate-950 border border-white/15 rounded-xl overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500/25 transition-all">
@@ -63,7 +68,7 @@ import { MatIconModule } from '@angular/material/icon';
                 placeholder="AIzaSy..." 
                 [value]="tempGeminiApiKey()"
                 (input)="onGeminiInputChange($event)"
-                class="w-full bg-transparent pl-4 pr-12 py-3 text-xs text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
+                class="w-full bg-transparent pl-4 pr-12 py-3 text-[13px] text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
               <button 
                 type="button" 
                 (click)="toggleShowKeyGemini()"
@@ -78,11 +83,12 @@ import { MatIconModule } from '@angular/material/icon';
           <!-- Meta Input section -->
           <div class="space-y-3 p-3.5 bg-slate-950/60 rounded-2xl border border-white/5">
             <div class="flex justify-between items-center">
-              <label for="modal-meta-key-input" class="block text-[10px] font-sans font-bold text-emerald-400 uppercase tracking-wider">
+              <label for="modal-meta-key-input" class="block text-xs font-sans font-bold text-emerald-400 uppercase tracking-wider">
                 Meta API Key cá nhân (Muse)
               </label>
-              <a href="https://dev.meta.ai/api-keys/" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 text-xs hover:underline">
-                Lấy Key Meta
+              <a href="https://dev.meta.ai/api-keys/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[13px] hover:underline transition-colors">
+                <span>Lấy Meta Key</span>
+                <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center">open_in_new</mat-icon>
               </a>
             </div>
             <div class="relative bg-slate-950 border border-white/15 rounded-xl overflow-hidden focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/25 transition-all">
@@ -92,7 +98,7 @@ import { MatIconModule } from '@angular/material/icon';
                 placeholder="Nhập Meta API Key..." 
                 [value]="tempMetaApiKey()"
                 (input)="onMetaInputChange($event)"
-                class="w-full bg-transparent pl-4 pr-12 py-2.5 text-xs text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
+                class="w-full bg-transparent pl-4 pr-12 py-2.5 text-[13px] text-slate-200 placeholder-slate-700 font-mono focus:outline-none" />
               <button 
                 type="button" 
                 (click)="toggleShowKeyMeta()"
@@ -106,14 +112,14 @@ import { MatIconModule } from '@angular/material/icon';
             <!-- Meta Custom Model Input -->
             <div class="space-y-1.5 pt-1 border-t border-white/5">
               <div class="flex justify-between items-center">
-                <label for="modal-meta-model-input" class="block text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider">
+                <label for="modal-meta-model-input" class="block text-xs font-sans font-bold text-slate-400 uppercase tracking-wider">
                   Mã Model Meta tùy chỉnh
                 </label>
                 <button
                   type="button"
                   (click)="resetDefaultMetaModel()"
-                  class="text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-0.5 focus:outline-none">
-                  <mat-icon class="!text-[12px] !w-3 !h-3 leading-none flex items-center justify-center">restart_alt</mat-icon>
+                  class="text-xs text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-0.5 focus:outline-none">
+                  <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center">restart_alt</mat-icon>
                   <span>Mặc định</span>
                 </button>
               </div>
@@ -123,8 +129,8 @@ import { MatIconModule } from '@angular/material/icon';
                 placeholder="muse-spark-1.3-contributor" 
                 [value]="tempMetaModelName()"
                 (input)="onMetaModelInputChange($event)"
-                class="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-700 font-mono focus:border-emerald-500 focus:outline-none transition-colors" />
-              <p class="text-[10px] text-slate-500 leading-tight">
+                class="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2 text-[13px] text-slate-200 placeholder-slate-700 font-mono focus:border-emerald-500 focus:outline-none transition-colors" />
+              <p class="text-[11.5px] text-slate-400 leading-normal">
                 Bạn có thể đổi sang mã Model Meta Vision khác được tài khoản của bạn hỗ trợ. Model mặc định (khi không có điều chỉnh nào): <code class="text-emerald-400 font-mono">muse-spark-1.3-contributor</code>
               </p>
             </div>
@@ -132,10 +138,10 @@ import { MatIconModule } from '@angular/material/icon';
 
           <!-- Security note -->
           <div class="space-y-1.5 font-sans">
-            <p class="text-[11px] text-slate-400 leading-normal">
+            <p class="text-xs text-slate-400 leading-normal">
               Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
             </p>
-            <p class="text-[10.5px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 leading-relaxed">
+            <p class="text-xs text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 leading-relaxed">
               <strong class="font-semibold text-amber-300">Lưu ý:</strong> Với trường hợp sử dụng Key miễn phí trên AI Studio hoặc sử dụng model trợ giá của Muse (muse-spark-1.3-contributor) chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo model AI của họ.
             </p>
           </div>
@@ -145,7 +151,7 @@ import { MatIconModule } from '@angular/material/icon';
 
           <!-- Remix App Banner -->
           <div class="flex flex-col gap-3 items-start text-left">
-            <p class="text-xs text-slate-400 font-sans leading-relaxed">
+            <p class="text-[13px] text-slate-300 font-sans leading-relaxed">
               Bạn có thể remix ứng dụng này để sao chép mã thành ứng dụng của riêng bạn và vibe coding (chỉnh sửa thêm) nếu cần. Thi thoảng bạn hãy quay lại phiên bản gốc để remix lại nếu có cập nhật.
             </p>
             <img src="/remix-app.png" alt="Remix this app on AI Studio" class="rounded-lg border border-white/10 shadow-lg w-full object-cover" referrerpolicy="no-referrer" />
@@ -156,7 +162,7 @@ import { MatIconModule } from '@angular/material/icon';
             <button 
               type="button" 
               (click)="clearKey.emit()"
-              class="px-4 py-2 flex items-center text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 rounded-lg transition-colors duration-200 focus:outline-none">
+              class="px-4 py-2 flex items-center text-xs sm:text-sm font-semibold bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 rounded-lg transition-colors duration-200 focus:outline-none">
               Xóa Key cá nhân
             </button>
             
@@ -164,13 +170,13 @@ import { MatIconModule } from '@angular/material/icon';
               <button 
                 type="button" 
                 (click)="closeModal.emit()"
-                class="px-5 py-2 text-xs font-semibold bg-white/5 hover:bg-white/10 rounded-lg text-slate-300 transition-colors duration-200 focus:outline-none">
+                class="px-5 py-2 text-xs sm:text-sm font-semibold bg-white/5 hover:bg-white/10 rounded-lg text-slate-300 transition-colors duration-200 focus:outline-none">
                 Hủy
               </button>
               <button 
                 type="button" 
                 (click)="save.emit({ geminiKey: tempGeminiApiKey(), metaKey: tempMetaApiKey(), metaModel: tempMetaModelName() })"
-                class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 rounded-lg text-white transition-colors duration-200 shadow-md shadow-indigo-600/15 focus:outline-none">
+                class="px-5 py-2 text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 rounded-lg text-white transition-colors duration-200 shadow-md shadow-indigo-600/15 focus:outline-none">
                 Lưu cấu hình
               </button>
             </div>

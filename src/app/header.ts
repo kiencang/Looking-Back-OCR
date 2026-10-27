@@ -110,11 +110,14 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <span>Flash</span>
             
             <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 px-3.5 py-2.5 bg-slate-900 border border-slate-600 text-slate-200 text-xs font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl shadow-black/80 w-[285px] text-left z-50 pointer-events-none">
+              <!-- Upward arrow caret pointing to button -->
+              <div class="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-slate-900 border-t border-l border-slate-600 rotate-45"></div>
+
               <span class="font-bold text-amber-400 block mb-0.5">Flash (mặc định):</span>
               Thích hợp nhất trong đa số trường hợp.
               @if (isModelLocked()) {
-                <span class="block mt-1 pt-1 border-t border-white/10 text-amber-300 font-medium">
+                <span class="block mt-1.5 pt-1.5 border-t border-slate-700 text-amber-300 text-[11px] font-medium leading-normal">
                   @if (selectedModel() === 'gemini-flash-latest') {
                     🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
                   } @else {
@@ -138,11 +141,14 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-violet-400]="selectedModel() === 'gemini-pro-latest'">psychology</mat-icon>
             <span>Pro</span>
             <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 px-3.5 py-2.5 bg-slate-900 border border-slate-600 text-slate-200 text-xs font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl shadow-black/80 w-[285px] text-left z-50 pointer-events-none">
+              <!-- Upward arrow caret pointing to button -->
+              <div class="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-slate-900 border-t border-l border-slate-600 rotate-45"></div>
+
               <span class="font-bold text-violet-400 block mb-0.5">Pro:</span>
               Model AI mạnh nhất trong dòng Gemini.
               @if (isModelLocked()) {
-                <span class="block mt-1 pt-1 border-t border-white/10 text-violet-300 font-medium">
+                <span class="block mt-1.5 pt-1.5 border-t border-slate-700 text-violet-300 text-[11px] font-medium leading-normal">
                   @if (selectedModel() === 'gemini-pro-latest') {
                     🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
                   } @else {
@@ -166,11 +172,14 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             <mat-icon class="!text-[13px] !w-3.5 !h-3.5 leading-none flex items-center justify-center group-hover:scale-110 transition-transform" [class.text-emerald-400]="selectedModel() === 'muse-spark-1.3-contributor'">auto_awesome</mat-icon>
             <span>Muse</span>
             <!-- Tooltip -->
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-950 border border-white/10 text-slate-200 text-[10px] font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl w-[240px] text-left z-50 pointer-events-none">
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 px-3.5 py-2.5 bg-slate-900 border border-slate-600 text-slate-200 text-xs font-normal leading-relaxed rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 shadow-2xl shadow-black/80 w-[285px] text-left z-50 pointer-events-none">
+              <!-- Upward arrow caret pointing to button -->
+              <div class="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-slate-900 border-t border-l border-slate-600 rotate-45"></div>
+
               <span class="font-bold text-emerald-400 block mb-0.5">Muse Spark:</span>
               Có khả năng xử lý đa dạng các kiểu tài liệu.
               @if (isModelLocked()) {
-                <span class="block mt-1 pt-1 border-t border-white/10 text-emerald-300 font-medium">
+                <span class="block mt-1.5 pt-1.5 border-t border-slate-700 text-emerald-300 text-[11px] font-medium leading-normal">
                   @if (selectedModel() === 'muse-spark-1.3-contributor') {
                     🔒 Trạng thái hiện tại: Đã cố định cho tài liệu này.
                   } @else {
@@ -193,13 +202,8 @@ export const DEFAULT_STYLE_PROFILE: DocumentStyleProfile = {
             (click)="openHistory.emit()"
             [disabled]="isOptimizing() || isParsing()"
             class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-white/5 rounded-full font-medium transition-colors cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
-            <mat-icon class="!text-[15px] !w-[15px] !h-[15px] leading-none flex items-center justify-center -mt-[1px]">history</mat-icon>
-            <span>Lịch sử</span>
-            @if (historyCount() > 0) {
-              <span class="bg-indigo-500 text-white text-[9px] min-w-[16px] h-4 flex items-center justify-center rounded-full font-semibold px-1 select-none leading-none">
-                {{ historyCount() }}
-              </span>
-            }
+            <mat-icon class="!text-[15px] !w-[15px] !h-[15px] leading-none flex items-center justify-center">history</mat-icon>
+            <span>Lịch sử OCR</span>
           </button>
 
           <button 
