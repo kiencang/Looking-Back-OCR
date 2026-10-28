@@ -14,13 +14,12 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & lị
 - Bản Web `.html` được OCR bởi `Looking-Back-OCR`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.html) (Tải về và mở bằng trình duyệt để xem).
 - Bản `.docx`: [Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx](https://github.com/kiencang/Looking-Back-OCR/blob/main/demo/Nam_Phong_Tap_Chi_Q04_QN_019-024_T020.docx) (Để có phiên bản `.docx`, trước khi chuyển, bạn chọn kiểu chuyển "DOCX" là được, còn mặc định khi không chọn sẽ là kiểu "Bảo toàn" của định dạng Web `.html`).
 
-## Cách sử dụng
-- **Mọi người có thể dùng phiên bản trên AI Studio thông qua link này**: https://aistudio.google.com/apps/513da822-939a-4929-ac44-2e0e86309b06?showPreview=true&showAssistant=true&fullscreenApplet=true (để tận dụng **ngưỡng miễn phí hàng ngày** tương đổi rộng rãi của Gemini, sử dụng API Key miễn phí).
-- Bản web: https://looking-back-ocr.wpsila.com (chỉ API Key trả phí mới dùng được).
+## Link
+- Bạn truy cập ứng dụng tại đây: https://looking-back-ocr.wpsila.com 
 
-2 bản trên là một, và có chất lượng như nhau.
+**Lưu ý 1**: Với trường hợp [sử dụng KEY miễn phí trên AI Studio](https://github.com/kiencang/Looking-Back-OCR/blob/main/create-api-key.md) (Gemini) hoặc sử dụng model trợ giá của Meta AI (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo AI của họ.
 
-**Lưu ý**: Với trường hợp [sử dụng KEY miễn phí trên AI Studio](https://github.com/kiencang/Looking-Back-OCR/blob/main/create-api-key.md) (Gemini) hoặc sử dụng model trợ giá của Meta AI (`muse-spark-1.2-contributor`), người dùng chỉ nên up lên tài liệu đã hết hạn bản quyền, vì các model trên có thể sẽ sử dụng dữ liệu người dùng up lên để đào tạo AI của họ.
+**Lưu ý 2**: Từ ngày 28/10/2026, việc sử dụng API Key miễn phí trên AI Studio (Gemini) không được thoải mái như trước đây, thường gặp giới hạn (thông báo dạng `model AI đang có nhu cầu sử dụng cao, vui lòng thử lại sau`). Hiện chỉ Key trả phí là tiện dùng ứng dụng được ngay.
 
 ### Một số giới hạn tải lên
 - Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang. Nếu file lớn quá ngưỡng trên, nên dùng công cụ cắt file PDF cho nó nhỏ bớt đi trước khi tải lên, ví dụ công cụ này: https://smallpdf.com/vi/split-pdf;
