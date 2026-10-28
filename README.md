@@ -78,9 +78,9 @@ Có 3 model có thể chọn lựa qua giao diện của ứng dụng:
 - 2 model mới nhất của Gemini là Flash, Pro;
 - 1 model mới nhất của Meta AI;
 
-Trong đó mặc định ứng dụng sẽ sử dụng model Flash, nó có chất lượng tốt và ngưỡng miễn phí đủ rộng. Nó có khả năng xử lý các tài liệu có cấu trúc phức tạp, chữ mờ khó nhìn.
+Trong đó mặc định ứng dụng sẽ sử dụng model Flash, nó có chất lượng tốt và chi phí vừa phải. Nó có khả năng xử lý các tài liệu có cấu trúc phức tạp, chữ mờ khó nhìn.
 
-Model Pro là model mạnh nhất trong dòng Gemini, tốc độ chậm hơn, có thể phù hợp cho tài liệu có cấu trúc rất phức tạp. Trên tài khoản miễn phí, model Pro bị giới hạn lượt request sớm hơn khá nhiều so với model Flash.
+Model Pro là model mạnh nhất trong dòng Gemini, tốc độ chậm hơn, có thể phù hợp cho tài liệu có cấu trúc rất phức tạp.
 
 ## Hai kiểu tái tạo
 Trước khi OCR, người dùng có quyền chọn một trong hai định dạng dưới đây:
