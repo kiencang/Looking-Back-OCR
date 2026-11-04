@@ -47,7 +47,7 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="space-y-6">
           <!-- Description -->
           <p class="text-sm text-slate-300 leading-relaxed font-sans">
-            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR cao và ngưỡng miễn phí ngày khá rộng rãi trên AI Studio. Đối với Meta AI, bạn bắt buộc phải dùng gói trả phí của Meta mới có API (thanh toán trực tiếp với Meta AI).
+            Để sử dụng các mô hình chuyển đổi, bạn cần thiết lập API Key cá nhân tương ứng. Bạn không bắt buộc phải nhập cả 2 API cùng lúc, nếu chỉ có một API bạn vẫn dùng bình thường cho AI tương ứng đó. Nên ưu tiên dùng Gemini khi có thể, nó có chất lượng OCR rất cao. Đối với Meta AI, tuy không có khả năng OCR cao như Gemini, nhưng một số tài liệu Gemini từ chối chuyển đổi do hiểu nhầm bạn có thể thử nó.
           </p>
 
           <!-- Gemini Input section -->
@@ -65,6 +65,8 @@ import { MatIconModule } from '@angular/material/icon';
               <input 
                 id="modal-gemini-key-input"
                 [type]="showApiKeyGemini() ? 'text' : 'password'"
+                autocomplete="off"
+                spellcheck="false"
                 placeholder="AIzaSy..." 
                 [value]="tempGeminiApiKey()"
                 (input)="onGeminiInputChange($event)"
@@ -95,6 +97,8 @@ import { MatIconModule } from '@angular/material/icon';
               <input 
                 id="modal-meta-key-input"
                 [type]="showApiKeyMeta() ? 'text' : 'password'"
+                autocomplete="off"
+                spellcheck="false"
                 placeholder="Nhập Meta API Key..." 
                 [value]="tempMetaApiKey()"
                 (input)="onMetaInputChange($event)"
@@ -137,7 +141,7 @@ import { MatIconModule } from '@angular/material/icon';
           </div>
 
           <!-- Security note -->
-          <div class="space-y-1.5 font-sans">
+          <div class="space-y-3.5 font-sans">
             <p class="text-xs text-slate-400 leading-normal">
               Khóa API của bạn được lưu cục bộ tuyệt đối trong trình duyệt của bạn ( <code class="bg-slate-950 px-1.5 py-0.5 font-mono rounded text-indigo-400">LocalStorage</code> ), không bao giờ gửi lên bất kỳ máy chủ nào khác.
             </p>

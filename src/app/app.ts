@@ -19,6 +19,7 @@ import { HistoryService } from './services/history.service';
 import { ExportService } from './services/export.service';
 
 import { Header, OutputMode } from './header';
+import { getSecureApiKey, saveSecureApiKey, removeSecureApiKey } from './utils/crypto-storage.util';
 
 function safeGetItem(key: string): string {
   try { return localStorage.getItem(key) || ''; } catch { return ''; }
@@ -164,11 +165,11 @@ export class App {
       await this.loadPdfEngine();
       await this.historyService.loadHistory();
 
-      // Load API Key from safe browser storage
-      const savedKey = safeGetItem('user_gemini_api_key');
+      // Load & auto-migrate API Keys via Web Crypto API (AES-GCM 256-bit) + IndexedDB Keystore
+      const savedKey = await getSecureApiKey('gemini');
       this.clientApiKey.set(savedKey);
 
-      const savedMetaKey = safeGetItem('user_meta_api_key');
+      const savedMetaKey = await getSecureApiKey('meta');
       this.metaApiKey.set(savedMetaKey);
 
       const savedMetaModel = safeGetItem('custom_meta_model_name')?.trim() || 'muse-spark-1.3-contributor';
@@ -310,7 +311,7 @@ export class App {
     this.showApiKeyModal.set(true);
   }
 
-  saveApiKeys(keys: {geminiKey: string, metaKey: string, metaModel?: string}) {
+  async saveApiKeys(keys: {geminiKey: string, metaKey: string, metaModel?: string}) {
     const trimmedGemini = keys.geminiKey.trim();
     if (trimmedGemini && (/[\u0080-\uFFFF]/.test(trimmedGemini) || trimmedGemini.includes(' '))) {
       this.apiError.set('🔴 Lỗi định dạng API Key: API Key Gemini bạn nhập chứa ký tự không hợp lệ. Vui lòng kiểm tra lại.');
@@ -324,10 +325,10 @@ export class App {
     }
 
     this.clientApiKey.set(trimmedGemini);
-    safeSetItem('user_gemini_api_key', trimmedGemini);
+    await saveSecureApiKey('gemini', trimmedGemini);
     
     this.metaApiKey.set(trimmedMeta);
-    safeSetItem('user_meta_api_key', trimmedMeta);
+    await saveSecureApiKey('meta', trimmedMeta);
 
     const modelName = keys.metaModel?.trim() || 'muse-spark-1.3-contributor';
     this.metaModelName.set(modelName);
@@ -337,12 +338,10 @@ export class App {
     this.showSuccess('Đã lưu cấu hình API Key và Model thành công.');
   }
 
-  clearApiKeyModal() {
+  async clearApiKeyModal() {
     this.clientApiKey.set('');
-    safeRemoveItem('user_gemini_api_key');
-    
     this.metaApiKey.set('');
-    safeRemoveItem('user_meta_api_key');
+    await removeSecureApiKey();
 
     this.metaModelName.set('muse-spark-1.3-contributor');
     safeRemoveItem('custom_meta_model_name');
