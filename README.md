@@ -26,7 +26,7 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & lị
 - Luôn thiết lập ngưỡng cho API Key bạn dùng để tránh chi tiêu quá mức, ví dụ thiết lập ngưỡng chi tiêu tối đa 300 ngàn đồng/tháng;
 - Nên dùng ứng dụng này trên các trình duyệt đáng tin cậy, tốt nhất là Chrome, Firefox hoặc Edge. Ngoài ra nên hạn chế các addon cài trên trình duyệt;
 
-### Một số giới hạn tải lên
+## Một số giới hạn tải lên
 - Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang. Nếu file lớn quá ngưỡng trên, nên dùng công cụ cắt file PDF cho nó nhỏ bớt đi trước khi tải lên, ví dụ công cụ này: https://smallpdf.com/vi/split-pdf;
 - Nếu bạn tải lên nhiều file PDF cùng lúc, số lượng tối đa không quá 20 file, mỗi file không quá 12 trang & không lớn hơn 10MB mỗi file;
 - Nếu bạn tải lên nhiều ảnh, số lượng không quá 100 ảnh, mỗi ảnh không quá 5MB;
