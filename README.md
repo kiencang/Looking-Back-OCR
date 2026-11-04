@@ -21,6 +21,11 @@ Trang bạn đang thấy đây là nơi lưu trữ toàn bộ mã nguồn & lị
 
 **Lưu ý 2**: Từ ngày 28/10/2026, việc sử dụng API Key miễn phí trên AI Studio (Gemini) không được thoải mái như trước đây, thường gặp giới hạn (thông báo dạng `model AI đang có nhu cầu sử dụng cao, vui lòng thử lại sau`). Hiện chỉ Key trả phí là tiện dùng ứng dụng được ngay.
 
+## Một số lưu ý khi dùng với API Key trả phí
+- Không chia sẻ API Key trả phí với người dùng khác, vì bạn sẽ bị tốn chi phí;
+- Luôn thiết lập ngưỡng cho API Key bạn dùng để tránh chi tiêu quá mức, ví dụ thiết lập ngưỡng chi tiêu tối đa 300 ngàn đồng/tháng;
+- Nên dùng ứng dụng này trên các trình duyệt đáng tin cậy, tốt nhất là Chrome, Firefox hoặc Edge. Ngoài ra nên hạn chế các addon cài trên trình duyệt;
+
 ### Một số giới hạn tải lên
 - Nếu bạn tải lên một file PDF, giới hạn là từ 100MB đổ xuống & không quá 500 trang. Nếu file lớn quá ngưỡng trên, nên dùng công cụ cắt file PDF cho nó nhỏ bớt đi trước khi tải lên, ví dụ công cụ này: https://smallpdf.com/vi/split-pdf;
 - Nếu bạn tải lên nhiều file PDF cùng lúc, số lượng tối đa không quá 20 file, mỗi file không quá 12 trang & không lớn hơn 10MB mỗi file;
