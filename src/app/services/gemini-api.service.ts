@@ -18,12 +18,15 @@ export class GeminiApiService {
     parseProfileFromJson: (rawText: string) => DocumentStyleProfile
   ): Promise<DocumentStyleProfile> {
     const parts = [...sampleParts, { text: "Hãy phân tích phong cách thiết kế của tài liệu này." }];
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
         body: JSON.stringify({
           contents: [{ parts }],
           systemInstruction: { parts: [{ text: analysisPrompt }] },
@@ -64,7 +67,7 @@ export class GeminiApiService {
     parts: any[],
     systemInstructionText?: string
   ): Promise<{ rawMarkdown: string; inputTokens: number; outputTokens: number }> {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
     const requestBody: any = {
       contents: [
@@ -93,7 +96,8 @@ export class GeminiApiService {
     const apiResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey
       },
       body: JSON.stringify(requestBody)
     });
